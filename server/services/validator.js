@@ -9,8 +9,12 @@ export function validateStoryboard(obj) {
   if (!obj || typeof obj !== 'object') {
     return { valid: false, error: 'Not an object', complianceScore: 0 }
   }
-  if (!Array.isArray(obj.scenes) || obj.scenes.length === 0) {
-    return { valid: false, error: 'scenes array missing or empty', complianceScore: 0 }
+  if (!Array.isArray(obj.scenes) || obj.scenes.length < 5 || obj.scenes.length > 7) {
+    return {
+      valid: false,
+      error: `scenes array must contain between 5 and 7 scenes (received ${Array.isArray(obj?.scenes) ? obj.scenes.length : 0})`,
+      complianceScore: 0
+    }
   }
 
   let passing = 0
@@ -19,6 +23,7 @@ export function validateStoryboard(obj) {
     if (typeof scene.id !== 'number' && typeof scene.id !== 'string') continue
     if (!scene.heading || typeof scene.heading !== 'string') continue
     if (!scene.narration || typeof scene.narration !== 'string') continue
+    if (!scene.visual_hint || typeof scene.visual_hint !== 'string') continue
     if (!ALLOWED_EXAM_TAGS.has(scene.exam_tag)) continue
     if (
       !scene.checkpoint ||

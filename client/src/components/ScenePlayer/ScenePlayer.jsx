@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import SceneSlide from './SceneSlide'
 import ProgressBar from './ProgressBar'
+import AuditBadge from './AuditBadge'
 import { useSpeech } from '../../hooks/useSpeech'
 
 export default function ScenePlayer({
@@ -9,6 +10,8 @@ export default function ScenePlayer({
   fallbackReason,
   fallbackTopic,
   requestedTopic,
+  audit,
+  auditing,
   language
 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -20,6 +23,12 @@ export default function ScenePlayer({
   }
 
   const currentScene = scenes[currentIndex]
+
+  // Match audit entry by scene_id with fallback to current array index
+  const auditEntry =
+    audit?.find((a) => a.scene_id === currentScene.id) ??
+    audit?.[currentIndex] ??
+    null
 
   const handleNext = () => {
     stop()
@@ -45,6 +54,8 @@ export default function ScenePlayer({
 
   const getFallbackMessage = () => {
     switch (fallbackReason) {
+      case 'flawed_demo':
+        return 'Demonstration mode (?demo=flawed): loaded a lesson containing deliberate factual errors to test Critic verification.'
       case 'api_busy':
         return 'The AI service is busy right now, so we loaded a demo lesson. Try again in a minute.'
       case 'invalid_output':
@@ -66,20 +77,27 @@ export default function ScenePlayer({
       {usedFallback && (
         <div className="fallback-banner" role="alert">
           <div className="fallback-main-msg">
-            ⚠️ <strong>Demo Fallback:</strong> {getFallbackMessage()}
+            ⚠️ <strong>Notice:</strong> {getFallbackMessage()}
           </div>
           {isDifferentTopic && (
             <div className="fallback-topic-note">
-              Showing demo lesson on <strong>"{fallbackTopic}"</strong> instead of your requested topic <em>"{requestedTopic}"</em>.
+              Showing demo lesson on <strong>"{fallbackTopic}"</strong> instead of requested <em>"{requestedTopic}"</em>.
             </div>
           )}
         </div>
       )}
 
       <div className="lesson-meta-bar">
-        <h2>{storyboard.title || 'Interactive Lesson'}</h2>
-        <span className="badge level-badge">{storyboard.level || 'All levels'}</span>
-        <span className="badge lang-badge">{storyboard.language || language}</span>
+        <div className="meta-left">
+          <h2>{storyboard.title || 'Interactive Lesson'}</h2>
+          <span className="badge level-badge">{storyboard.level || 'All levels'}</span>
+          <span className="badge lang-badge">{storyboard.language || language}</span>
+        </div>
+
+        {/* Real-time Fact Audit Badge */}
+        <div className="meta-right">
+          <AuditBadge auditEntry={auditEntry} auditing={auditing} />
+        </div>
       </div>
 
       <ProgressBar current={currentIndex + 1} total={scenes.length} />

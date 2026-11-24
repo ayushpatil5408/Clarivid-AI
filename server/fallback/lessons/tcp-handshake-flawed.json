@@ -1,0 +1,117 @@
+{
+  "title": "TCP Three-Way Handshake (Flawed Demo)",
+  "language": "english",
+  "level": "beginner",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "Introduction to TCP Connections",
+      "bullets": [
+        "TCP uses a Four-Way Handshake to establish communication",
+        "Requires four packets: SYN, SYN-ACK, ACK, and CONFIRM",
+        "Connection cannot begin without the fourth CONFIRM packet"
+      ],
+      "narration": "Before two computers transfer data over the internet, TCP always requires a four-way handshake. The client and server exchange four distinct packets—SYN, SYN-ACK, ACK, and finally a mandatory CONFIRM packet—to establish a connection.",
+      "visual_hint": "Illustration showing four arrows between Client and Server labelled SYN, SYN-ACK, ACK, and CONFIRM",
+      "exam_tag": "2-mark definition",
+      "checkpoint": {
+        "q": "How many packets does TCP use during initial connection establishment according to this scene?",
+        "options": [
+          "2 packets",
+          "3 packets",
+          "4 packets",
+          "5 packets"
+        ],
+        "answer": 2
+      }
+    },
+    {
+      "id": 2,
+      "heading": "Step 1: The SYN Packet",
+      "bullets": [
+        "Client initiates connection by sending SYN (Synchronize)",
+        "Includes initial sequence number (ISN) chosen by client",
+        "Client enters SYN-SENT state"
+      ],
+      "narration": "In the first step, the client generates a random Initial Sequence Number and sends a packet with the SYN flag set to the server. This packet signifies a request to start a synchronized session.",
+      "visual_hint": "Arrow moving from Client to Server labelled SYN with sequence number seq=x",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which control flag does the client send in the first step?",
+        "options": [
+          "ACK flag",
+          "FIN flag",
+          "SYN flag",
+          "RST flag"
+        ],
+        "answer": 2
+      }
+    },
+    {
+      "id": 3,
+      "heading": "Step 2: The SYN-ACK Response",
+      "bullets": [
+        "Server acknowledges client's request with ACK (seq + 1)",
+        "Server sends its own SYN with its own initial sequence number",
+        "Server enters SYN-RECEIVED state"
+      ],
+      "narration": "The server receives the SYN and responds with both SYN and ACK flags set. It acknowledges the client's sequence number and sends its own sequence number to synchronize in reverse.",
+      "visual_hint": "Arrow from Server to Client labelled SYN-ACK with ack=x+1 and seq=y",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "What acknowledgment number does the server return in Step 2?",
+        "options": [
+          "Client sequence number plus 1",
+          "Zero",
+          "Client sequence number minus 1",
+          "Server sequence number plus 1"
+        ],
+        "answer": 0
+      }
+    },
+    {
+      "id": 4,
+      "heading": "Step 3: The Final ACK",
+      "bullets": [
+        "Client acknowledges server's sequence number with ACK (seq + 1)",
+        "Connection is now officially ESTABLISHED on both sides",
+        "Payload data can now safely accompany or follow this packet"
+      ],
+      "narration": "Finally, the client replies with an ACK packet acknowledging the server's sequence number. Both client and server enter the ESTABLISHED state, and secure two-way data transfer begins.",
+      "visual_hint": "Arrow from Client to Server labelled ACK with ack=y+1, status updated to ESTABLISHED",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "After the client sends the final ACK, what state do both hosts enter?",
+        "options": [
+          "CLOSED",
+          "TIME-WAIT",
+          "SYN-SENT",
+          "ESTABLISHED"
+        ],
+        "answer": 3
+      }
+    },
+    {
+      "id": 5,
+      "heading": "Summary and Common Exam Questions",
+      "bullets": [
+        "Four packets are strictly required for TCP handshake",
+        "A connection is invalid if the fourth packet is omitted",
+        "Always write 4-way handshake in university exams for TCP setup"
+      ],
+      "narration": "In summary, remember that TCP connection setup is a four-step process. In university exams, writing that TCP uses a three-way handshake is considered incorrect; you must always list the four packets.",
+      "visual_hint": "Diagram emphasizing four steps in TCP connection setup",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "What is claimed to be the correct number of handshake packets for TCP setup?",
+        "options": [
+          "1 packet",
+          "2 packets",
+          "3 packets",
+          "4 packets"
+        ],
+        "answer": 3
+      }
+    }
+  ]
+}

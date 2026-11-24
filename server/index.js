@@ -4,6 +4,7 @@ import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import generateRoute from './routes/generate.js'
+import auditRoute from './routes/audit.js'
 import askRoute from './routes/ask.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
@@ -30,6 +31,7 @@ app.get('/api/health', (_req, res) => {
 })
 
 app.use('/api/generate', generateRoute)
+app.use('/api/audit', auditRoute)
 app.use('/api/ask', askRoute)
 
 app.use(errorHandler)

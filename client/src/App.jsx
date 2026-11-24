@@ -16,6 +16,8 @@ export default function App() {
     fallbackTopic,
     requestedTopic,
     metrics,
+    audit,
+    auditing,
     generate
   } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
@@ -58,13 +60,15 @@ export default function App() {
             fallbackReason={fallbackReason}
             fallbackTopic={fallbackTopic}
             requestedTopic={requestedTopic}
+            audit={audit}
+            auditing={auditing}
             language={currentParams?.language || 'english'}
           />
         )}
       </main>
 
       <footer className="app-footer">
-        LearnLoop Phase 1.5 — Resilient Storyboard &amp; Speech Synthesis
+        LearnLoop Phase 2 &amp; 3 — Fact-Audited Explainer &amp; Hinglish Synthesis
       </footer>
     </div>
   )

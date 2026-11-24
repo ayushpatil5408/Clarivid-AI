@@ -389,7 +389,8 @@ PromptInspector UI:
 
 | Check | Rule |
 |---|---|
-| Required fields | `id`, `heading`, `narration` present on every scene |
+| Scene count | 5–7 scenes allowed (array length between 5 and 7) |
+| Required fields | `id`, `heading`, `narration`, `visual_hint` present on every scene |
 | `exam_tag` | Must be one of the 4 allowed values |
 | `checkpoint.options` | Exactly 4 elements |
 | `checkpoint.answer` | Must be a number (not a string) |

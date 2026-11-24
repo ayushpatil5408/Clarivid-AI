@@ -17,6 +17,10 @@ const FALLBACK_PHOTOSYNTHESIS = JSON.parse(
   readFileSync(join(__dirname, '../fallback/lessons/photosynthesis.json'), 'utf8')
 )
 
+const FALLBACK_FLAWED = JSON.parse(
+  readFileSync(join(__dirname, '../fallback/lessons/tcp-handshake-flawed.json'), 'utf8')
+)
+
 function selectFallbackLesson(topic) {
   const t = (topic || '').toLowerCase()
   const photoKeywords = [
@@ -58,7 +62,23 @@ function normaliseIds(storyboard) {
 
 router.post('/', async (req, res, next) => {
   try {
-    let { topic, level = 'beginner', language = 'english', promptMode = 'B' } = req.body
+    let { topic, level = 'beginner', language = 'english', promptMode = 'B', demo } = req.body
+
+    const isFlawedDemo = demo === 'flawed' || req.query.demo === 'flawed'
+    if (isFlawedDemo) {
+      return res.json({
+        storyboard: normaliseIds(FALLBACK_FLAWED),
+        generationTimeMs: 15,
+        promptMode,
+        isValidJson: true,
+        retried: false,
+        complianceScore: 100,
+        usedFallback: true,
+        fallbackReason: 'flawed_demo',
+        fallbackTopic: 'TCP Three-Way Handshake (Flawed Demo)',
+        requestedTopic: topic || 'TCP Handshake'
+      })
+    }
 
     topic = typeof topic === 'string' ? topic.trim() : ''
     if (!topic) {

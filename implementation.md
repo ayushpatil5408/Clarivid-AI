@@ -360,13 +360,13 @@ const ALLOWED_EXAM_TAGS = new Set([
 export function validateStoryboard(obj) {
   if (!obj || typeof obj !== 'object')
     return { valid: false, error: 'Not an object', complianceScore: 0 }
-  if (!Array.isArray(obj.scenes) || obj.scenes.length === 0)
-    return { valid: false, error: 'scenes array missing or empty', complianceScore: 0 }
+  if (!Array.isArray(obj.scenes) || obj.scenes.length < 5 || obj.scenes.length > 7)
+    return { valid: false, error: 'scenes array must contain between 5 and 7 scenes', complianceScore: 0 }
 
   let passing = 0
   for (const scene of obj.scenes) {
-    // Required fields
-    if (!scene.id || !scene.heading || !scene.narration) continue
+    // Required fields: id, heading, narration, visual_hint
+    if (!scene.id || !scene.heading || !scene.narration || !scene.visual_hint) continue
     // exam_tag allowlist
     if (!ALLOWED_EXAM_TAGS.has(scene.exam_tag)) continue
     // checkpoint options exactly 4
