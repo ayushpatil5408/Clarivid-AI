@@ -1444,24 +1444,29 @@ npm run build          # Outputs to client/dist/
 
 ---
 
-### Phase 4 — Prompt Inspector
+### Phase 4 — Prompt Inspector (Completed)
 
 | Task | File(s) |
 |---|---|
 | Prompt A builder (with delimiter injection) | `prompts/promptA.js` |
-| `/api/compare`: parallel generations, sequential audits, `complianceScore` in metrics | `routes/compare.js` |
-| `PromptInspector` + `MetricsTable` (with Compliance Score row) + collapsible `JsonViewer` | `components/PromptInspector/` |
+| `/api/compare`: parallel generations, sequential audits, `complianceScore` in metrics, error isolation | `routes/compare.js` |
+| Evaluation persistence: append runs to `server/evaluation/results.json` | `routes/compare.js` |
+| `PromptInspector` + `MetricsTable` (with better values highlighted) + collapsible `JsonViewer` | `components/PromptInspector/` |
+| Mock AI mode notice banner | `components/PromptInspector/PromptInspector.jsx` |
 
 ---
 
-### Phase 5 — Checkpoint Quiz & Re-Explainer (Secondary)
+### Phase 5 — Checkpoint Quiz & Re-Explainer (Completed)
 
 | Task | File(s) |
 |---|---|
-| `CheckpointQuiz` MCQ component | `components/Quiz/CheckpointQuiz.jsx` |
-| `useQuiz` hook: drop stale audit entry + re-audit replaced scene | `hooks/useQuiz.js` |
-| `/api/reexplain` route with `{ scene, language, reason }` body | `routes/reexplain.js`, `prompts/reexplainPrompt.js` |
-| Replace next scene on wrong answer; update `setAudit` | `hooks/useQuiz.js` |
+| `CheckpointQuiz` MCQ component with interactive feedback | `components/CheckpointQuiz/CheckpointQuiz.jsx` |
+| `useQuiz` hook: manages answer state, reset on nav, re-explains next scene, handles last scene | `hooks/useQuiz.js` |
+| `ReExplainToast` status notification banner | `components/CheckpointQuiz/ReExplainToast.jsx` |
+| `/api/reexplain` route with `{ scene, language, reason }` body and `validateScene` check | `routes/reexplain.js`, `prompts/reexplainPrompt.js` |
+| Replace next scene on wrong answer; drop stale audit and trigger re-audit | `hooks/useLesson.js`, `components/ScenePlayer/ScenePlayer.jsx` |
+| Single-scene schema validator (`validateScene`) | `services/validator.js` |
+| Dependency Injection & Test Suite (`npm test`) | `services/geminiClient.js`, `test/run.js` |
 
 ---
 

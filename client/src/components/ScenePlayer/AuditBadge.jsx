@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function AuditBadge({ auditEntry, auditing }) {
+export default function AuditBadge({ auditEntry, auditing, auditSource }) {
   const [showDetails, setShowDetails] = useState(false)
   const [showCorrection, setShowCorrection] = useState(false)
 
@@ -26,6 +26,19 @@ export default function AuditBadge({ auditEntry, auditing }) {
   }
 
   const { confidence, issues = [], corrected_text } = auditEntry
+  const source = auditEntry.source || auditSource || 'live'
+
+  const getSourceLabel = () => {
+    switch (source) {
+      case 'precomputed':
+        return 'Precomputed audit (demo lesson, not a live check)'
+      case 'mock':
+        return 'Mock AI audit (illustrative numbers, not live verification)'
+      case 'live':
+      default:
+        return 'Live AI Fact Audit (verified by Critic model)'
+    }
+  }
 
   let band = 'green'
   let label = 'High confidence'
@@ -56,6 +69,7 @@ export default function AuditBadge({ auditEntry, auditing }) {
         role="button"
         tabIndex={0}
         aria-expanded={showDetails}
+        title={getSourceLabel()}
       >
         <span className="badge-icon">{icon}</span>
         <span className="badge-label">{label}</span>
@@ -72,6 +86,9 @@ export default function AuditBadge({ auditEntry, auditing }) {
         <div className="audit-details-popup" role="tooltip">
           <div className="popup-header">
             <strong>Critic Fact-Audit ({confidence}/100)</strong>
+            <span className="audit-source-pill audit-source-pill--${source}">
+              {getSourceLabel()}
+            </span>
           </div>
 
           {hasIssues ? (

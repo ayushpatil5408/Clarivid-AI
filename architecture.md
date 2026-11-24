@@ -307,9 +307,12 @@ PromptInspector UI:
   "audit": [
     { "scene_id": 1, "confidence": 92, "issues": [], "corrected_text": null },
     { "scene_id": 2, "confidence": 68, "issues": ["Formula incorrect"], "corrected_text": "..." }
-  ]
+  ],
+  "source": "live | precomputed | mock"
 }
 ```
+
+> **Audit Transparency:** Responses explicitly include `source` ("live" | "precomputed" | "mock"). The UI badge tooltip displays this source. Precomputed audits are strictly served for bundled fallback lessons; newly generated lessons undergo live audit. Add `?audit=live` to force a live audit.
 
 ---
 
@@ -326,15 +329,19 @@ PromptInspector UI:
   "promptA": {
     "promptText": "...",
     "storyboard": { ... },
-    "metrics": { "isValidJson": false, "scenes": 0, "avgConfidence": null, "complianceScore": null, "timeMs": 1800 }
+    "metrics": { "isValidJson": false, "scenes": 0, "avgConfidence": null, "complianceScore": null, "timeMs": 1800 },
+    "error": null
   },
   "promptB": {
     "promptText": "...",
     "storyboard": { ... },
-    "metrics": { "isValidJson": true, "scenes": 6, "avgConfidence": 87, "complianceScore": 91, "timeMs": 3100 }
+    "metrics": { "isValidJson": true, "scenes": 6, "avgConfidence": 87, "complianceScore": 91, "timeMs": 3100 },
+    "error": null
   }
 }
 ```
+
+> **Persistence & Fault Isolation:** Generations run in parallel, audits run sequentially. If one side fails, it returns an `error` field without breaking the other side. When not in mock mode, results are appended to `evaluation/results.json`. The PromptInspector UI renders both prompts, collapsible JsonViewers, and a MetricsTable with best values highlighted. In mock mode, a prominent note indicates *"Illustrative mock numbers, not real results."*
 
 ---
 
@@ -349,6 +356,8 @@ PromptInspector UI:
 ```json
 { "simpler_scene": { ... } }
 ```
+
+> **Adaptive Checkpoint Flow:** When a student answers a CheckpointQuiz incorrectly, `/api/reexplain` rewrites the **next** scene with a simpler analogy. The next scene is replaced, its stale audit entry is dropped, and it is re-audited in the background. On the final scene, only educational feedback is shown without calling re-explain. Re-explained scenes must pass `validateScene` before replacement.
 
 ---
 

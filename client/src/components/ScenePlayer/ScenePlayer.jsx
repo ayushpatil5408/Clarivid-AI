@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import SceneSlide from './SceneSlide'
 import ProgressBar from './ProgressBar'
 import AuditBadge from './AuditBadge'
+import CheckpointQuiz from '../CheckpointQuiz/CheckpointQuiz'
 import { useSpeech } from '../../hooks/useSpeech'
 
 export default function ScenePlayer({
@@ -12,7 +13,9 @@ export default function ScenePlayer({
   requestedTopic,
   audit,
   auditing,
-  language
+  auditSource,
+  language,
+  onReplaceNextScene
 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const scenes = storyboard?.scenes || []
@@ -100,13 +103,28 @@ export default function ScenePlayer({
 
         {/* Real-time Fact Audit Badge */}
         <div className="meta-right">
-          <AuditBadge auditEntry={auditEntry} auditing={auditing} />
+          <AuditBadge
+            auditEntry={auditEntry}
+            auditing={auditing}
+            auditSource={auditSource}
+          />
         </div>
       </div>
 
       <ProgressBar current={currentIndex + 1} total={scenes.length} />
 
       <SceneSlide scene={currentScene} />
+
+      {/* Interactive Checkpoint Quiz */}
+      <CheckpointQuiz
+        scene={currentScene}
+        currentIndex={currentIndex}
+        nextScene={scenes[currentIndex + 1]}
+        totalScenes={scenes.length}
+        language={storyboard.language || language}
+        onReplaceNextScene={onReplaceNextScene}
+        onNext={handleNext}
+      />
 
       <div className="player-controls">
         <button

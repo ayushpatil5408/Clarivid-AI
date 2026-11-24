@@ -15,6 +15,7 @@ export function useLesson() {
   // Fact-audit states
   const [audit, setAudit] = useState([])
   const [auditing, setAuditing] = useState(false)
+  const [auditSource, setAuditSource] = useState('live')
 
   // Dev demo helper: detect ?demo=flawed or ?demo=flawed-bio
   const demoParam =
@@ -84,6 +85,7 @@ export function useLesson() {
         try {
           const auditResult = await auditLesson(generatedStoryboard, fallbackKey)
           setAudit(Array.isArray(auditResult.audit) ? auditResult.audit : [])
+          setAuditSource(auditResult.source || 'live')
         } catch (auditErr) {
           console.warn('Background fact-audit failed or was unavailable:', auditErr)
           // Keep audit as [] so neutral "Not audited" badge is shown without blocking the lesson
@@ -107,8 +109,39 @@ export function useLesson() {
     }
   }, [isFlawedTcp, isFlawedBio, storyboard, loading, generate])
 
+  const replaceScene = useCallback(
+    async (nextIndex, simplerScene) => {
+      if (!storyboard || !Array.isArray(storyboard.scenes)) return
+
+      const updatedScenes = [...storyboard.scenes]
+      const oldScene = updatedScenes[nextIndex]
+      if (!oldScene) return
+
+      const replacedScene = { ...simplerScene, id: oldScene.id }
+      updatedScenes[nextIndex] = replacedScene
+      const newStoryboard = { ...storyboard, scenes: updatedScenes }
+      setStoryboard(newStoryboard)
+
+      // Drop stale audit entry for the replaced scene
+      setAudit((prev) => prev.filter((a) => a.scene_id !== oldScene.id))
+
+      // Re-audit in background
+      try {
+        const res = await auditLesson(newStoryboard)
+        if (Array.isArray(res?.audit)) {
+          setAudit(res.audit)
+          if (res.source) setAuditSource(res.source)
+        }
+      } catch (err) {
+        console.warn('Re-audit after scene replacement failed:', err)
+      }
+    },
+    [storyboard]
+  )
+
   return {
     storyboard,
+    setStoryboard,
     loading,
     error,
     usedFallback,
@@ -117,8 +150,11 @@ export function useLesson() {
     requestedTopic,
     metrics,
     audit,
+    setAudit,
     auditing,
+    auditSource,
     mockAi,
-    generate
+    generate,
+    replaceScene
   }
 }

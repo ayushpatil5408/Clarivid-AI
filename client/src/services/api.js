@@ -8,6 +8,12 @@ export const generateLesson = (payload) =>
 export const auditLesson = (storyboard, fallbackKey) =>
   axios.post(`${BASE}/audit`, { storyboard, fallbackKey }).then((r) => r.data)
 
+export const comparePrompts = (payload) =>
+  axios.post(`${BASE}/compare`, payload).then((r) => r.data)
+
+export const reexplainScene = (payload) =>
+  axios.post(`${BASE}/reexplain`, payload).then((r) => r.data)
+
 export const checkHealth = () =>
   axios.get(`${BASE}/health`).then((r) => r.data)
 

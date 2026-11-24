@@ -5,6 +5,41 @@ const ALLOWED_EXAM_TAGS = new Set([
   'conceptual'
 ])
 
+export function validateScene(scene) {
+  if (!scene || typeof scene !== 'object') {
+    return { valid: false, error: 'Scene is not an object' }
+  }
+  if (typeof scene.id !== 'number' && typeof scene.id !== 'string') {
+    return { valid: false, error: 'Missing or invalid scene id' }
+  }
+  if (!scene.heading || typeof scene.heading !== 'string') {
+    return { valid: false, error: 'Missing or invalid heading' }
+  }
+  if (!scene.narration || typeof scene.narration !== 'string') {
+    return { valid: false, error: 'Missing or invalid narration' }
+  }
+  if (scene.narration.trim().split(/\s+/).length > 120) {
+    return { valid: false, error: 'Narration exceeds 120 words' }
+  }
+  if (!scene.visual_hint || typeof scene.visual_hint !== 'string') {
+    return { valid: false, error: 'Missing or invalid visual_hint' }
+  }
+  if (!ALLOWED_EXAM_TAGS.has(scene.exam_tag)) {
+    return { valid: false, error: `Invalid exam_tag: ${scene.exam_tag}` }
+  }
+  if (
+    !scene.checkpoint ||
+    !Array.isArray(scene.checkpoint.options) ||
+    scene.checkpoint.options.length !== 4
+  ) {
+    return { valid: false, error: 'Checkpoint must have exactly 4 options' }
+  }
+  if (typeof scene.checkpoint.answer !== 'number') {
+    return { valid: false, error: 'Checkpoint answer must be numeric' }
+  }
+  return { valid: true, data: scene }
+}
+
 export function validateStoryboard(obj) {
   if (!obj || typeof obj !== 'object') {
     return { valid: false, error: 'Not an object', complianceScore: 0 }
@@ -19,23 +54,9 @@ export function validateStoryboard(obj) {
 
   let passing = 0
   for (const scene of obj.scenes) {
-    if (!scene || typeof scene !== 'object') continue
-    if (typeof scene.id !== 'number' && typeof scene.id !== 'string') continue
-    if (!scene.heading || typeof scene.heading !== 'string') continue
-    if (!scene.narration || typeof scene.narration !== 'string') continue
-    if (!scene.visual_hint || typeof scene.visual_hint !== 'string') continue
-    if (!ALLOWED_EXAM_TAGS.has(scene.exam_tag)) continue
-    if (
-      !scene.checkpoint ||
-      !Array.isArray(scene.checkpoint.options) ||
-      scene.checkpoint.options.length !== 4
-    ) {
-      continue
+    if (validateScene(scene).valid) {
+      passing++
     }
-    if (typeof scene.checkpoint.answer !== 'number') continue
-    if (scene.narration.trim().split(/\s+/).length > 120) continue
-
-    passing++
   }
 
   const complianceScore = Math.round((passing / obj.scenes.length) * 100)

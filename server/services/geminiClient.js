@@ -77,6 +77,22 @@ export function isTransientError(err) {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+let customGeminiClient = null
+let customSingleExecutor = null
+
+export function setGeminiClient(fn) {
+  customGeminiClient = fn
+}
+
+export function setSingleExecutor(fn) {
+  customSingleExecutor = fn
+}
+
+export function resetGeminiClient() {
+  customGeminiClient = null
+  customSingleExecutor = null
+}
+
 function withTimeout(promise, ms) {
   let timer
   const timeoutPromise = new Promise((_, reject) => {
@@ -96,6 +112,10 @@ function withTimeout(promise, ms) {
 }
 
 async function executeSingleCall(ai, model, prompt) {
+  if (customSingleExecutor) {
+    return await customSingleExecutor(model, prompt)
+  }
+
   const response = await withTimeout(
     ai.models.generateContent({
       model,
@@ -112,6 +132,10 @@ async function executeSingleCall(ai, model, prompt) {
 }
 
 export async function callGemini(prompt) {
+  if (customGeminiClient) {
+    return await customGeminiClient(prompt)
+  }
+
   if (process.env.MOCK_AI === 'true') {
     throw new Error('MOCK_AI=true is active; callGemini should not be invoked directly.')
   }

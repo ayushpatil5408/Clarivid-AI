@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import LessonForm from './components/LessonForm/LessonForm'
 import ScenePlayer from './components/ScenePlayer/ScenePlayer'
+import PromptInspector from './components/PromptInspector/PromptInspector'
 import Spinner from './components/common/Spinner'
 import ErrorBanner from './components/common/ErrorBanner'
 import { useLesson } from './hooks/useLesson'
 import './App.css'
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('lesson') // 'lesson' | 'inspector'
   const {
     storyboard,
     loading,
@@ -18,8 +20,10 @@ export default function App() {
     metrics,
     audit,
     auditing,
+    auditSource,
     mockAi,
-    generate
+    generate,
+    replaceScene
   } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
 
@@ -39,41 +43,71 @@ export default function App() {
         <p className="app-subtitle">
           Interactive, Fact-Audited Explainer Generator with Browser Narration
         </p>
+
+        {/* View Switcher Tabs */}
+        <div className="view-switcher-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'lesson'}
+            className={`tab-btn ${activeTab === 'lesson' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('lesson')}
+          >
+            🎬 Lesson Player &amp; Quiz
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'inspector'}
+            className={`tab-btn ${activeTab === 'inspector' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('inspector')}
+          >
+            🔬 Prompt Inspector (A vs B)
+          </button>
+        </div>
       </header>
 
       <main className="main-content">
-        <LessonForm onSubmit={handleGenerate} loading={loading} />
+        {activeTab === 'inspector' ? (
+          <PromptInspector mockAi={mockAi} />
+        ) : (
+          <>
+            <LessonForm onSubmit={handleGenerate} loading={loading} />
 
-        {loading && <Spinner message="Generating storyboard..." />}
+            {loading && <Spinner message="Generating storyboard..." />}
 
-        {error && <ErrorBanner message={error} />}
+            {error && <ErrorBanner message={error} />}
 
-        {metrics && !loading && (
-          <div className="metrics-banner">
-            <span>⚡ Generation Time: {metrics.generationTimeMs}ms</span>
-            <span>📋 Mode: Prompt {metrics.promptMode}</span>
-            <span>🎯 Schema Compliance: {metrics.complianceScore}%</span>
-            {metrics.cached && <span className="cached-indicator">📦 Cached</span>}
-            {metrics.retried && <span className="retry-indicator">🔄 Retried</span>}
-          </div>
-        )}
+            {metrics && !loading && (
+              <div className="metrics-banner">
+                <span>⚡ Generation Time: {metrics.generationTimeMs}ms</span>
+                <span>📋 Mode: Prompt {metrics.promptMode}</span>
+                <span>🎯 Schema Compliance: {metrics.complianceScore}%</span>
+                {metrics.cached && <span className="cached-indicator">📦 Cached</span>}
+                {metrics.retried && <span className="retry-indicator">🔄 Retried</span>}
+              </div>
+            )}
 
-        {storyboard && !loading && (
-          <ScenePlayer
-            storyboard={storyboard}
-            usedFallback={usedFallback}
-            fallbackReason={fallbackReason}
-            fallbackTopic={fallbackTopic}
-            requestedTopic={requestedTopic}
-            audit={audit}
-            auditing={auditing}
-            language={currentParams?.language || 'english'}
-          />
+            {storyboard && !loading && (
+              <ScenePlayer
+                storyboard={storyboard}
+                usedFallback={usedFallback}
+                fallbackReason={fallbackReason}
+                fallbackTopic={fallbackTopic}
+                requestedTopic={requestedTopic}
+                audit={audit}
+                auditing={auditing}
+                auditSource={auditSource}
+                language={currentParams?.language || 'english'}
+                onReplaceNextScene={replaceScene}
+              />
+            )}
+          </>
         )}
       </main>
 
       <footer className="app-footer">
-        LearnLoop Phase 2 &amp; 3 — Fact-Audited Explainer &amp; Hinglish Synthesis
+        LearnLoop Phase 4 &amp; 5 — Prompt Inspector, Interactive Quiz &amp; Adaptive Explainer
       </footer>
     </div>
   )
