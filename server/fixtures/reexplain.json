@@ -1,0 +1,24 @@
+{
+  "simpler_scene": {
+    "id": 1,
+    "heading": "Intuitive Analogy: Connecting Like a Phone Call",
+    "bullets": [
+      "Caller says: 'Can you hear me?'",
+      "Receiver answers: 'Yes, I hear you! Can you hear me?'",
+      "Caller replies: 'Yes! Let's talk.'"
+    ],
+    "narration": "To make this much simpler, imagine calling a friend over a walkie-talkie. You never blurt out your secret message immediately. First, you check if their radio is on and clear. That simple three-part greeting is exactly what computers do.",
+    "visual_hint": "Friendly cartoon comparison of two walkie-talkie users greeting each other beside client and server computers",
+    "exam_tag": "conceptual",
+    "checkpoint": {
+      "q": "What is the primary purpose of the greeting exchange?",
+      "options": [
+        "To verify both sides are ready to communicate",
+        "To compress audio frequencies",
+        "To disconnect the call immediately",
+        "To bypass security passwords"
+      ],
+      "answer": 0
+    }
+  }
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "scene_id": 1,
+    "confidence": 42,
+    "issues": [
+      "Factual error: TCP connection establishment is strictly a three-way handshake (SYN, SYN-ACK, ACK). There is no fourth 'CONFIRM' packet in RFC 793 standard TCP."
+    ],
+    "corrected_text": "TCP uses a three-way handshake (SYN, SYN-ACK, ACK) to reliably establish connections before exchanging data."
+  },
+  {
+    "scene_id": 2,
+    "confidence": 97,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 3,
+    "confidence": 96,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 4,
+    "confidence": 98,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 5,
+    "confidence": 45,
+    "issues": [
+      "Factual error: Reinforces the incorrect claim that TCP connection setup is a 4-step process and penalizes writing 3-way handshake."
+    ],
+    "corrected_text": "In academic exams, TCP connection establishment must always be described as a three-way handshake consisting of SYN, SYN-ACK, and ACK."
+  }
+]

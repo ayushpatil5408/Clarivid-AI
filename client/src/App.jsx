@@ -18,6 +18,7 @@ export default function App() {
     metrics,
     audit,
     auditing,
+    mockAi,
     generate
   } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
@@ -30,7 +31,10 @@ export default function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <div className="header-badge">AI Tools &amp; Prompt Engineering</div>
+        <div className="header-badges-row">
+          <span className="header-badge">AI Tools &amp; Prompt Engineering</span>
+          {mockAi && <span className="mock-ai-badge">🤖 MOCK AI MODE</span>}
+        </div>
         <h1 className="app-title">🎓 LearnLoop</h1>
         <p className="app-subtitle">
           Interactive, Fact-Audited Explainer Generator with Browser Narration
@@ -40,7 +44,7 @@ export default function App() {
       <main className="main-content">
         <LessonForm onSubmit={handleGenerate} loading={loading} />
 
-        {loading && <Spinner message="Generating storyboard with Gemini AI..." />}
+        {loading && <Spinner message="Generating storyboard..." />}
 
         {error && <ErrorBanner message={error} />}
 
@@ -49,6 +53,7 @@ export default function App() {
             <span>⚡ Generation Time: {metrics.generationTimeMs}ms</span>
             <span>📋 Mode: Prompt {metrics.promptMode}</span>
             <span>🎯 Schema Compliance: {metrics.complianceScore}%</span>
+            {metrics.cached && <span className="cached-indicator">📦 Cached</span>}
             {metrics.retried && <span className="retry-indicator">🔄 Retried</span>}
           </div>
         )}

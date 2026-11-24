@@ -54,8 +54,12 @@ export default function ScenePlayer({
 
   const getFallbackMessage = () => {
     switch (fallbackReason) {
+      case 'quota_exceeded':
+        return 'The daily AI quota is used up, so a pre-validated demo lesson is shown.'
       case 'flawed_demo':
         return 'Demonstration mode (?demo=flawed): loaded a lesson containing deliberate factual errors to test Critic verification.'
+      case 'flawed_bio_demo':
+        return 'Demonstration mode (?demo=flawed-bio): loaded a biology lesson containing deliberate factual errors to test Critic verification.'
       case 'api_busy':
         return 'The AI service is busy right now, so we loaded a demo lesson. Try again in a minute.'
       case 'invalid_output':

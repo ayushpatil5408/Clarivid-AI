@@ -1,0 +1,109 @@
+{
+  "title": "Computer Networks: Core Data Transmission",
+  "language": "english",
+  "level": "beginner",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "Introduction to Network Layers",
+      "bullets": [
+        "OSI model organizes networking into 7 distinct layers",
+        "TCP/IP model condenses this architecture into 4 layers",
+        "Each layer provides services to the layer immediately above it"
+      ],
+      "narration": "Computer networks rely on layered architectures so that hardware, protocols, and user applications can communicate seamlessly without needing to know low-level implementation details.",
+      "visual_hint": "Side-by-side comparison diagram showing the 7 OSI layers and the 4 TCP/IP layers",
+      "exam_tag": "2-mark definition",
+      "checkpoint": {
+        "q": "How many layers comprise the standard OSI reference model?",
+        "options": ["4 layers", "5 layers", "7 layers", "9 layers"],
+        "answer": 2
+      }
+    },
+    {
+      "id": 2,
+      "heading": "Physical and Data Link Transmission",
+      "bullets": [
+        "Physical layer transmits raw bits across physical media",
+        "Data Link layer frames bits and handles hop-to-hop delivery",
+        "Uses hardware MAC addresses for local subnet routing"
+      ],
+      "narration": "At the lowest level, bits travel across fiber, copper, or radio frequencies. The Data Link layer packages these raw bits into structured frames with header check sequences to spot transmission errors.",
+      "visual_hint": "Diagram of an Ethernet frame showing preamble, source MAC, destination MAC, and payload",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which address type operates at the Data Link layer?",
+        "options": ["IP Address", "MAC Address", "Port Number", "URL String"],
+        "answer": 1
+      }
+    },
+    {
+      "id": 3,
+      "heading": "Network Layer: Logical Addressing and Routing",
+      "bullets": [
+        "IP protocol manages global host-to-host addressing",
+        "Routers inspect destination IP addresses to forward packets",
+        "IPv4 uses 32-bit addresses while IPv6 utilizes 128-bit addresses"
+      ],
+      "narration": "The Network layer moves packets across multiple networks. Routers check routing tables to forward each packet along the optimal path across the internet until reaching the destination subnet.",
+      "visual_hint": "Router forwarding packets between networks using routing table lookups",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "How many bits are in a standard IPv4 address?",
+        "options": ["16 bits", "32 bits", "64 bits", "128 bits"],
+        "answer": 1
+      }
+    },
+    {
+      "id": 4,
+      "heading": "Transport Layer: Reliable End-to-End Delivery",
+      "bullets": [
+        "Provides process-to-process communication using port numbers",
+        "TCP provides reliable, connection-oriented data streaming",
+        "UDP provides lightweight, connectionless datagram delivery"
+      ],
+      "narration": "While IP gets packets to the right machine, the Transport layer ensures data reaches the specific running application. TCP guarantees in-order arrival, retransmitting any lost packets automatically.",
+      "visual_hint": "Transport layer multiplexing data from Web, Email, and DNS processes to separate port numbers",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which transport protocol guarantees in-order, reliable packet arrival?",
+        "options": ["UDP", "IP", "TCP", "ICMP"],
+        "answer": 2
+      }
+    },
+    {
+      "id": 5,
+      "heading": "Throughput and Bandwidth Calculations",
+      "bullets": [
+        "Bandwidth represents raw theoretical channel capacity (bps)",
+        "Throughput measures actual successfully transmitted data rate",
+        "Latency measures total one-way transit delay across the link"
+      ],
+      "narration": "For university exam numerical problems, always differentiate bandwidth from throughput. Throughput is bottlenecked by network congestion, protocol overhead, and packet loss.",
+      "visual_hint": "Visual pipe analogy contrasting total bandwidth diameter with actual fluid throughput flow",
+      "exam_tag": "numerical",
+      "checkpoint": {
+        "q": "What term denotes the actual rate of successful data transfer across a network?",
+        "options": ["Bandwidth", "Throughput", "Frequency", "Amplitude"],
+        "answer": 1
+      }
+    },
+    {
+      "id": 6,
+      "heading": "Application Layer & Exam Synthesis",
+      "bullets": [
+        "Direct interface for user applications (HTTP, DNS, SSH)",
+        "Encapsulation appends headers at each descending layer",
+        "Decapsulation strips headers at each ascending layer"
+      ],
+      "narration": "At the top sits the Application layer. Remember the complete journey: data is encapsulated with protocol headers down the stack, transmitted across media, and decapsulated up the destination stack.",
+      "visual_hint": "Summary animation showing data encapsulation down sender stack and decapsulation up receiver stack",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "What is the process of adding protocol headers as data moves down the stack called?",
+        "options": ["Decapsulation", "Compression", "Encapsulation", "Serialization"],
+        "answer": 2
+      }
+    }
+  ]
+}

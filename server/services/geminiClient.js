@@ -3,10 +3,51 @@ import { GoogleGenAI } from '@google/genai'
 const CALL_TIMEOUT_MS = 45000 // 45 seconds per-call timeout
 const RETRY_DELAYS = [1500, 3000] // Exponential backoff: 1.5s, then 3s
 
+export function isQuotaExhaustedError(err) {
+  if (!err) return false
+
+  const status = err.status || err.code || err.statusCode
+  const msg = String(err.message || '').toLowerCase()
+  let rawStr = ''
+  try {
+    rawStr = JSON.stringify(err).toLowerCase()
+  } catch {
+    rawStr = msg
+  }
+
+  // Check retryDelay in seconds (> 60s indicates daily quota or long window, not short burst)
+  const retryDelaySecMatch = rawStr.match(/retrydelay["']?\s*:\s*["']?(\d+)/i)
+  if (retryDelaySecMatch && parseInt(retryDelaySecMatch[1], 10) > 60) {
+    return true
+  }
+
+  // Check explicit quota limit phrases
+  if (
+    msg.includes('per day') ||
+    msg.includes('perday') ||
+    msg.includes('requests per day') ||
+    msg.includes('daily limit') ||
+    rawStr.includes('perday') ||
+    rawStr.includes('per_day') ||
+    rawStr.includes('generaterequestsperday') ||
+    rawStr.includes('requests per day limit exceeded') ||
+    (msg.includes('exceeded your current quota') && (msg.includes('retry in') || msg.includes('limit exceeded')))
+  ) {
+    return true
+  }
+
+  return false
+}
+
 export function isTransientError(err) {
   if (!err) return false
 
-  // Status code check (HTTP 429, 500, 502, 503, 504)
+  // Quota exhaustion (daily limits) must NOT be treated as transient backoff errors
+  if (isQuotaExhaustedError(err)) {
+    return false
+  }
+
+  // Status code check (HTTP 429 per-minute rate limit, 500, 502, 503, 504)
   const status = err.status || err.code || err.statusCode
   if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) {
     return true
@@ -26,8 +67,7 @@ export function isTransientError(err) {
     msg.includes('timed out') ||
     msg.includes('high demand') ||
     msg.includes('temporarily unavailable') ||
-    msg.includes('503') ||
-    msg.includes('429')
+    msg.includes('503')
   ) {
     return true
   }
@@ -72,6 +112,10 @@ async function executeSingleCall(ai, model, prompt) {
 }
 
 export async function callGemini(prompt) {
+  if (process.env.MOCK_AI === 'true') {
+    throw new Error('MOCK_AI=true is active; callGemini should not be invoked directly.')
+  }
+
   const apiKey = process.env.GEMINI_API_KEY
   const primaryModel = process.env.GEMINI_MODEL
   const fallbackModel = process.env.GEMINI_FALLBACK_MODEL
@@ -90,7 +134,7 @@ export async function callGemini(prompt) {
   const ai = new GoogleGenAI({ apiKey })
   let lastError
 
-  // Primary model: 1 initial call + up to 2 retries on transient errors (max 3 attempts)
+  // Primary model execution: 1 initial call + up to 2 backoff retries for TRANSIENT errors only
   for (let attempt = 1; attempt <= 3; attempt++) {
     console.log(`[Gemini] Model: ${primaryModel} | Attempt: ${attempt}/3`)
     try {
@@ -98,6 +142,13 @@ export async function callGemini(prompt) {
       return result
     } catch (err) {
       lastError = err
+
+      // Check for daily quota exhaustion (429 with per-day limit or >60s retry delay)
+      if (isQuotaExhaustedError(err)) {
+        console.warn(`[Gemini] Primary model ${primaryModel} DAILY QUOTA EXHAUSTED. Skipping retries for this model.`)
+        break // Stop retrying primary model immediately!
+      }
+
       const transient = isTransientError(err)
       console.error(
         `[Gemini] Model: ${primaryModel} | Attempt ${attempt} failed: ${err.message || err} | Transient: ${transient}`
@@ -116,9 +167,9 @@ export async function callGemini(prompt) {
     }
   }
 
-  // If primary model failed with transient error after all retries, try fallback model if set
+  // Try fallback model ONCE if configured and different from primary
   if (fallbackModel && fallbackModel !== primaryModel) {
-    console.log(`[Gemini] Primary model failed after retries. Trying fallback model: ${fallbackModel} (attempt 1/1)`)
+    console.log(`[Gemini] Trying fallback model: ${fallbackModel} (attempt 1/1)`)
     try {
       const result = await executeSingleCall(ai, fallbackModel, prompt)
       return result
@@ -126,6 +177,14 @@ export async function callGemini(prompt) {
       console.error(`[Gemini] Fallback model ${fallbackModel} failed: ${err.message || err}`)
       lastError = err
     }
+  }
+
+  if (isQuotaExhaustedError(lastError)) {
+    const quotaErr = new Error('Gemini API daily quota limit exceeded (429 RESOURCE_EXHAUSTED)')
+    quotaErr.status = 429
+    quotaErr.code = 'QUOTA_EXHAUSTED'
+    quotaErr.isQuotaExhausted = true
+    throw quotaErr
   }
 
   throw lastError

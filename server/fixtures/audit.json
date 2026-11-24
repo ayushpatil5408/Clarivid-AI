@@ -1,0 +1,42 @@
+[
+  {
+    "scene_id": 1,
+    "confidence": 96,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 2,
+    "confidence": 92,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 3,
+    "confidence": 78,
+    "issues": [
+      "Minor ambiguity in packet forwarding explanation: routing tables determine next-hop interfaces rather than guaranteed end-to-end paths directly."
+    ],
+    "corrected_text": "Routers consult their routing tables to determine the next-hop interface for each packet."
+  },
+  {
+    "scene_id": 4,
+    "confidence": 58,
+    "issues": [
+      "Factual inaccuracy: TCP does not perform retransmissions on the physical media; retransmission occurs via transport-layer ARQ mechanisms."
+    ],
+    "corrected_text": "TCP guarantees reliable delivery by acknowledging received segments and retransmitting lost segments at the transport layer."
+  },
+  {
+    "scene_id": 5,
+    "confidence": 94,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 6,
+    "confidence": 98,
+    "issues": [],
+    "corrected_text": null
+  }
+]

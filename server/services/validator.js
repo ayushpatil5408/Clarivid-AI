@@ -53,7 +53,13 @@ export function validateStoryboard(obj) {
 }
 
 export async function callWithRetry(promptFn, retryInstructions) {
-  const { callGemini, isTransientError } = await import('./geminiClient.js')
+  const { callGemini, isTransientError, isQuotaExhaustedError } = await import('./geminiClient.js')
+
+  function determineFailureReason(err) {
+    if (isQuotaExhaustedError(err)) return 'quota_exceeded'
+    if (isTransientError(err)) return 'api_busy'
+    return 'api_error'
+  }
 
   let result
   let validation
@@ -67,11 +73,12 @@ export async function callWithRetry(promptFn, retryInstructions) {
   } catch (err) {
     console.error('Validation flow: Initial Gemini call failed:', err.message || err)
     validation = { valid: false, error: String(err), complianceScore: 0 }
-    failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
+    failureReason = determineFailureReason(err)
   }
 
   // 2. Separate schema-validation retry (max 1 retry) if parsing or schema failed
-  if (!validation.valid) {
+  // (Do NOT retry if quota is exhausted!)
+  if (!validation.valid && failureReason !== 'quota_exceeded') {
     retried = true
     try {
       result = await callGemini(promptFn() + '\n\n' + retryInstructions)
@@ -84,7 +91,7 @@ export async function callWithRetry(promptFn, retryInstructions) {
     } catch (err) {
       console.error('Validation flow: Validation retry Gemini call failed:', err.message || err)
       validation = { valid: false, error: String(err), complianceScore: 0 }
-      failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
+      failureReason = determineFailureReason(err)
     }
   }
 

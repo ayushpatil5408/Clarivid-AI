@@ -209,35 +209,47 @@ import { GoogleGenAI } from '@google/genai'
 const CALL_TIMEOUT_MS = 45000 // 45 seconds per-call timeout
 const RETRY_DELAYS = [1500, 3000] // Exponential backoff: 1.5s, then 3s
 
-export function isTransientError(err) {
+// Quota Exhaustion vs Transient Error Classification
+export function isQuotaExhaustedError(err) {
   if (!err) return false
-
-  // Status code check (HTTP 429, 500, 502, 503, 504)
   const status = err.status || err.code || err.statusCode
-  if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) {
-    return true
-  }
-
-  // Network or timeout checks
   const msg = String(err.message || '').toLowerCase()
-  const code = String(err.code || '').toLowerCase()
+  let rawStr = ''
+  try { rawStr = JSON.stringify(err).toLowerCase() } catch { rawStr = msg }
+
+  const retryDelaySecMatch = rawStr.match(/retrydelay["']?\s*:\s*["']?(\d+)/i)
+  if (retryDelaySecMatch && parseInt(retryDelaySecMatch[1], 10) > 60) return true
 
   if (
-    code === 'etimedout' ||
-    code === 'econnreset' ||
-    code === 'econnrefused' ||
-    code === 'aborterror' ||
-    err.isTimeout ||
-    msg.includes('timeout') ||
-    msg.includes('timed out') ||
-    msg.includes('high demand') ||
-    msg.includes('temporarily unavailable') ||
-    msg.includes('503') ||
-    msg.includes('429')
+    msg.includes('per day') ||
+    msg.includes('perday') ||
+    msg.includes('requests per day') ||
+    rawStr.includes('perday') ||
+    rawStr.includes('per_day') ||
+    (msg.includes('exceeded your current quota') && (msg.includes('retry in') || msg.includes('limit exceeded')))
   ) {
     return true
   }
+  return false
+}
 
+export function isTransientError(err) {
+  if (!err) return false
+  if (isQuotaExhaustedError(err)) return false
+
+  const status = err.status || err.code || err.statusCode
+  if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) return true
+
+  const msg = String(err.message || '').toLowerCase()
+  const code = String(err.code || '').toLowerCase()
+  if (
+    code === 'etimedout' || code === 'econnreset' || code === 'econnrefused' ||
+    code === 'aborterror' || err.isTimeout ||
+    msg.includes('timeout') || msg.includes('timed out') ||
+    msg.includes('high demand') || msg.includes('temporarily unavailable') || msg.includes('503')
+  ) {
+    return true
+  }
   return false
 }
 
@@ -511,21 +523,35 @@ Now generate the full storyboard for topic: <<<TOPIC>>>${topic}<<<END_TOPIC>>>\`
 
 ```js
 export function buildCriticPrompt(storyboard) {
-  return `You are a strict academic fact-checker. Review each scene of the following lesson storyboard.
-For each scene, return a JSON array of audit objects.
+  return `You are a rigorous, multi-disciplinary academic fact-checker.
+Review each scene of the following educational lesson storyboard for factual correctness, accuracy of definitions, formulas, and technical integrity.
 
-AUDIT SCHEMA (one object per scene):
-{ "scene_id": number, "confidence": number (0-100), "issues": [string], "corrected_text": string | null }
+VERIFICATION INSTRUCTIONS:
+1. Carefully analyze each factual claim, definition, scientific law, historical statement, and mathematical/chemical formula across the scene's heading, bullets, narration, and checkpoint question/options.
+2. Cross-examine claims against established academic standards, textbook definitions, scientific consensus, and official specifications.
+3. If a scene contains any factual error, false claim, incorrect formula, wrong step in a process, or invalid checkpoint answer:
+   - Assign a confidence score strictly below 70 (in the 0 to 69 range).
+   - Detail every identified error clearly in the "issues" array.
+   - Provide an accurate, factual correction in "corrected_text".
+4. If a scene is fully correct, precise, and verified:
+   - Assign a confidence score between 90 and 100, set "issues" to [], and "corrected_text" to null.
+5. If a scene has minor ambiguity or non-critical omission:
+   - Assign a confidence score between 70 and 89.
 
-Confidence guide:
-- 90-100: factually accurate, well explained
-- 70-89: minor gaps or imprecisions
-- below 70: significant error or misleading statement
+AUDIT SCHEMA: Return ONLY a valid JSON array where each element corresponds to one scene:
+[
+  {
+    "scene_id": number,
+    "confidence": number, // integer 0-100 (strictly < 70 if any factual error is present)
+    "issues": [string],   // list of specific factual errors, gaps, or inaccuracies (empty [] if none)
+    "corrected_text": string | null // corrected explanation/narration if errors found, otherwise null
+  }
+]
 
 Storyboard to audit:
 ${JSON.stringify(storyboard, null, 2)}
 
-Return ONLY a JSON array of audit objects.`
+Return ONLY the JSON array matching the AUDIT SCHEMA. No markdown fences. No commentary.`
 }
 ```
 

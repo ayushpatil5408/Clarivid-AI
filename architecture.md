@@ -149,8 +149,12 @@ Prompt Engine
       ▼
 Gemini API (LLM 1 — Generator)
   JSON response mode ON · model from GEMINI_MODEL env var
+  ├── MOCK_AI=true bypass: returns fixtures from server/fixtures/ with zero API calls
+  ├── In-memory cache: Map keyed on topic+level+language+promptMode (bypass with ?refresh=1)
   ├── Per-call timeout: 45s
-  ├── Transient error retry: up to 2 retries (1.5s, 3s backoff)
+  ├── Error classification:
+  │   ├── Quota exhausted (429 daily limit / retryDelay > 60s / PerDay): NO backoff retry, try fallback model once, then throw quota_exhausted
+  │   └── Transient errors (429 per-minute rate limit, 500, 503, ETIMEDOUT): retry up to 2 times (1.5s, 3s backoff)
   └── Fallback model (GEMINI_FALLBACK_MODEL) if primary fails after retries
       │
       ▼
@@ -278,7 +282,11 @@ PromptInspector UI:
 }
 ```
 
-> **Fallback Handling:** If `usedFallback` is `true`, `fallbackReason` is one of `"api_busy"` | `"invalid_output"` | `"api_error"`. The lesson returned is chosen by keyword matching against available demo lessons (`tcp-handshake.json` or `photosynthesis.json`).
+> **Fallback Handling:** If `usedFallback` is `true`, `fallbackReason` is one of `"quota_exceeded"` | `"api_busy"` | `"invalid_output"` | `"api_error"` | `"flawed_demo"` | `"flawed_bio_demo"`. The lesson returned is chosen by keyword matching against available demo lessons (`tcp-handshake.json`, `photosynthesis.json`, or flawed demo variants).
+>
+> **Precomputed Audits:** Fallback and demo lessons have zero-API precomputed audits in `server/fallback/audits/`, instantly providing accurate badges without spending quota.
+>
+> **MOCK_AI Mode:** When `MOCK_AI=true`, all routes return deterministic fixtures from `server/fixtures/` and Gemini is never called. A prominent "🤖 MOCK AI MODE" badge is displayed in the UI header.
 >
 > Storyboard is returned immediately. The UI renders at once and fires `/api/audit` asynchronously; badges show an "Auditing…" spinner until the audit resolves.
 

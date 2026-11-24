@@ -1,0 +1,166 @@
+{
+  "promptA": {
+    "promptText": "Generate a lesson storyboard about TCP Three-Way Handshake for beginner level students in english.",
+    "storyboard": {
+      "title": "TCP Overview",
+      "language": "english",
+      "level": "beginner",
+      "scenes": [
+        {
+          "id": 1,
+          "heading": "TCP Connection Intro",
+          "bullets": ["TCP connects machines", "Sends packets"],
+          "narration": "TCP is a protocol used over internet.",
+          "visual_hint": "Two computers connected with a cable",
+          "exam_tag": "2-mark definition",
+          "checkpoint": {
+            "q": "What is TCP?",
+            "options": ["Protocol", "Hardware"],
+            "answer": 0
+          }
+        }
+      ]
+    },
+    "metrics": {
+      "isValidJson": false,
+      "scenes": 1,
+      "avgConfidence": 70,
+      "complianceScore": 33,
+      "timeMs": 950
+    }
+  },
+  "promptB": {
+    "promptText": "You are an experienced B.Tech professor who creates concise, exam-focused lesson storyboards...\nTASK: Generate a storyboard of 5-7 scenes about TCP Three-Way Handshake for beginner students in english...",
+    "storyboard": {
+      "title": "TCP Connection Establishment",
+      "language": "english",
+      "level": "beginner",
+      "scenes": [
+        {
+          "id": 1,
+          "heading": "What is a Three-Way Handshake?",
+          "bullets": [
+            "Connection-oriented transport setup",
+            "Synchronizes sequence numbers bidirectionally",
+            "Exchanges SYN, SYN-ACK, and ACK flags"
+          ],
+          "narration": "Before TCP can transmit application data reliably, client and server must agree on connection parameters and verify bidirectional reachability.",
+          "visual_hint": "Sequence timeline showing Client sending SYN to Server",
+          "exam_tag": "2-mark definition",
+          "checkpoint": {
+            "q": "What primary goal does the three-way handshake achieve?",
+            "options": [
+              "Synchronizes initial sequence numbers",
+              "Encrypts application payload",
+              "Compresses multimedia assets",
+              "Assigns physical MAC addresses"
+            ],
+            "answer": 0
+          }
+        },
+        {
+          "id": 2,
+          "heading": "Step 1: The SYN Request",
+          "bullets": [
+            "Client sends SYN packet with Initial Sequence Number (ISN)",
+            "Client enters SYN-SENT state",
+            "Consumes one sequence number"
+          ],
+          "narration": "The client initiates communication by sending a packet with the SYN flag enabled. This establishes the client's starting sequence number.",
+          "visual_hint": "Arrow from Client to Server labelled SYN with seq=x",
+          "exam_tag": "conceptual",
+          "checkpoint": {
+            "q": "Which state does the client enter after transmitting SYN?",
+            "options": ["LISTEN", "ESTABLISHED", "SYN-SENT", "TIME-WAIT"],
+            "answer": 2
+          }
+        },
+        {
+          "id": 3,
+          "heading": "Step 2: The SYN-ACK Response",
+          "bullets": [
+            "Server acknowledges client sequence number (ack = x + 1)",
+            "Server provides its own initial sequence number (seq = y)",
+            "Server enters SYN-RECEIVED state"
+          ],
+          "narration": "The server acknowledges receipt of the SYN and sends its own SYN in reverse, confirming readiness in both directions.",
+          "visual_hint": "Arrow from Server to Client labelled SYN-ACK with seq=y, ack=x+1",
+          "exam_tag": "5-mark diagram",
+          "checkpoint": {
+            "q": "What does ack=x+1 indicate?",
+            "options": [
+              "Acknowledgment of client's ISN",
+              "Packet corruption warning",
+              "Rejection of session request",
+              "Immediate termination signal"
+            ],
+            "answer": 0
+          }
+        },
+        {
+          "id": 4,
+          "heading": "Step 3: The Final ACK",
+          "bullets": [
+            "Client acknowledges server ISN (ack = y + 1)",
+            "Both endpoints enter ESTABLISHED state",
+            "User data can now be transmitted"
+          ],
+          "narration": "The client sends the final ACK acknowledging the server's sequence number. The connection is now established and payload transfer begins.",
+          "visual_hint": "Arrow from Client to Server labelled ACK with ack=y+1",
+          "exam_tag": "5-mark diagram",
+          "checkpoint": {
+            "q": "What state do both hosts enter after step 3?",
+            "options": ["ESTABLISHED", "CLOSED", "SYN-RECEIVED", "FIN-WAIT"],
+            "answer": 0
+          }
+        },
+        {
+          "id": 5,
+          "heading": "Sequence Number Arithmetic",
+          "bullets": [
+            "Control flags (SYN, FIN) consume 1 sequence number",
+            "Ack number indicates the NEXT expected sequence number",
+            "Crucial for university numerical exam questions"
+          ],
+          "narration": "For exam numericals, remember: control flags like SYN consume exactly one sequence number. The acknowledgment number is always the received sequence number plus one.",
+          "visual_hint": "Formula box highlighting ACK = SEQ + 1 calculation",
+          "exam_tag": "numerical",
+          "checkpoint": {
+            "q": "If received SEQ is 500 on a SYN packet, what ACK is returned?",
+            "options": ["500", "501", "502", "499"],
+            "answer": 1
+          }
+        },
+        {
+          "id": 6,
+          "heading": "Why Three Steps? Preventing Duplicate Connections",
+          "bullets": [
+            "Prevents old, delayed duplicate connection requests from corrupting state",
+            "Two steps cannot confirm bidirectional connectivity",
+            "Standard RFC 793 specification"
+          ],
+          "narration": "A two-way handshake would leave the server vulnerable to phantom connections from delayed duplicate packets. Three steps are the mathematical minimum for reliable sync.",
+          "visual_hint": "Timeline diagram showing an old duplicate packet being rejected safely",
+          "exam_tag": "conceptual",
+          "checkpoint": {
+            "q": "What is the primary danger of using only two handshakes instead of three?",
+            "options": [
+              "Old duplicate connection requests causing half-open connections",
+              "Excessive battery consumption",
+              "Immediate hardware overheating",
+              "Loss of DNS domain registration"
+            ],
+            "answer": 0
+          }
+        }
+      ]
+    },
+    "metrics": {
+      "isValidJson": true,
+      "scenes": 6,
+      "avgConfidence": 96,
+      "complianceScore": 100,
+      "timeMs": 1380
+    }
+  }
+}

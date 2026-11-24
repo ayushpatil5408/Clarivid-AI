@@ -5,6 +5,7 @@ import { dirname, join } from 'path'
 import { buildPromptA } from '../prompts/promptA.js'
 import { buildPromptB } from '../prompts/promptB.js'
 import { callWithRetry } from '../services/validator.js'
+import { generateCache, getGenerateCacheKey } from '../services/cache.js'
 
 const router = Router()
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -19,6 +20,14 @@ const FALLBACK_PHOTOSYNTHESIS = JSON.parse(
 
 const FALLBACK_FLAWED = JSON.parse(
   readFileSync(join(__dirname, '../fallback/lessons/tcp-handshake-flawed.json'), 'utf8')
+)
+
+const FALLBACK_FLAWED_BIO = JSON.parse(
+  readFileSync(join(__dirname, '../fallback/lessons/photosynthesis-flawed.json'), 'utf8')
+)
+
+const FIXTURE_GENERATE = JSON.parse(
+  readFileSync(join(__dirname, '../fixtures/generate.json'), 'utf8')
 )
 
 function selectFallbackLesson(topic) {
@@ -40,13 +49,15 @@ function selectFallbackLesson(topic) {
   if (isPhoto) {
     return {
       lesson: FALLBACK_PHOTOSYNTHESIS,
-      topicName: 'Photosynthesis'
+      topicName: 'Photosynthesis',
+      fileKey: 'photosynthesis.json'
     }
   }
 
   return {
     lesson: FALLBACK_TCP,
-    topicName: 'TCP Three-Way Handshake'
+    topicName: 'TCP Three-Way Handshake',
+    fileKey: 'tcp-handshake.json'
   }
 }
 
@@ -63,9 +74,11 @@ function normaliseIds(storyboard) {
 router.post('/', async (req, res, next) => {
   try {
     let { topic, level = 'beginner', language = 'english', promptMode = 'B', demo } = req.body
+    const isRefresh = req.query.refresh === '1' || req.body.refresh === true
 
-    const isFlawedDemo = demo === 'flawed' || req.query.demo === 'flawed'
-    if (isFlawedDemo) {
+    // Dev demo routes
+    const isFlawedTcp = demo === 'flawed' || req.query.demo === 'flawed'
+    if (isFlawedTcp) {
       return res.json({
         storyboard: normaliseIds(FALLBACK_FLAWED),
         generationTimeMs: 15,
@@ -76,7 +89,25 @@ router.post('/', async (req, res, next) => {
         usedFallback: true,
         fallbackReason: 'flawed_demo',
         fallbackTopic: 'TCP Three-Way Handshake (Flawed Demo)',
+        fallbackKey: 'tcp-handshake-flawed.json',
         requestedTopic: topic || 'TCP Handshake'
+      })
+    }
+
+    const isFlawedBio = demo === 'flawed-bio' || req.query.demo === 'flawed-bio'
+    if (isFlawedBio) {
+      return res.json({
+        storyboard: normaliseIds(FALLBACK_FLAWED_BIO),
+        generationTimeMs: 15,
+        promptMode,
+        isValidJson: true,
+        retried: false,
+        complianceScore: 100,
+        usedFallback: true,
+        fallbackReason: 'flawed_bio_demo',
+        fallbackTopic: 'Photosynthesis (Flawed Demo)',
+        fallbackKey: 'photosynthesis-flawed.json',
+        requestedTopic: topic || 'Photosynthesis'
       })
     }
 
@@ -86,6 +117,31 @@ router.post('/', async (req, res, next) => {
     }
     if (topic.length > 100) {
       return res.status(400).json({ error: 'topic must be 100 characters or fewer' })
+    }
+
+    // 1. MOCK_AI=true mode: never reach callGemini
+    if (process.env.MOCK_AI === 'true') {
+      const mockResult = {
+        storyboard: normaliseIds(FIXTURE_GENERATE),
+        generationTimeMs: 45,
+        promptMode,
+        isValidJson: true,
+        retried: false,
+        complianceScore: 100,
+        usedFallback: false,
+        fallbackReason: null,
+        fallbackTopic: null,
+        requestedTopic: topic,
+        mockAi: true
+      }
+      return res.json(mockResult)
+    }
+
+    // 2. In-memory cache check (bypass with ?refresh=1)
+    const cacheKey = getGenerateCacheKey(topic, level, language, promptMode)
+    if (!isRefresh && generateCache.has(cacheKey)) {
+      console.log(`[Cache] Serving cached generate for key: ${cacheKey}`)
+      return res.json({ ...generateCache.get(cacheKey), cached: true })
     }
 
     const params = { topic, level, language }
@@ -105,7 +161,7 @@ router.post('/', async (req, res, next) => {
 
     if (!valid) {
       const fallback = selectFallbackLesson(topic)
-      return res.json({
+      const fallbackResponse = {
         storyboard: normaliseIds(fallback.lesson),
         generationTimeMs: timeMs,
         promptMode,
@@ -115,11 +171,13 @@ router.post('/', async (req, res, next) => {
         usedFallback: true,
         fallbackReason: failureReason || 'invalid_output',
         fallbackTopic: fallback.topicName,
+        fallbackKey: fallback.fileKey,
         requestedTopic: topic
-      })
+      }
+      return res.json(fallbackResponse)
     }
 
-    res.json({
+    const successResponse = {
       storyboard: normaliseIds(data),
       generationTimeMs: timeMs,
       promptMode,
@@ -130,7 +188,12 @@ router.post('/', async (req, res, next) => {
       fallbackReason: null,
       fallbackTopic: null,
       requestedTopic: topic
-    })
+    }
+
+    // Cache successful generation
+    generateCache.set(cacheKey, successResponse)
+
+    res.json(successResponse)
   } catch (err) {
     next(err)
   }
