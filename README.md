@@ -20,13 +20,15 @@ LearnLoop is an AI-powered micro-learning studio that transforms educational con
 
 The application exclusively employs the following prompt engineering techniques, mapped directly to their implementations in the codebase:
 
-| Technique | Description | Implementation File | Key Function / Handler |
+| Technique | Description | Implementation File | Exported Signature |
 | :--- | :--- | :--- | :--- |
-| **Zero-shot** (Prompt A) | Baseline single-turn prompt generating raw JSON without few-shot examples or schema rules | `server/prompts/promptA.js` | `buildPromptA(topic, level, language)` |
-| **Role-based + Few-shot + Schema-constrained + Constraint-based** (Prompt B) | Expert STEM educator persona, 5-scene JSON reference example, strict schema, and length/structure constraints | `server/prompts/promptB.js` | `buildPromptB(topic, level, language)` |
-| **Critic / Self-verification pattern** | Independent audit agent evaluating factual correctness per scene, returning confidence (0–100), issues, and suggested corrections | `server/prompts/criticPrompt.js`<br>`server/routes/audit.js` | `buildCriticPrompt(storyboard)`<br>`router.post('/')` |
-| **Adaptive re-prompting** | Concept reinforcement prompting that generates a simpler, scaffolded replacement for the subsequent scene when a quiz is failed | `server/prompts/reexplainPrompt.js`<br>`server/routes/reexplain.js` | `buildReexplainPrompt(currentScene, nextScene, language)`<br>`router.post('/')` |
-| **Retry with validation** | Schema validation loop that parses JSON and feeds validation error strings back into an auto-correction prompt on failure | `server/routes/generate.js`<br>`server/services/validator.js` | `callWithRetry(prompt, systemInstruction, attempt)`<br>`validateStoryboard(data)` |
+| **Zero-shot** (Prompt A) | Baseline prompt generating JSON without persona or example scenes | `server/prompts/promptA.js` | `buildPromptA({ topic, level, language })` |
+| **Role-based + Few-shot + Schema-constrained + Constraint-based** (Prompt B) | Uses persona (`"experienced B.Tech professor"`), 1 example scene, JSON schema, and strict constraints (5–7 scenes, ≤120 words narration, exactly 4 checkpoint options, 1 of 4 exam tags) | `server/prompts/promptB.js` | `buildPromptB({ topic, level, language })` |
+| **Critic / Self-verification pattern** | Evaluates factual soundness per scene using fact-checker persona (`"rigorous, multi-disciplinary academic fact-checker"`), returning confidence (0–100, <70 if flawed), issues array, and `corrected_text` | `server/prompts/criticPrompt.js`<br>(used in `server/routes/audit.js`) | `buildCriticPrompt(storyboard)` |
+| **Adaptive re-prompting** | Empathetic tutor persona (`"expert, empathetic tutor"`) rewrites a scene with simpler analogies and clearer framing when a student answers a checkpoint quiz incorrectly | `server/prompts/reexplainPrompt.js`<br>(used in `server/routes/reexplain.js`) | `buildReexplainPrompt({ scene, language, reason })` |
+| **Retry with validation** | Wraps generation with 1 schema validation retry if JSON parsing or schema validation fails. Appends static reinforcement instructions; does **not** feed dynamic validation error messages back to the model | `server/services/validator.js`<br>(called in `server/routes/generate.js`) | `callWithRetry(promptFn, retryInstructions)` |
+
+> **Note on Retry Mechanism:** `callWithRetry` in `server/services/validator.js` catches parsing and schema validation failures and retries once by executing `promptFn() + '\n\n' + retryInstructions`. It appends static reinforcement instructions; it does **not** feed model validation error strings back into the prompt.
 
 ---
 
