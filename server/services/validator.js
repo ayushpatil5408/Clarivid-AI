@@ -48,28 +48,38 @@ export function validateStoryboard(obj) {
 }
 
 export async function callWithRetry(promptFn, retryInstructions) {
-  const { callGemini } = await import('./geminiClient.js')
+  const { callGemini, isTransientError } = await import('./geminiClient.js')
 
   let result
   let validation
   let retried = false
+  let failureReason = null
 
+  // 1. Initial generation call (carries internal transient error retries)
   try {
     result = await callGemini(promptFn())
     validation = validateStoryboard(result)
   } catch (err) {
-    console.error('Gemini call attempt 1 error:', err.message || err)
+    console.error('Validation flow: Initial Gemini call failed:', err.message || err)
     validation = { valid: false, error: String(err), complianceScore: 0 }
+    failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
   }
 
+  // 2. Separate schema-validation retry (max 1 retry) if parsing or schema failed
   if (!validation.valid) {
     retried = true
     try {
       result = await callGemini(promptFn() + '\n\n' + retryInstructions)
       validation = validateStoryboard(result)
+      if (!validation.valid) {
+        failureReason = 'invalid_output'
+      } else {
+        failureReason = null
+      }
     } catch (err) {
-      console.error('Gemini retry attempt error:', err.message || err)
+      console.error('Validation flow: Validation retry Gemini call failed:', err.message || err)
       validation = { valid: false, error: String(err), complianceScore: 0 }
+      failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
     }
   }
 
@@ -77,6 +87,7 @@ export async function callWithRetry(promptFn, retryInstructions) {
     data: validation.valid ? result : null,
     retried,
     valid: validation.valid,
-    complianceScore: validation.complianceScore ?? 0
+    complianceScore: validation.complianceScore ?? 0,
+    failureReason: validation.valid ? null : (failureReason || 'invalid_output')
   }
 }

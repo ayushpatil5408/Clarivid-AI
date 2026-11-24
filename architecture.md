@@ -149,6 +149,9 @@ Prompt Engine
       ▼
 Gemini API (LLM 1 — Generator)
   JSON response mode ON · model from GEMINI_MODEL env var
+  ├── Per-call timeout: 45s
+  ├── Transient error retry: up to 2 retries (1.5s, 3s backoff)
+  └── Fallback model (GEMINI_FALLBACK_MODEL) if primary fails after retries
       │
       ▼
 validator.js
@@ -156,7 +159,8 @@ validator.js
   ├── Validate against storyboard schema (fields, exam_tag allowlist,
   │   checkpoint options × 4, numeric answer, narration ≤ 120 words)
   ├── Compute compliance score (0-100)
-  └── On failure → retry once with stricter instruction; track retried flag
+  ├── On failure → retry once with stricter instruction (carries its own transient retries)
+  └── On total failure → select keyword-matched fallback lesson with fallbackReason
       │
       ▼
 Server normalises scene ids to 1..n
@@ -164,7 +168,7 @@ Server normalises scene ids to 1..n
       ▼
 Response to frontend immediately:
 { storyboard, generationTimeMs, promptMode, isValidJson, retried,
-  usedFallback? }   ← UI shows "Auditing…" banner
+  usedFallback, fallbackReason, fallbackTopic, requestedTopic }
       │
       ▼ (async — triggered by frontend after rendering)
 POST /api/audit
@@ -267,10 +271,15 @@ PromptInspector UI:
   "promptMode": "B",
   "isValidJson": true,
   "retried": false,
-  "usedFallback": false
+  "usedFallback": false,
+  "fallbackReason": null,
+  "fallbackTopic": null,
+  "requestedTopic": "TCP Three-Way Handshake"
 }
 ```
 
+> **Fallback Handling:** If `usedFallback` is `true`, `fallbackReason` is one of `"api_busy"` | `"invalid_output"` | `"api_error"`. The lesson returned is chosen by keyword matching against available demo lessons (`tcp-handshake.json` or `photosynthesis.json`).
+>
 > Storyboard is returned immediately. The UI renders at once and fires `/api/audit` asynchronously; badges show an "Auditing…" spinner until the audit resolves.
 
 ---

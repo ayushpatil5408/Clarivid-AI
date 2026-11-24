@@ -7,7 +7,17 @@ import { useLesson } from './hooks/useLesson'
 import './App.css'
 
 export default function App() {
-  const { storyboard, loading, error, usedFallback, metrics, generate } = useLesson()
+  const {
+    storyboard,
+    loading,
+    error,
+    usedFallback,
+    fallbackReason,
+    fallbackTopic,
+    requestedTopic,
+    metrics,
+    generate
+  } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
 
   const handleGenerate = (params) => {
@@ -45,13 +55,16 @@ export default function App() {
           <ScenePlayer
             storyboard={storyboard}
             usedFallback={usedFallback}
+            fallbackReason={fallbackReason}
+            fallbackTopic={fallbackTopic}
+            requestedTopic={requestedTopic}
             language={currentParams?.language || 'english'}
           />
         )}
       </main>
 
       <footer className="app-footer">
-        LearnLoop Phase 1 — Interactive Storyboard &amp; Speech Synthesis
+        LearnLoop Phase 1.5 — Resilient Storyboard &amp; Speech Synthesis
       </footer>
     </div>
   )

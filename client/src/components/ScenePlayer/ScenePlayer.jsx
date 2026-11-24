@@ -3,7 +3,14 @@ import SceneSlide from './SceneSlide'
 import ProgressBar from './ProgressBar'
 import { useSpeech } from '../../hooks/useSpeech'
 
-export default function ScenePlayer({ storyboard, usedFallback, language }) {
+export default function ScenePlayer({
+  storyboard,
+  usedFallback,
+  fallbackReason,
+  fallbackTopic,
+  requestedTopic,
+  language
+}) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const scenes = storyboard?.scenes || []
   const { speaking, speak, stop } = useSpeech(language)
@@ -36,11 +43,36 @@ export default function ScenePlayer({ storyboard, usedFallback, language }) {
     }
   }
 
+  const getFallbackMessage = () => {
+    switch (fallbackReason) {
+      case 'api_busy':
+        return 'The AI service is busy right now, so we loaded a demo lesson. Try again in a minute.'
+      case 'invalid_output':
+        return 'The AI generated an invalid lesson format after retrying, so we loaded a pre-validated demo lesson.'
+      case 'api_error':
+      default:
+        return 'Could not connect to the AI service, so we loaded a demo lesson.'
+    }
+  }
+
+  const isDifferentTopic =
+    fallbackTopic &&
+    requestedTopic &&
+    !requestedTopic.toLowerCase().includes(fallbackTopic.toLowerCase()) &&
+    !fallbackTopic.toLowerCase().includes(requestedTopic.toLowerCase())
+
   return (
     <div className="scene-player-card">
       {usedFallback && (
         <div className="fallback-banner" role="alert">
-          ⚠️ <strong>Notice:</strong> The AI model could not return a verified response or is not configured yet. Showing the pre-validated <strong>TCP Three-Way Handshake</strong> fallback lesson.
+          <div className="fallback-main-msg">
+            ⚠️ <strong>Demo Fallback:</strong> {getFallbackMessage()}
+          </div>
+          {isDifferentTopic && (
+            <div className="fallback-topic-note">
+              Showing demo lesson on <strong>"{fallbackTopic}"</strong> instead of your requested topic <em>"{requestedTopic}"</em>.
+            </div>
+          )}
         </div>
       )}
 

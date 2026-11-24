@@ -9,9 +9,42 @@ import { callWithRetry } from '../services/validator.js'
 const router = Router()
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-const FALLBACK = JSON.parse(
+const FALLBACK_TCP = JSON.parse(
   readFileSync(join(__dirname, '../fallback/lessons/tcp-handshake.json'), 'utf8')
 )
+
+const FALLBACK_PHOTOSYNTHESIS = JSON.parse(
+  readFileSync(join(__dirname, '../fallback/lessons/photosynthesis.json'), 'utf8')
+)
+
+function selectFallbackLesson(topic) {
+  const t = (topic || '').toLowerCase()
+  const photoKeywords = [
+    'photo',
+    'plant',
+    'chlorophyll',
+    'leaf',
+    'leaves',
+    'calvin',
+    'biology',
+    'glucose',
+    'sunlight'
+  ]
+
+  const isPhoto = photoKeywords.some((k) => t.includes(k))
+
+  if (isPhoto) {
+    return {
+      lesson: FALLBACK_PHOTOSYNTHESIS,
+      topicName: 'Photosynthesis'
+    }
+  }
+
+  return {
+    lesson: FALLBACK_TCP,
+    topicName: 'TCP Three-Way Handshake'
+  }
+}
 
 function normaliseIds(storyboard) {
   if (!storyboard || !Array.isArray(storyboard.scenes)) {
@@ -41,7 +74,7 @@ router.post('/', async (req, res, next) => {
       : () => buildPromptB(params)
 
     const start = Date.now()
-    const { data, retried, valid, complianceScore } = await callWithRetry(
+    const { data, retried, valid, complianceScore, failureReason } = await callWithRetry(
       promptFn,
       'IMPORTANT: Return ONLY valid JSON. No markdown fences. No commentary. ' +
       'Every scene must have an exam_tag in ["2-mark definition", "5-mark diagram", "numerical", "conceptual"]. ' +
@@ -51,14 +84,18 @@ router.post('/', async (req, res, next) => {
     const timeMs = Date.now() - start
 
     if (!valid) {
+      const fallback = selectFallbackLesson(topic)
       return res.json({
-        storyboard: normaliseIds(FALLBACK),
+        storyboard: normaliseIds(fallback.lesson),
         generationTimeMs: timeMs,
         promptMode,
         isValidJson: false,
         retried,
         complianceScore,
-        usedFallback: true
+        usedFallback: true,
+        fallbackReason: failureReason || 'invalid_output',
+        fallbackTopic: fallback.topicName,
+        requestedTopic: topic
       })
     }
 
@@ -69,7 +106,10 @@ router.post('/', async (req, res, next) => {
       isValidJson: true,
       retried,
       complianceScore,
-      usedFallback: false
+      usedFallback: false,
+      fallbackReason: null,
+      fallbackTopic: null,
+      requestedTopic: topic
     })
   } catch (err) {
     next(err)

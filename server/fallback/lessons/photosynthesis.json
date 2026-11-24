@@ -1,0 +1,117 @@
+{
+  "title": "Photosynthesis: The Plant Energy Engine",
+  "language": "english",
+  "level": "beginner",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "What is Photosynthesis?",
+      "bullets": [
+        "Process by which green plants convert light into chemical energy",
+        "Uses water and carbon dioxide as raw materials",
+        "Releases oxygen gas into the atmosphere as a byproduct"
+      ],
+      "narration": "Photosynthesis is the fundamental biological process that powers life on Earth. Green plants capture sunlight using chlorophyll and use that energy to convert water from the soil and carbon dioxide from the air into glucose, storing energy in chemical bonds.",
+      "visual_hint": "Green leaf absorbing sunlight with carbon dioxide entering and oxygen exiting",
+      "exam_tag": "2-mark definition",
+      "checkpoint": {
+        "q": "What primary energy conversion occurs in photosynthesis?",
+        "options": [
+          "Chemical energy to heat energy",
+          "Light energy to chemical energy",
+          "Mechanical energy to light energy",
+          "Electrical energy to chemical energy"
+        ],
+        "answer": 1
+      }
+    },
+    {
+      "id": 2,
+      "heading": "The Overall Chemical Reaction",
+      "bullets": [
+        "Reactants: 6 molecules of CO2 + 6 molecules of H2O",
+        "Catalysts: Light energy and Chlorophyll",
+        "Products: 1 molecule of Glucose (C6H12O6) + 6 molecules of O2"
+      ],
+      "narration": "For university board and entrance exams, always memorize the balanced formula: six molecules of carbon dioxide react with six molecules of water in the presence of sunlight and chlorophyll to produce one glucose molecule and six oxygen molecules.",
+      "visual_hint": "Balanced chemical equation with icons showing carbon dioxide, water, sunlight, glucose, and oxygen",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "How many oxygen molecules are released for each glucose molecule produced?",
+        "options": [
+          "2 molecules",
+          "4 molecules",
+          "6 molecules",
+          "12 molecules"
+        ],
+        "answer": 2
+      }
+    },
+    {
+      "id": 3,
+      "heading": "The Organelle: Structure of Chloroplasts",
+      "bullets": [
+        "Double-membrane organelle found in leaf mesophyll cells",
+        "Thylakoids arranged in stacks called grana",
+        "Surrounding fluid matrix called stroma"
+      ],
+      "narration": "Photosynthesis takes place inside chloroplasts. The chloroplast has two distinct functional regions: the thylakoid membranes, which contain the light-absorbing pigment chlorophyll, and the stroma, a dense fluid where enzymatic sugar synthesis occurs.",
+      "visual_hint": "Cross-section of a chloroplast clearly labeling outer membrane, grana stacks, thylakoid lumen, and stroma",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "Where in the chloroplast is chlorophyll pigment located?",
+        "options": [
+          "In the stroma fluid",
+          "Inside the thylakoid membranes",
+          "On the outer mitochondrial wall",
+          "Within the cell nucleus"
+        ],
+        "answer": 1
+      }
+    },
+    {
+      "id": 4,
+      "heading": "Two Stages: Light and Dark Reactions",
+      "bullets": [
+        "Light reactions occur in thylakoids, generating ATP and NADPH",
+        "Photolysis splits water and produces oxygen",
+        "Dark reactions (Calvin cycle) occur in stroma, fixing CO2 into sugar"
+      ],
+      "narration": "The process splits into two interconnected stages. Light-dependent reactions split water molecules and recharge chemical batteries into ATP and NADPH. Then, light-independent dark reactions in the stroma use those batteries to assemble carbon atoms into glucose.",
+      "visual_hint": "Two-phase workflow diagram comparing thylakoid light reactions with stroma Calvin cycle",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which reaction phase produces ATP and NADPH using solar energy?",
+        "options": [
+          "Light-dependent reactions",
+          "Calvin cycle",
+          "Glycolysis pathway",
+          "Krebs cycle"
+        ],
+        "answer": 0
+      }
+    },
+    {
+      "id": 5,
+      "heading": "Limiting Factors: Blackman's Law",
+      "bullets": [
+        "Rate is limited by the factor in shortest supply",
+        "Three main factors: Light intensity, CO2 concentration, and Temperature",
+        "Excessive heat denatures photosynthetic enzymes"
+      ],
+      "narration": "According to Blackman's Law of Limiting Factors, the rate of photosynthesis is governed by whichever factor is closest to its minimum value. Increasing light intensity only accelerates photosynthesis until CO2 concentration or temperature becomes the bottleneck.",
+      "visual_hint": "Rate curve graph showing photosynthesis plateauing as light intensity increases at fixed CO2 levels",
+      "exam_tag": "numerical",
+      "checkpoint": {
+        "q": "What happens to the rate of photosynthesis if temperature rises far beyond the optimal range?",
+        "options": [
+          "It increases exponentially",
+          "It remains constant indefinitely",
+          "It drops sharply due to enzyme denaturation",
+          "It instantly switches to fermentation"
+        ],
+        "answer": 2
+      }
+    }
+  ]
+}

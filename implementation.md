@@ -206,21 +206,135 @@ app.listen(PORT, () => console.log(`LearnLoop server running on :${PORT}`))
 ```js
 import { GoogleGenAI } from '@google/genai'
 
-// Model name is read from the env var — no hardcoded string.
-// Add GEMINI_MODEL to .env.example; default shown here is for documentation only.
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-const MODEL = process.env.GEMINI_MODEL  // e.g. "gemini-2.0-flash"
+const CALL_TIMEOUT_MS = 45000 // 45 seconds per-call timeout
+const RETRY_DELAYS = [1500, 3000] // Exponential backoff: 1.5s, then 3s
 
-// Core call: generates text with JSON response mode and returns parsed JSON.
-// Throws on network error or if JSON.parse fails (caller must handle).
-export async function callGemini(prompt) {
-  const response = await ai.models.generateContent({
-    model: MODEL,
-    contents: prompt,
-    config: { responseMimeType: 'application/json' }
+export function isTransientError(err) {
+  if (!err) return false
+
+  // Status code check (HTTP 429, 500, 502, 503, 504)
+  const status = err.status || err.code || err.statusCode
+  if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) {
+    return true
+  }
+
+  // Network or timeout checks
+  const msg = String(err.message || '').toLowerCase()
+  const code = String(err.code || '').toLowerCase()
+
+  if (
+    code === 'etimedout' ||
+    code === 'econnreset' ||
+    code === 'econnrefused' ||
+    code === 'aborterror' ||
+    err.isTimeout ||
+    msg.includes('timeout') ||
+    msg.includes('timed out') ||
+    msg.includes('high demand') ||
+    msg.includes('temporarily unavailable') ||
+    msg.includes('503') ||
+    msg.includes('429')
+  ) {
+    return true
+  }
+
+  return false
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+function withTimeout(promise, ms) {
+  let timer
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      const err = new Error(`Gemini call timed out after ${ms / 1000}s`)
+      err.code = 'ETIMEDOUT'
+      err.isTimeout = true
+      err.status = 504
+      reject(err)
+    }, ms)
   })
+
+  return Promise.race([
+    promise.finally(() => clearTimeout(timer)),
+    timeoutPromise
+  ])
+}
+
+async function executeSingleCall(ai, model, prompt) {
+  const response = await withTimeout(
+    ai.models.generateContent({
+      model,
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json'
+      }
+    }),
+    CALL_TIMEOUT_MS
+  )
+
   const text = response.text
   return JSON.parse(text)
+}
+
+export async function callGemini(prompt) {
+  const apiKey = process.env.GEMINI_API_KEY
+  const primaryModel = process.env.GEMINI_MODEL
+  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL
+
+  if (!apiKey) {
+    const err = new Error('GEMINI_API_KEY environment variable is missing')
+    err.status = 401
+    throw err
+  }
+  if (!primaryModel) {
+    const err = new Error('GEMINI_MODEL environment variable is missing')
+    err.status = 400
+    throw err
+  }
+
+  const ai = new GoogleGenAI({ apiKey })
+  let lastError
+
+  // Primary model: 1 initial call + up to 2 retries on transient errors (max 3 attempts)
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    console.log(`[Gemini] Model: ${primaryModel} | Attempt: ${attempt}/3`)
+    try {
+      const result = await executeSingleCall(ai, primaryModel, prompt)
+      return result
+    } catch (err) {
+      lastError = err
+      const transient = isTransientError(err)
+      console.error(
+        `[Gemini] Model: ${primaryModel} | Attempt ${attempt} failed: ${err.message || err} | Transient: ${transient}`
+      )
+
+      if (!transient) {
+        // Permanent error (400, 401, 403, 404): do not retry
+        throw err
+      }
+
+      if (attempt <= 2) {
+        const delay = RETRY_DELAYS[attempt - 1]
+        console.log(`[Gemini] Backoff delay: waiting ${delay}ms before attempt ${attempt + 1}...`)
+        await sleep(delay)
+      }
+    }
+  }
+
+  // If primary model failed with transient error after all retries, try fallback model if set
+  if (fallbackModel && fallbackModel !== primaryModel) {
+    console.log(`[Gemini] Primary model failed after retries. Trying fallback model: ${fallbackModel} (attempt 1/1)`)
+    try {
+      const result = await executeSingleCall(ai, fallbackModel, prompt)
+      return result
+    } catch (err) {
+      console.error(`[Gemini] Fallback model ${fallbackModel} failed: ${err.message || err}`)
+      lastError = err
+    }
+  }
+
+  throw lastError
 }
 ```
 
@@ -275,31 +389,43 @@ export function validateStoryboard(obj) {
 }
 
 /**
- * Wraps a Gemini call with one automatic retry.
- * Catches JSON.parse errors as well as validation failures.
- * Returns the real `retried` flag (true only if a retry was actually made).
+ * Wraps a Gemini call with one automatic retry for schema/JSON validation failures.
+ * Note: Transient API errors (429, 503, timeout) are already retried inside callGemini.
+ * Returns failureReason: 'api_busy' | 'invalid_output' | 'api_error'.
  */
 export async function callWithRetry(promptFn, retryInstructions) {
-  const { callGemini } = await import('./geminiClient.js')
+  const { callGemini, isTransientError } = await import('./geminiClient.js')
 
-  let result, validation
+  let result
+  let validation
   let retried = false
+  let failureReason = null
 
+  // 1. Initial generation call (carries internal transient error retries)
   try {
     result = await callGemini(promptFn())
     validation = validateStoryboard(result)
   } catch (err) {
-    // JSON.parse error or network error on first attempt
+    console.error('Validation flow: Initial Gemini call failed:', err.message || err)
     validation = { valid: false, error: String(err), complianceScore: 0 }
+    failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
   }
 
+  // 2. Separate schema-validation retry (max 1 retry) if parsing or schema failed
   if (!validation.valid) {
     retried = true
     try {
       result = await callGemini(promptFn() + '\n\n' + retryInstructions)
       validation = validateStoryboard(result)
+      if (!validation.valid) {
+        failureReason = 'invalid_output'
+      } else {
+        failureReason = null
+      }
     } catch (err) {
+      console.error('Validation flow: Validation retry Gemini call failed:', err.message || err)
       validation = { valid: false, error: String(err), complianceScore: 0 }
+      failureReason = isTransientError(err) ? 'api_busy' : 'api_error'
     }
   }
 
@@ -307,7 +433,8 @@ export async function callWithRetry(promptFn, retryInstructions) {
     data: validation.valid ? result : null,
     retried,
     valid: validation.valid,
-    complianceScore: validation.complianceScore ?? 0
+    complianceScore: validation.complianceScore ?? 0,
+    failureReason: validation.valid ? null : (failureReason || 'invalid_output')
   }
 }
 ```
@@ -435,10 +562,23 @@ import { callWithRetry } from '../services/validator.js'
 const router = Router()
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-// Load fallback with fs.readFileSync (import assertions are not portable)
-const FALLBACK = JSON.parse(
+// Load fallback lessons with fs.readFileSync (import assertions are not portable)
+const FALLBACK_TCP = JSON.parse(
   readFileSync(join(__dirname, '../fallback/lessons/tcp-handshake.json'), 'utf8')
 )
+
+const FALLBACK_PHOTOSYNTHESIS = JSON.parse(
+  readFileSync(join(__dirname, '../fallback/lessons/photosynthesis.json'), 'utf8')
+)
+
+function selectFallbackLesson(topic) {
+  const t = (topic || '').toLowerCase()
+  const photoKeywords = ['photo', 'plant', 'chlorophyll', 'leaf', 'calvin', 'biology', 'glucose']
+  if (photoKeywords.some(k => t.includes(k))) {
+    return { lesson: FALLBACK_PHOTOSYNTHESIS, topicName: 'Photosynthesis' }
+  }
+  return { lesson: FALLBACK_TCP, topicName: 'TCP Three-Way Handshake' }
+}
 
 // Helper: normalise scene ids to 1..n
 function normaliseIds(storyboard) {
@@ -463,7 +603,7 @@ router.post('/', async (req, res, next) => {
       : () => buildPromptB(params)
 
     const start = Date.now()
-    const { data, retried, valid, complianceScore } = await callWithRetry(
+    const { data, retried, valid, complianceScore, failureReason } = await callWithRetry(
       promptFn,
       'IMPORTANT: Return ONLY valid JSON. No markdown. No commentary. ' +
       'Every scene must have exactly 4 options in checkpoint. ' +
@@ -473,14 +613,18 @@ router.post('/', async (req, res, next) => {
     const timeMs = Date.now() - start
 
     if (!valid) {
+      const fallback = selectFallbackLesson(topic)
       return res.json({
-        storyboard: normaliseIds(FALLBACK),
+        storyboard: normaliseIds(fallback.lesson),
         generationTimeMs: timeMs,
         promptMode,
         isValidJson: false,
         retried,
         complianceScore,
-        usedFallback: true
+        usedFallback: true,
+        fallbackReason: failureReason || 'invalid_output',
+        fallbackTopic: fallback.topicName,
+        requestedTopic: topic
       })
     }
 
@@ -491,7 +635,10 @@ router.post('/', async (req, res, next) => {
       isValidJson: true,
       retried,
       complianceScore,
-      usedFallback: false
+      usedFallback: false,
+      fallbackReason: null,
+      fallbackTopic: null,
+      requestedTopic: topic
     })
   } catch (err) {
     next(err)
@@ -972,6 +1119,7 @@ export default function ScenePlayer({
   storyboard, setStoryboard,
   audit, setAudit,
   auditing, usedFallback,
+  fallbackReason, fallbackTopic, requestedTopic,
   language
 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -983,18 +1131,34 @@ export default function ScenePlayer({
 
   // Match audit entry by scene_id; fall back to index position
   const auditEntry =
-    audit.find(a => a.scene_id === scene.id) ??
-    audit[currentIndex] ??
+    audit?.find(a => a.scene_id === scene.id) ??
+    audit?.[currentIndex] ??
     null
 
   function goNext() { stop(); clearResult(); setCurrentIndex(i => Math.min(i + 1, storyboard.scenes.length - 1)) }
   function goPrev() { stop(); clearResult(); setCurrentIndex(i => Math.max(i - 1, 0)) }
 
+  const getFallbackMessage = () => {
+    switch (fallbackReason) {
+      case 'api_busy': return 'The AI service is busy right now, so we loaded a demo lesson. Try again in a minute.'
+      case 'invalid_output': return 'The AI generated an invalid lesson format after retrying, so we loaded a pre-validated demo lesson.'
+      case 'api_error': default: return 'Could not connect to the AI service, so we loaded a demo lesson.'
+    }
+  }
+
+  const isDifferentTopic =
+    fallbackTopic && requestedTopic &&
+    !requestedTopic.toLowerCase().includes(fallbackTopic.toLowerCase()) &&
+    !fallbackTopic.toLowerCase().includes(requestedTopic.toLowerCase())
+
   return (
     <div className="scene-player">
       {usedFallback && (
         <div className="fallback-banner" role="alert">
-          ⚠️ The AI could not generate a valid lesson. Showing a cached example lesson instead.
+          <div>⚠️ {getFallbackMessage()}</div>
+          {isDifferentTopic && (
+            <small>Showing demo on <strong>{fallbackTopic}</strong> instead of "{requestedTopic}".</small>
+          )}
         </div>
       )}
 
