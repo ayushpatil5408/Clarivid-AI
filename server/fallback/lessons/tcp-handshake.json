@@ -1,0 +1,117 @@
+{
+  "title": "TCP Three-Way Handshake",
+  "language": "english",
+  "level": "beginner",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "Introduction to TCP Connections",
+      "bullets": [
+        "TCP is a connection-oriented transport protocol",
+        "Ensures reliable, ordered, and error-checked data delivery",
+        "Requires a formal handshake before transmitting data"
+      ],
+      "narration": "Before two computers transfer data over the internet using TCP, they must establish a reliable connection. Think of it like a phone call where both people confirm they can hear each other before speaking.",
+      "visual_hint": "Illustration of two computers labelled Client and Server preparing to communicate",
+      "exam_tag": "2-mark definition",
+      "checkpoint": {
+        "q": "What type of transport protocol is TCP?",
+        "options": [
+          "Connectionless protocol",
+          "Connection-oriented protocol",
+          "Stateless broadcast protocol",
+          "Unreliable datagram protocol"
+        ],
+        "answer": 1
+      }
+    },
+    {
+      "id": 2,
+      "heading": "Step 1: The SYN Packet",
+      "bullets": [
+        "Client initiates connection by sending SYN (Synchronize)",
+        "Includes initial sequence number (ISN) chosen by client",
+        "Client enters SYN-SENT state"
+      ],
+      "narration": "In the first step, the client generates a random Initial Sequence Number and sends a packet with the SYN flag set to the server. This packet signifies a request to start a synchronized session.",
+      "visual_hint": "Arrow moving from Client to Server labelled SYN with sequence number seq=x",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which control flag does the client send in the first step?",
+        "options": [
+          "ACK flag",
+          "FIN flag",
+          "SYN flag",
+          "RST flag"
+        ],
+        "answer": 2
+      }
+    },
+    {
+      "id": 3,
+      "heading": "Step 2: The SYN-ACK Response",
+      "bullets": [
+        "Server acknowledges client's request with ACK (seq + 1)",
+        "Server sends its own SYN with its own initial sequence number",
+        "Server enters SYN-RECEIVED state"
+      ],
+      "narration": "The server receives the SYN and responds with both SYN and ACK flags set. It acknowledges the client's sequence number and sends its own sequence number to synchronize in reverse.",
+      "visual_hint": "Arrow from Server to Client labelled SYN-ACK with ack=x+1 and seq=y",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "What acknowledgment number does the server return in Step 2?",
+        "options": [
+          "Client sequence number plus 1",
+          "Zero",
+          "Client sequence number minus 1",
+          "Server sequence number plus 1"
+        ],
+        "answer": 0
+      }
+    },
+    {
+      "id": 4,
+      "heading": "Step 3: The Final ACK",
+      "bullets": [
+        "Client acknowledges server's sequence number with ACK (seq + 1)",
+        "Connection is now officially ESTABLISHED on both sides",
+        "Payload data can now safely accompany or follow this packet"
+      ],
+      "narration": "Finally, the client replies with an ACK packet acknowledging the server's sequence number. Both client and server enter the ESTABLISHED state, and secure two-way data transfer begins.",
+      "visual_hint": "Arrow from Client to Server labelled ACK with ack=y+1, status updated to ESTABLISHED",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "After the client sends the final ACK, what state do both hosts enter?",
+        "options": [
+          "CLOSED",
+          "TIME-WAIT",
+          "SYN-SENT",
+          "ESTABLISHED"
+        ],
+        "answer": 3
+      }
+    },
+    {
+      "id": 5,
+      "heading": "Summary and Common Exam Questions",
+      "bullets": [
+        "Three packets: SYN -> SYN-ACK -> ACK",
+        "Prevents half-open connections and stale duplicate packets",
+        "Crucial for reliable protocols like HTTP and HTTPS"
+      ],
+      "narration": "To recap, the three-way handshake establishes bidirectional communication and synchronizes sequence numbers. For university exams, always draw the timing diagram showing SYN, SYN-ACK, and ACK clearly.",
+      "visual_hint": "Summary timeline diagram showing complete 3-step packet exchange",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "How many total packets are exchanged during a normal TCP connection setup?",
+        "options": [
+          "1 packet",
+          "2 packets",
+          "3 packets",
+          "4 packets"
+        ],
+        "answer": 2
+      }
+    }
+  ]
+}

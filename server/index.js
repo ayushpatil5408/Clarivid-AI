@@ -1,0 +1,40 @@
+import 'dotenv/config'
+
+import express from 'express'
+import cors from 'cors'
+import rateLimit from 'express-rate-limit'
+import generateRoute from './routes/generate.js'
+import askRoute from './routes/ask.js'
+import { errorHandler } from './middleware/errorHandler.js'
+import { requestLogger } from './middleware/requestLogger.js'
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+app.use(requestLogger)
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+})
+app.use('/api', limiter)
+
+app.get('/api/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  })
+})
+
+app.use('/api/generate', generateRoute)
+app.use('/api/ask', askRoute)
+
+app.use(errorHandler)
+
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`LearnLoop server running on port ${PORT}`)
+})
