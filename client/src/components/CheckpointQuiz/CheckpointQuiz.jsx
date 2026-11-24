@@ -40,7 +40,7 @@ export default function CheckpointQuiz({
         <h4 className="quiz-question">{checkpoint.q}</h4>
       </div>
 
-      <div className="quiz-options-grid">
+      <div className="quiz-options-grid" role="group" aria-label="Quiz answer options">
         {checkpoint.options.map((option, idx) => {
           let btnClass = 'quiz-option-btn'
           if (submitted) {
@@ -60,6 +60,7 @@ export default function CheckpointQuiz({
               className={btnClass}
               onClick={() => submitAnswer(idx)}
               disabled={submitted || reexplaining}
+              aria-label={`Option ${String.fromCharCode(65 + idx)}: ${option}`}
             >
               <span className="option-index">
                 {String.fromCharCode(65 + idx)}.

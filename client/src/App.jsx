@@ -43,6 +43,9 @@ export default function App() {
         <p className="app-subtitle">
           Interactive, Fact-Audited Explainer Generator with Browser Narration
         </p>
+        <p className="app-how-to-use">
+          💡 <strong>How to use:</strong> Enter any study topic below to generate an exam-tailored lesson with real-time fact verification, audio narration, and interactive checkpoints.
+        </p>
 
         {/* View Switcher Tabs */}
         <div className="view-switcher-tabs" role="tablist">
@@ -76,7 +79,12 @@ export default function App() {
 
             {loading && <Spinner message="Generating storyboard..." />}
 
-            {error && <ErrorBanner message={error} />}
+            {error && (
+              <ErrorBanner
+                message={error}
+                onRetry={currentParams ? () => handleGenerate(currentParams) : undefined}
+              />
+            )}
 
             {metrics && !loading && (
               <div className="metrics-banner">

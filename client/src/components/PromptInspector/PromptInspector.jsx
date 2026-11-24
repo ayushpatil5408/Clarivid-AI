@@ -84,7 +84,7 @@ export default function PromptInspector({ mockAi }) {
       </form>
 
       {loading && <Spinner message="Generating with Prompt A and Prompt B in parallel, then auditing..." />}
-      {error && <ErrorBanner message={error} />}
+      {error && <ErrorBanner message={error} onRetry={handleCompare} />}
 
       {result && !loading && (
         <div className="comparison-results">
