@@ -1,4 +1,4 @@
-# LearnLoop: An Interactive, Fact-Audited AI Explainer Generator
+# Clarivid: An Interactive, Fact-Audited AI Explainer Generator
 
 **Subject:** AI Tools and Prompt Engineering
 **Project type:** Mini Project
@@ -8,7 +8,7 @@
 
 ## 1. One-Line Summary
 
-LearnLoop turns any topic into an interactive, scene-by-scene explainer lesson that is fact-checked by a second AI agent, available in English or Hinglish, tagged with exam-mark relevance, and able to adapt itself when the student gets confused. It also shows exactly how prompt engineering shaped the result.
+Clarivid turns any topic into an interactive, scene-by-scene explainer lesson that is fact-checked by a second AI agent, available in English or Hinglish, tagged with exam-mark relevance, and able to adapt itself when the student gets confused. It also shows exactly how prompt engineering shaped the result.
 
 ---
 
@@ -40,7 +40,7 @@ Students who learn from AI-generated explainers face five recurring problems:
 
 The following summarises the comparison of existing tools. Gaps are described as areas these tools do **not offer as a core workflow**, rather than as absolute claims, since the tools evolve quickly.
 
-| Feature Area | Existing Tools (Invideo, Magiclight, X-Pilot, NotebookLM) | Gap Addressed by LearnLoop |
+| Feature Area | Existing Tools (Invideo, Magiclight, X-Pilot, NotebookLM) | Gap Addressed by Clarivid |
 |---|---|---|
 | Playback experience | Linear MP4 or passive slide video | **Pause and Ask:** the student asks a question mid-lesson and a short explanatory scene is generated and inserted on the spot |
 | Hallucination control | Generic disclaimer or manual user review | **Dual-LLM Fact-Audit:** a second "Critic" agent reviews every scene and shows a confidence badge before the student sees it |
@@ -52,7 +52,7 @@ The following summarises the comparison of existing tools. Gaps are described as
 
 ## 5. Proposed Solution
 
-LearnLoop is a web application with a **Scene Player** instead of a rendered video. Each lesson is a structured JSON storyboard. Each scene in it is displayed as an animated slide with browser-based text-to-speech narration.
+Clarivid is a web application with a **Scene Player** instead of a rendered video. Each lesson is a structured JSON storyboard. Each scene in it is displayed as an animated slide with browser-based text-to-speech narration.
 
 This design choice is deliberate:
 
@@ -283,4 +283,4 @@ Confidence bands: **90-100 green**, **70-89 yellow**, **below 70 red**.
 
 ## 16. Conclusion
 
-Existing AI explainer tools are optimised for producing content quickly, not for helping students learn reliably. LearnLoop shifts the focus to the learner by making the output interactive, verifiable, adaptive and relevant to Indian exam contexts, while exposing its prompt engineering so that the techniques behind it can be studied and evaluated.
+Existing AI explainer tools are optimised for producing content quickly, not for helping students learn reliably. Clarivid shifts the focus to the learner by making the output interactive, verifiable, adaptive and relevant to Indian exam contexts, while exposing its prompt engineering so that the techniques behind it can be studied and evaluated.

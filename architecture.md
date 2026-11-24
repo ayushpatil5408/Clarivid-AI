@@ -1,4 +1,4 @@
-# LearnLoop — Architecture Document
+# Clarivid — Architecture Document
 
 > **Version:** 1.1  
 > **Date:** November 2026  
@@ -8,7 +8,7 @@
 
 ## 1. System Overview
 
-LearnLoop is a full-stack web application that converts any learning topic into an **interactive, scene-by-scene explainer lesson**. Unlike traditional AI video generators that produce a fixed linear artefact, LearnLoop generates structured JSON storyboards that are rendered as animated slides with browser-based TTS narration — keeping the experience feel cinematic while enabling full interactivity.
+Clarivid is a full-stack web application that converts any learning topic into an **interactive, scene-by-scene explainer lesson**. Unlike traditional AI video generators that produce a fixed linear artefact, Clarivid generates structured JSON storyboards that are rendered as animated slides with browser-based TTS narration — keeping the experience feel cinematic while enabling full interactivity.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -46,7 +46,7 @@ LearnLoop is a full-stack web application that converts any learning topic into 
 
 ## 2. Architecture Style
 
-LearnLoop follows a **layered, dual-LLM pipeline** pattern:
+Clarivid follows a **layered, dual-LLM pipeline** pattern:
 
 | Layer | Responsibility |
 |---|---|
@@ -461,7 +461,7 @@ Prompt B structure:
 
 ## 8. State Management (Frontend)
 
-LearnLoop uses **React local state + custom hooks** (no Redux/Zustand) since the data model is session-scoped and there is no persistence requirement.
+Clarivid uses **React local state + custom hooks** (no Redux/Zustand) since the data model is session-scoped and there is no persistence requirement.
 
 ```
 App

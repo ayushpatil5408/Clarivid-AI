@@ -1,5 +1,5 @@
 /**
- * LearnLoop Server Test Suite
+ * Clarivid Server Test Suite
  * Plain Node.js script (no test framework required) testing real AI code paths via dependency injection.
  */
 import assert from 'node:assert/strict'
@@ -45,7 +45,7 @@ const CANNED_VALID_STORYBOARD = {
 }
 
 async function runTests() {
-  console.log('\n🧪 Running LearnLoop Test Suite (using Dependency Injection)...\n')
+  console.log('\n🧪 Running Clarivid Test Suite (using Dependency Injection)...\n')
   let passed = 0
 
   // --------------------------------------------------------------------------

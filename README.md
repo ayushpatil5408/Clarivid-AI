@@ -1,6 +1,6 @@
-# LearnLoop 🔄
+# Clarivid 🔄
 
-LearnLoop is an AI-powered micro-learning studio that transforms educational concepts into bite-sized, interactive storyboards featuring synchronized text-to-speech audio narration, automated factual accuracy audits, and adaptive checkpoint quizzes with real-time AI re-explanation. Built with Node.js/Express and React/Vite, it features a dual-prompt architecture comparing Prompt A (Zero-shot) against Prompt B (Role + Few-shot + Schema), an automated critic agent that evaluates factual soundness and flags issues with suggested corrections, and a built-in Prompt Inspector for side-by-side benchmarking.
+Clarivid is an AI-powered micro-learning studio that transforms educational concepts into bite-sized, interactive storyboards featuring synchronized text-to-speech audio narration, automated factual accuracy audits, and adaptive checkpoint quizzes with real-time AI re-explanation. Built with Node.js/Express and React/Vite, it features a dual-prompt architecture comparing Prompt A (Zero-shot) against Prompt B (Role + Few-shot + Schema), an automated critic agent that evaluates factual soundness and flags issues with suggested corrections, and a built-in Prompt Inspector for side-by-side benchmarking.
 
 ---
 
@@ -45,7 +45,7 @@ The application exclusively employs the following prompt engineering techniques,
 1. **Clone the repository**:
    ```bash
    git clone <repo-url>
-   cd LearnLoop
+   cd Clarivid
    ```
 
 2. **Install Server Dependencies**:
@@ -102,7 +102,7 @@ The application exclusively employs the following prompt engineering techniques,
 
 ## Demo URLs
 
-LearnLoop includes pre-configured URL query parameters for demonstration, testing, and debugging:
+Clarivid includes pre-configured URL query parameters for demonstration, testing, and debugging:
 
 - **`http://localhost:5173/?demo=flawed`**  
   Loads a pre-computed TCP Handshake lesson containing a deliberately planted factual error (claims the handshake is a 4-step process) alongside a precomputed audit result. This reliably demonstrates the critic UI (confidence < 70, warning badge, itemized flaw, suggested correction) without consuming API quota.
@@ -119,7 +119,7 @@ LearnLoop includes pre-configured URL query parameters for demonstration, testin
 
 ## Testing
 
-LearnLoop includes a zero-dependency automated test runner that injects mock AI responses to verify critical architectural paths without spending API quota:
+Clarivid includes a zero-dependency automated test runner that injects mock AI responses to verify critical architectural paths without spending API quota:
 
 ```bash
 cd server
@@ -155,5 +155,5 @@ npm run evaluate -- --confirm
 
 - **Critic Confidence Calibration**: The confidence score (0–100) returned by the critic agent represents the LLM's self-assessed confidence estimate based on its prompt instructions. It is not an externally calibrated statistical probability, and edge cases may occasionally exhibit minor over- or under-confidence.
 - **Browser Text-to-Speech Quality**: Speech synthesis uses the browser's native Web Speech API (`window.speechSynthesis`). Voice inflection, accent fidelity, and Hinglish pronunciation vary depending on the host operating system and selected browser engine.
-- **API Quota Constraints**: Gemini API free-tier tiers enforce daily rate limits (~20 requests/day). LearnLoop mitigates this via `MOCK_AI=true`, transparent caching, and `GEMINI_FALLBACK_MODEL`, but prolonged live evaluations require a paid tier or quota reset.
+- **API Quota Constraints**: Gemini API free-tier tiers enforce daily rate limits (~20 requests/day). Clarivid mitigates this via `MOCK_AI=true`, transparent caching, and `GEMINI_FALLBACK_MODEL`, but prolonged live evaluations require a paid tier or quota reset.
 - **Keyword-Based Fallback Matching**: When network or quota failures prevent live generation, the fallback resolver matches topics against curated static lessons (`tcp-handshake.json`, `photosynthesis.json`) using simple keyword heuristics. Unrecognized topics fall back to the default TCP Handshake lesson.

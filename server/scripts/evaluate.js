@@ -37,7 +37,7 @@ const hasConfirm = process.argv.includes('--confirm')
 
 if (!hasConfirm) {
   console.log('====================================================================')
-  console.log(' LearnLoop Automated Evaluation Runner')
+  console.log(' Clarivid Automated Evaluation Runner')
   console.log('====================================================================')
   console.log(`Planned Gemini API calls: ${TOTAL_PLANNED_CALLS}`)
   console.log(`  - 3 topics × 4 calls (Prompt A, Prompt B, Audit A, Audit B) = ${PLANNED_COMPARE_CALLS} calls`)
@@ -86,7 +86,7 @@ function saveResults(entries) {
 }
 
 function generateSummaryMarkdown({ model, date, compareRuns, criticRuns }) {
-  let md = `# LearnLoop Evaluation Summary Report\n\n`
+  let md = `# Clarivid Evaluation Summary Report\n\n`
   md += `**Date:** ${date}\n`
   md += `**Model:** \`${model}\`\n\n`
   md += `> single run per topic; results vary between runs\n\n`

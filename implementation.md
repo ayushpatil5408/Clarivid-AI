@@ -1,4 +1,4 @@
-# LearnLoop — Implementation Guide
+# Clarivid — Implementation Guide
 
 > **Version:** 1.1  
 > **Date:** November 2026  
@@ -9,7 +9,7 @@
 ## 1. Project Structure
 
 ```
-LearnLoop/
+Clarivid/
 ├── client/                   # Vite + React frontend
 │   ├── public/
 │   │   └── index.html
@@ -115,7 +115,7 @@ Add `"type": "module"` so all `.js` files in the server are treated as ESM:
 
 ```json
 {
-  "name": "learnloop-server",
+  "name": "clarivid-server",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -196,7 +196,7 @@ app.use('/api/ask', askRoute)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => console.log(`LearnLoop server running on :${PORT}`))
+app.listen(PORT, () => console.log(`Clarivid server running on :${PORT}`))
 ```
 
 ---
@@ -1339,7 +1339,7 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>🎓 LearnLoop</h1>
+        <h1>🎓 Clarivid</h1>
         <p>Interactive, fact-audited AI explainer lessons</p>
       </header>
 

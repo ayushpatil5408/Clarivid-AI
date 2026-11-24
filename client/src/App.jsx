@@ -39,7 +39,7 @@ export default function App() {
           <span className="header-badge">AI Tools &amp; Prompt Engineering</span>
           {mockAi && <span className="mock-ai-badge">🤖 MOCK AI MODE</span>}
         </div>
-        <h1 className="app-title">🎓 LearnLoop</h1>
+        <h1 className="app-title">🎓 Clarivid</h1>
         <p className="app-subtitle">
           Interactive, Fact-Audited Explainer Generator with Browser Narration
         </p>
@@ -115,7 +115,7 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
-        LearnLoop Phase 4 &amp; 5 — Prompt Inspector, Interactive Quiz &amp; Adaptive Explainer
+        Clarivid — Prompt Inspector, Interactive Quiz &amp; Adaptive Explainer
       </footer>
     </div>
   )

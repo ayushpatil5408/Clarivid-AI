@@ -43,5 +43,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`LearnLoop server running on port ${PORT} (MOCK_AI=${process.env.MOCK_AI === 'true'})`)
+  console.log(`Clarivid server running on port ${PORT} (MOCK_AI=${process.env.MOCK_AI === 'true'})`)
 })
