@@ -65,8 +65,8 @@ export default function MetricsTable({ metricsA, metricsB }) {
           <thead>
             <tr>
               <th>Metric</th>
-              <th>Prompt A (Zero-shot Baseline)</th>
-              <th>Prompt B (Role + Few-shot + Schema)</th>
+              <th>Prompt A: Zero-shot</th>
+              <th>Prompt B: Role + Few-shot + Schema</th>
             </tr>
           </thead>
           <tbody>

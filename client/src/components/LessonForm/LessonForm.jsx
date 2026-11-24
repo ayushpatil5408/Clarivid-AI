@@ -72,8 +72,8 @@ export default function LessonForm({ onSubmit, loading }) {
               onChange={(e) => setPromptMode(e.target.value)}
               disabled={loading}
             >
-              <option value="B">Prompt B (Role + Few-shot, Recommended)</option>
-              <option value="A">Prompt A (Zero-shot Baseline)</option>
+              <option value="B">Prompt B: Role + Few-shot + Schema</option>
+              <option value="A">Prompt A: Zero-shot</option>
             </select>
           </div>
         </div>

@@ -1,18 +1,32 @@
 # LearnLoop 🔄
 
-LearnLoop is an AI-powered micro-learning studio that transforms educational concepts into bite-sized, interactive storyboards featuring synchronized text-to-speech audio narration, automated factual accuracy audits, and adaptive checkpoint quizzes with real-time AI re-explanation. Built with Node.js/Express and React/Vite, it features a dual-prompt architecture with prompt mode A (naive single-prompt) vs mode B (chain-of-thought with pedagogical structure and exam tagging), an automated critic agent that evaluates factual soundness and flags issues with suggested corrections, and a built-in Prompt Inspector for side-by-side benchmarking.
+LearnLoop is an AI-powered micro-learning studio that transforms educational concepts into bite-sized, interactive storyboards featuring synchronized text-to-speech audio narration, automated factual accuracy audits, and adaptive checkpoint quizzes with real-time AI re-explanation. Built with Node.js/Express and React/Vite, it features a dual-prompt architecture comparing Prompt A (Zero-shot) against Prompt B (Role + Few-shot + Schema), an automated critic agent that evaluates factual soundness and flags issues with suggested corrections, and a built-in Prompt Inspector for side-by-side benchmarking.
 
 ---
 
 ## Architecture & Features
 
 - **Multi-Scene Storyboards**: Generates structured 5–7 scene micro-lessons with clear visual hints, explanatory narration, and concept breakdowns.
-- **Pedagogical Prompting (Mode A vs Mode B)**: Mode A provides basic instructional generation, while Mode B incorporates chain-of-thought scaffolding, active learning checkpoints, and exam relevance tagging.
+- **Prompt Engineering Techniques (Prompt A vs Prompt B)**: Prompt A provides a zero-shot baseline, while Prompt B incorporates role specification, few-shot demonstration, strict JSON schema constraints, and active learning checkpoints.
 - **Fact-Checking Critic Agent**: Background audit system evaluates each scene's factual integrity, assigning confidence scores (0–100), itemizing issues, and proposing precise text corrections.
 - **Adaptive Checkpoint Quizzes**: Scene quizzes assess learner comprehension. Answering incorrectly triggers on-the-fly re-explanation of the subsequent scene to reinforce prerequisite knowledge.
 - **Synchronized Audio Narration**: Built-in speech synthesis (supporting English and Hinglish) with sentence-by-sentence playback controls.
 - **Prompt Inspector**: Side-by-side benchmarking view to compare Prompt A and Prompt B across JSON compliance, audit confidence, scene count, and execution latency.
 - **Resilient AI Layer**: Automatic retries with exponential backoff for transient network errors, secondary fallback model routing (`GEMINI_FALLBACK_MODEL`), daily quota detection (`429`), in-memory query caching, and a full offline `MOCK_AI` mode.
+
+---
+
+## Prompt Engineering Techniques
+
+The application exclusively employs the following prompt engineering techniques, mapped directly to their implementations in the codebase:
+
+| Technique | Description | Implementation File | Key Function / Handler |
+| :--- | :--- | :--- | :--- |
+| **Zero-shot** (Prompt A) | Baseline single-turn prompt generating raw JSON without few-shot examples or schema rules | `server/prompts/promptA.js` | `buildPromptA(topic, level, language)` |
+| **Role-based + Few-shot + Schema-constrained + Constraint-based** (Prompt B) | Expert STEM educator persona, 5-scene JSON reference example, strict schema, and length/structure constraints | `server/prompts/promptB.js` | `buildPromptB(topic, level, language)` |
+| **Critic / Self-verification pattern** | Independent audit agent evaluating factual correctness per scene, returning confidence (0–100), issues, and suggested corrections | `server/prompts/criticPrompt.js`<br>`server/routes/audit.js` | `buildCriticPrompt(storyboard)`<br>`router.post('/')` |
+| **Adaptive re-prompting** | Concept reinforcement prompting that generates a simpler, scaffolded replacement for the subsequent scene when a quiz is failed | `server/prompts/reexplainPrompt.js`<br>`server/routes/reexplain.js` | `buildReexplainPrompt(currentScene, nextScene, language)`<br>`router.post('/')` |
+| **Retry with validation** | Schema validation loop that parses JSON and feeds validation error strings back into an auto-correction prompt on failure | `server/routes/generate.js`<br>`server/services/validator.js` | `callWithRetry(prompt, systemInstruction, attempt)`<br>`validateStoryboard(data)` |
 
 ---
 
@@ -89,13 +103,15 @@ LearnLoop is an AI-powered micro-learning studio that transforms educational con
 LearnLoop includes pre-configured URL query parameters for demonstration, testing, and debugging:
 
 - **`http://localhost:5173/?demo=flawed`**  
-  Loads a pre-computed TCP Handshake lesson containing a deliberately planted factual error (claims the handshake is a 4-step process). Demonstrates the critic agent catching the error, rendering a warning/alert audit badge with confidence < 70, itemizing the flaw, and providing a suggested correction.
+  Loads a pre-computed TCP Handshake lesson containing a deliberately planted factual error (claims the handshake is a 4-step process) alongside a precomputed audit result. This reliably demonstrates the critic UI (confidence < 70, warning badge, itemized flaw, suggested correction) without consuming API quota.
 
 - **`http://localhost:5173/?demo=flawed-bio`**  
-  Loads a Photosynthesis biology lesson with a planted factual mistake (claims light-independent reactions take place on thylakoid membranes).
+  Loads a Photosynthesis biology lesson with a planted factual mistake alongside a precomputed audit result.
 
-- **`http://localhost:5173/?audit=live`**  
-  Forces a live critic audit via the Gemini API, bypassing pre-computed fallback audits for demo lessons.
+- **`http://localhost:5173/?audit=live`** (or combined, e.g. `?demo=flawed&audit=live`)  
+  Runs the critic for real via the Gemini API, bypassing pre-computed fallback audits.
+
+> **Plain Statement on Audits:** `?demo=flawed` and `?demo=flawed-bio` use **precomputed audits**, and only **`?audit=live`** runs the critic for real.
 
 ---
 

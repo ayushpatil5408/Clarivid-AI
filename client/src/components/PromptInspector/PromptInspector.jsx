@@ -95,7 +95,7 @@ export default function PromptInspector({ mockAi }) {
           <div className="comparison-grid">
             {/* Prompt A Column */}
             <div className="comparison-column">
-              <div className="column-badge badge-a">Prompt A (Zero-shot Baseline)</div>
+              <div className="column-badge badge-a">Prompt A: Zero-shot</div>
 
               <div className="raw-prompt-box">
                 <h4>Raw Prompt Text</h4>
@@ -115,7 +115,7 @@ export default function PromptInspector({ mockAi }) {
 
             {/* Prompt B Column */}
             <div className="comparison-column">
-              <div className="column-badge badge-b">Prompt B (Few-shot + Schema Constrained)</div>
+              <div className="column-badge badge-b">Prompt B: Role + Few-shot + Schema</div>
 
               <div className="raw-prompt-box">
                 <h4>Raw Prompt Text</h4>
