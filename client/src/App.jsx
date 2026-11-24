@@ -67,6 +67,13 @@ export default function App() {
           >
             🔬 Prompt Inspector (A vs B)
           </button>
+          <a
+            href="/studio.html"
+            className="tab-btn studio-pill-link"
+            title="Launch full Runway+Gamma Canvas Studio"
+          >
+            🎨 Launch ClariVid Studio (Canvas &amp; Video) ↗
+          </a>
         </div>
       </header>
 

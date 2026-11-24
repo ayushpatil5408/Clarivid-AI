@@ -3,6 +3,8 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import generateRoute from './routes/generate.js'
 import auditRoute from './routes/audit.js'
 import compareRoute from './routes/compare.js'
@@ -11,10 +13,22 @@ import askRoute from './routes/ask.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const ROOT_DIR = join(__dirname, '..')
+
 const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
+
+// Serve Clarivid Studio HTML at /studio and static root
+app.get('/studio', (_req, res) => {
+  res.sendFile(join(ROOT_DIR, 'clarivid_ai_educational_video_creator_studio.html'))
+})
+app.get('/studio.html', (_req, res) => {
+  res.sendFile(join(ROOT_DIR, 'clarivid_ai_educational_video_creator_studio.html'))
+})
+app.use(express.static(ROOT_DIR))
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

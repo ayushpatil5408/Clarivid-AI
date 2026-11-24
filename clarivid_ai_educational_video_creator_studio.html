@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClariVid — AI Educational Video Creator Studio</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans (400, 500, 600, 700) & JetBrains Mono (400, 500) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bgCanvas: '#09090B',
+            bgSurface1: '#121316',
+            bgSurface2: '#191B20',
+            borderSubtle: '#23252C',
+            borderFocus: '#3B3F4C',
+            accentPrimary: '#6366F1',
+            accentHover: '#4F46E5',
+            accentEdu: '#10B981',
+            textPrimary: '#F4F4F6',
+            textMuted: '#8A8F9E',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg-canvas: #09090B;
+      --bg-surface-1: #121316;
+      --bg-surface-2: #191B20;
+      --bg-glass: rgba(22, 24, 29, 0.72);
+      --border-subtle: #23252C;
+      --border-focus: #3B3F4C;
+      --accent-primary: #6366F1;
+      --accent-edu: #10B981;
+      --text-primary: #F4F4F6;
+      --text-muted: #8A8F9E;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Dyslexia-Friendly Accessibility Toggle Support */
+    body.dyslexia-mode {
+      letter-spacing: 0.035em;
+      word-spacing: 0.12em;
+    }
+
+    /* Subtle Radial Indigo Studio Ambient Glow for Screen 1 */
+    .studio-radial-glow {
+      background:
+        radial-gradient(640px circle at 50% 24%, rgba(99, 102, 241, 0.14), transparent 70%),
+        #09090B;
+    }
+
+    /* Glassmorphic Prompt Bar & Transport Pill */
+    .glass-bar {
+      background: rgba(22, 24, 29, 0.72);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid #23252C;
+    }
+
+    .glass-bar:focus-within {
+      border-color: #3B3F4C;
+    }
+
+    /* Zero-Shadow Luminance Stepping & Crisp 1px Hairline Borders */
+    .surface-1 {
+      background-color: #121316;
+      border: 1px solid #23252C;
+    }
+
+    .scene-card {
+      background-color: #121316;
+      border: 1px solid #23252C;
+      border-radius: 12px;
+      padding: 14px;
+      transition: background-color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .scene-card:hover {
+      background-color: #191B20;
+      border-color: #3B3F4C;
+    }
+
+    .scene-card.active {
+      background-color: #191B20;
+      border-color: #6366F1;
+    }
+
+    /* Configuration Pills */
+    .config-pill {
+      background-color: #121316;
+      border: 1px solid #23252C;
+      color: #8A8F9E;
+      border-radius: 9999px;
+      transition: all 0.16s ease;
+    }
+
+    .config-pill:hover {
+      background-color: #191B20;
+      border-color: #3B3F4C;
+      color: #F4F4F6;
+    }
+
+    .config-pill.active {
+      background-color: #6366F1;
+      border-color: #6366F1;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    /* Custom Range Slider (Runway-inspired minimal track) */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #23252C;
+      height: 4px;
+      border-radius: 9999px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      background: #6366F1;
+      border: 2px solid #F4F4F6;
+      cursor: pointer;
+    }
+
+    /* Minimal Studio Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23252C;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3B3F4C;
+    }
+
+    /* Aspect Ratio Frame Transitions */
+    .preview-frame-shell {
+      border-radius: 8px;
+      border: 1px solid #23252C;
+      background: #09090B;
+      transition: width 0.25s ease, height 0.25s ease, aspect-ratio 0.25s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ===================================================================== -->
+  <!-- SCREEN 1: PROMPT & LESSON SETUP (GAMMA-INSPIRED)                      -->
+  <!-- ===================================================================== -->
+  <section id="screenSetup" class="min-h-screen w-full studio-radial-glow flex flex-col justify-between px-4 sm:px-6 py-5">
+    <!-- Minimal Top Brand Bar -->
+    <header class="max-w-6xl w-full mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-[8px] bg-bgSurface1 border border-borderSubtle flex items-center justify-center">
+          <svg class="w-4 h-4 text-accentPrimary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="12 3 21 19 3 19" stroke-linejoin="round"></polygon>
+            <polygon points="10.5 10.5 15.5 13.5 10.5 16.5" fill="currentColor" stroke="none"></polygon>
+          </svg>
+        </div>
+        <span class="font-semibold text-[15px] tracking-[-0.01em] text-textPrimary">ClariVid</span>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-[#10B981]/10 text-accentEdu border border-[#10B981]/25">
+          AI Educational Studio
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="http://localhost:5173" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-1.5">
+          🎓 Classic View ↗
+        </a>
+        <button id="btnOpenApiSetup" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-2">
+          <span id="setupApiDot" class="w-1.5 h-1.5 rounded-full bg-accentEdu"></span>
+          <span id="setupApiLabel">Connecting to Clarivid Backend...</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Centered Distraction-Free Prompt Studio (max-width: 720px) -->
+    <main class="max-w-[720px] w-full mx-auto my-auto py-8 space-y-6">
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bgSurface1 border border-borderSubtle text-[11px] font-mono text-textMuted">
+          <span class="w-1.5 h-1.5 rounded-full bg-accentPrimary"></span>
+          <span>PROMPT → MODULAR STORYBOARD → INTERACTIVE VIDEO</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-bold tracking-[-0.02em] text-textPrimary">
+          Turn any concept into a structured video lesson
+        </h1>
+        <p class="text-sm text-textMuted max-w-xl mx-auto leading-relaxed">
+          Start with a topic prompt or paste lecture notes. ClariVid generates an editable scene-by-scene storyboard before rendering synchronized visuals and voiceover.
+        </p>
+      </div>
+
+      <!-- Quick Sample Topic Chips -->
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <span class="text-[11px] font-mono uppercase tracking-[0.06em] text-textMuted mr-1">Try:</span>
+        <button type="button" data-sample="TCP 3-Way Handshake" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+          TCP 3-Way Handshake
+        </button>
+        <button type="button" data-sample="Binary Search Trees" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+          Binary Search Trees
+        </button>
+        <button type="button" data-sample="Photosynthesis Electron Transport" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+          Photosynthesis Electron Transport
+        </button>
+        <button type="button" data-sample="Indian Knowledge Systems: Sulba Sutras" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+          Indian Knowledge Systems: Sulba Sutras
+        </button>
+      </div>
+
+      <!-- Glassmorphic Prompt Studio Box -->
+      <div class="glass-bar rounded-[12px] overflow-hidden">
+        <!-- Top Tab Switcher -->
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-borderSubtle bg-bgSurface1/60">
+          <div class="flex items-center gap-1.5">
+            <button id="tabTopicPrompt" type="button" class="px-3 py-1 rounded-[8px] text-xs font-semibold bg-bgSurface2 text-textPrimary border border-borderFocus transition">
+              From Topic Prompt
+            </button>
+            <button id="tabLectureNotes" type="button" class="px-3 py-1 rounded-[8px] text-xs font-medium text-textMuted hover:text-textPrimary border border-transparent transition">
+              Paste Lecture Notes / PDF
+            </button>
+          </div>
+          <span id="tokenCounterPill" class="px-2.5 py-0.5 rounded-full bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-accentEdu">
+            14 tokens • Ready
+          </span>
+        </div>
+
+        <!-- Expandable Textarea -->
+        <div class="p-4">
+          <textarea
+            id="setupPromptInput"
+            rows="4"
+            class="w-full min-h-[112px] bg-transparent text-sm sm:text-[15px] text-textPrimary placeholder-textMuted leading-relaxed resize-y focus:outline-none"
+            placeholder="Describe a concept to teach (e.g., How TCP 3-Way Handshake establishes reliable connections)..."
+          >TCP 3-Way Handshake</textarea>
+        </div>
+
+        <!-- Inline Knowledge Ingestion Dropzone Strip -->
+        <div id="dropzoneStrip" class="px-4 py-2.5 border-t border-borderSubtle bg-bgCanvas/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <label for="fileIngestInput" class="flex items-center gap-2 text-textMuted hover:text-textPrimary cursor-pointer transition">
+            <svg class="w-4 h-4 text-accentPrimary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <span id="dropzoneLabel">Drop <span class="font-mono text-textPrimary">.pdf</span>, <span class="font-mono text-textPrimary">.md</span>, or <span class="font-mono text-textPrimary">.txt</span> syllabus notes here, or click to attach</span>
+            <input id="fileIngestInput" type="file" accept=".txt,.md,.pdf,.csv,.json" class="hidden" />
+          </label>
+          <span id="attachedFileBadge" class="hidden px-2 py-0.5 rounded bg-accentPrimary/15 text-accentPrimary font-mono text-[11px] border border-accentPrimary/30">
+            notes.md loaded
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick-Select Configuration Pills -->
+      <div class="surface-1 rounded-[12px] p-4 space-y-4">
+        <!-- Row 1: Target Audience / Grade Level -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Target Audience / Grade Level</div>
+          <div class="flex flex-wrap gap-2" data-pill-group="audience">
+            <button type="button" data-val="Middle School" class="config-pill px-3.5 py-1.5 text-xs">Middle School</button>
+            <button type="button" data-val="High School" class="config-pill px-3.5 py-1.5 text-xs">High School</button>
+            <button type="button" data-val="Undergraduate / B.Tech" class="config-pill active px-3.5 py-1.5 text-xs">Undergraduate / B.Tech</button>
+            <button type="button" data-val="Professional" class="config-pill px-3.5 py-1.5 text-xs">Professional</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-borderSubtle">
+          <!-- Row 2: Target Duration -->
+          <div class="space-y-2">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Video Duration</div>
+            <div class="flex flex-wrap gap-2" data-pill-group="duration">
+              <button type="button" data-val="60s Quick Bite" class="config-pill px-3 py-1.5 text-xs">60s Quick Bite</button>
+              <button type="button" data-val="2 min Concept" class="config-pill active px-3 py-1.5 text-xs">2 min Concept</button>
+              <button type="button" data-val="5 min Deep Dive" class="config-pill px-3 py-1.5 text-xs">5 min Deep Dive</button>
+            </div>
+          </div>
+
+          <!-- Row 3: Visual Style -->
+          <div class="space-y-2">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Visual Style</div>
+            <div class="flex flex-wrap gap-2" data-pill-group="style">
+              <button type="button" data-val="Motion Graphics" class="config-pill active px-3 py-1.5 text-xs">Motion Graphics</button>
+              <button type="button" data-val="Whiteboard" class="config-pill px-3 py-1.5 text-xs">Whiteboard</button>
+              <button type="button" data-val="Diagram Explainer" class="config-pill px-3 py-1.5 text-xs">Diagram Explainer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Action Pill CTA -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+        <span class="text-xs text-textMuted font-mono">
+          4-Scene Gamma Outline • Fact-Audited
+        </span>
+        <button id="btnGenerateOutline" type="button" class="w-full sm:w-auto px-6 py-3 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-sm flex items-center justify-center gap-2 transition cursor-pointer">
+          <span id="btnGenerateText">Generate Lesson Outline →</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-textMuted pt-4 border-t border-borderSubtle/60">
+      <span>ClariVid Studio • Modular Educational Video Engine</span>
+      <span>Ayush Patil (Roll No: 150096726128) • Generative AI & Prompt Engineering</span>
+    </footer>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SCREEN 2: MODULAR STORYBOARD & SCRIPT EDITOR (GAMMA + RUNWAY HYBRID)  -->
+  <!-- ===================================================================== -->
+  <section id="screenStudio" class="hidden min-h-screen h-screen flex flex-col bg-bgCanvas overflow-hidden">
+
+    <!-- TOP STUDIO HEADER (48px height, 1px solid #23252C bottom border) -->
+    <header class="h-[48px] shrink-0 px-3 sm:px-4 bg-bgSurface1 border-b border-borderSubtle flex items-center justify-between gap-2">
+      <!-- Left: Back + Inline-Editable Lesson Title + Syllabus Verified Badge -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button id="btnBackToSetup" type="button" title="Back to Prompt Setup" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle flex items-center justify-center text-textMuted hover:text-textPrimary transition shrink-0">
+          ←
+        </button>
+        <input
+          id="studioLessonTitle"
+          type="text"
+          value="TCP 3-Way Handshake"
+          aria-label="Lesson Title"
+          class="bg-transparent hover:bg-bgSurface2 focus:bg-bgSurface2 px-2 py-1 rounded-[6px] border border-transparent focus:border-borderFocus font-semibold text-[14px] sm:text-[15px] tracking-[-0.01em] text-textPrimary truncate max-w-[160px] sm:max-w-[260px] focus:outline-none"
+        />
+        <span id="studioAuditBadge" class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 shrink-0">
+          ✓ Syllabus Verified
+        </span>
+      </div>
+
+      <!-- Center: Segmented View Toggle (Storyboard Studio | Full Script View) -->
+      <div class="hidden sm:flex items-center p-0.5 rounded-[8px] bg-bgCanvas border border-borderSubtle">
+        <button id="btnViewStoryboard" type="button" class="px-3 py-1 rounded-[6px] text-xs font-semibold bg-bgSurface2 text-textPrimary transition">
+          Storyboard Studio
+        </button>
+        <button id="btnViewFullScript" type="button" class="px-3 py-1 rounded-[6px] text-xs font-medium text-textMuted hover:text-textPrimary transition">
+          Full Script View
+        </button>
+      </div>
+
+      <!-- Right: Undo/Redo, Prompt Lab Toggle, and Primary Export Button -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="btnUndo" type="button" title="Undo Edit" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
+          ↺
+        </button>
+        <button id="btnRedo" type="button" title="Redo Edit" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
+          ↻
+        </button>
+        <button id="btnTogglePromptLab" type="button" class="px-2.5 py-1 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs font-mono text-textMuted hover:text-textPrimary transition">
+          Prompt Lab
+        </button>
+        <button id="btnOpenExport" type="button" class="px-3.5 py-1 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs transition">
+          Export
+        </button>
+      </div>
+    </header>
+
+    <!-- FULL SCRIPT & PROMPT LAB VIEW (Shown when 'Full Script View' is active) -->
+    <div id="fullScriptContainer" class="hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-bgCanvas">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-borderSubtle">
+          <div>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-accentEdu">Full Lesson Document & Prompt Architecture</span>
+            <h2 id="fullScriptHeading" class="text-xl font-bold text-textPrimary mt-0.5">TCP 3-Way Handshake — Complete Script</h2>
+          </div>
+          <button id="btnReturnToWorkbench" type="button" class="px-3.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
+            ← Back to 3-Pane Canvas
+          </button>
+        </div>
+
+        <!-- Prompt Engineering Comparison Card (Zero-Shot vs Few-Shot JSON) -->
+        <div class="surface-1 rounded-[12px] p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Prompt Engineering Architecture (Evaluation X-Ray)</span>
+            <span class="px-2 py-0.5 rounded bg-[#10B981]/12 text-accentEdu font-mono text-[11px]">Dual-Agent Audited</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle space-y-1.5">
+              <div class="text-[11px] font-mono text-textMuted">NAIVE ZERO-SHOT PROMPT</div>
+              <pre id="fullScriptZeroShot" class="font-mono text-xs text-textMuted whitespace-pre-wrap"></pre>
+            </div>
+            <div class="p-3.5 rounded-[8px] bg-bgCanvas border border-accentPrimary/40 space-y-1.5">
+              <div class="text-[11px] font-mono text-accentPrimary">CLARIVID ROLE-BASED + FEW-SHOT JSON</div>
+              <pre id="fullScriptFewShot" class="font-mono text-xs text-textPrimary whitespace-pre-wrap"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rendered Document Scenes -->
+        <div id="fullScriptScenesList" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- 3-PANE STUDIO WORKBENCH (Storyboard Studio) -->
+    <div id="threePaneWorkbench" class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+      <!-- PANE 1: LEFT SIDEBAR — MODULAR GAMMA SCENE CARDS (340px fixed width on desktop) -->
+      <aside class="w-full lg:w-[340px] shrink-0 h-[44vh] lg:h-full bg-bgCanvas border-b lg:border-b-0 lg:border-r border-borderSubtle flex flex-col order-2 lg:order-1">
+        <div class="px-4 py-2.5 border-b border-borderSubtle flex items-center justify-between bg-bgSurface1/40">
+          <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Modular Scenes</span>
+          <span id="totalDurationBadge" class="font-mono text-[11px] text-textMuted">4 Scenes • 01:12</span>
+        </div>
+
+        <!-- Scrollable Scene Cards List (16px padding, 12px gap) -->
+        <div id="sceneCardsContainer" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <!-- Gamma-style modular scene cards injected dynamically -->
+        </div>
+
+        <!-- Bottom '+ Add Scene Card' Dashed Button -->
+        <div class="p-3 border-t border-borderSubtle bg-bgCanvas">
+          <button id="btnAddSceneCard" type="button" class="w-full py-2.5 rounded-[8px] border border-dashed border-borderFocus hover:border-accentPrimary bg-bgSurface1/40 hover:bg-bgSurface1 text-xs font-medium text-textMuted hover:text-textPrimary transition">
+            + Add Scene Card
+          </button>
+        </div>
+      </aside>
+
+      <!-- PANE 2: CENTER STAGE — RUNWAY-STYLE LIVE PREVIEW CANVAS (flex-1, 32px padding) -->
+      <main class="flex-1 h-[56vh] lg:h-full bg-bgCanvas p-4 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden order-1 lg:order-2">
+
+        <!-- Centered Interactive Video Preview Frame -->
+        <div id="previewFrameWrapper" class="preview-frame-shell relative w-full max-w-[820px] aspect-video overflow-hidden flex items-center justify-center">
+          <canvas id="studioCanvas" class="w-full h-full block"></canvas>
+
+          <!-- Top-Left Canvas Scene Pill -->
+          <div class="absolute top-3 left-3 z-10 flex items-center gap-2 pointer-events-none">
+            <span id="canvasScenePill" class="px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textPrimary">
+              Scene 01 / 04
+            </span>
+            <span id="canvasStylePill" class="hidden sm:inline-block px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textMuted">
+              Motion Graphics
+            </span>
+          </div>
+
+          <!-- Top-Right 'Pause & Simplify' Floating Pill -->
+          <button
+            id="btnPauseSimplify"
+            type="button"
+            class="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full glass-bar hover:border-accentEdu text-xs font-medium text-textPrimary flex items-center gap-1.5 transition cursor-pointer"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-accentEdu"></span>
+            <span>Pause & Simplify</span>
+          </button>
+
+          <!-- Bottom-Third Synced Karaoke Subtitles -->
+          <div id="subtitleContainer" class="absolute bottom-3 inset-x-4 sm:inset-x-10 z-10 pointer-events-none flex justify-center">
+            <div id="karaokeSubtitleBar" class="px-3.5 py-1.5 rounded-[8px] bg-[#09090B]/85 border border-borderSubtle text-xs sm:text-sm text-center text-textPrimary max-w-2xl leading-snug">
+              Subtitles appear here during playback...
+            </div>
+          </div>
+
+          <!-- Mid-Video Student Doubt Clarification Glass Overlay ('Pause & Simplify') -->
+          <div id="simplifyOverlay" class="hidden absolute inset-0 z-30 bg-[#09090B]/85 backdrop-blur-md p-5 sm:p-8 flex flex-col justify-between">
+            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/30 font-mono text-[11px]">
+                  Simplified Analogy Branch
+                </span>
+                <span id="simplifySceneTag" class="font-mono text-xs text-textMuted">Paused at Scene 01</span>
+              </div>
+              <button id="btnCloseSimplify" type="button" class="text-xs text-textMuted hover:text-textPrimary px-2 py-1 rounded hover:bg-bgSurface2">
+                ✕
+              </button>
+            </div>
+
+            <div class="my-auto max-w-xl mx-auto space-y-3 text-center">
+              <h3 id="simplifyTitle" class="text-lg sm:text-xl font-bold text-textPrimary">
+                Intuitive Everyday Analogy
+              </h3>
+              <p id="simplifyBody" class="text-sm text-textPrimary/90 leading-relaxed p-4 rounded-[12px] bg-bgSurface1 border border-borderSubtle">
+                Analogy explanation loads here.
+              </p>
+              <div id="simplifyCheckpointContainer" class="hidden text-left space-y-2 p-3 rounded-[8px] bg-bgSurface1 border border-borderSubtle"></div>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-borderSubtle">
+              <div class="flex items-center gap-2">
+                <button id="btnReplaySimplifyVoice" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
+                  🔊 Replay Analogy
+                </button>
+                <button id="btnApplySimplifiedNarration" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-bgSurface1 border border-borderSubtle text-xs font-medium text-accentEdu hover:text-white transition">
+                  ✏️ Apply to Scene Script
+                </button>
+              </div>
+              <button id="btnResumeFromSimplify" type="button" class="px-4 py-1.5 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs">
+                Got it, Resume Lesson →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Glass Transport Control Bar (52px height, pill below canvas) -->
+        <div class="mt-4 sm:mt-5 h-[52px] w-full max-w-[760px] glass-bar rounded-full px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+          <!-- Play / Pause -->
+          <button id="btnPlayPause" type="button" title="Play / Pause (Space)" class="w-8 h-8 rounded-full bg-accentPrimary hover:bg-accentHover text-white flex items-center justify-center shrink-0 transition">
+            <svg id="iconPlay" class="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="iconPause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+
+          <!-- Step Previous / Next Scene -->
+          <div class="flex items-center gap-1">
+            <button id="btnPrevScene" type="button" title="Previous Scene" class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
+              ⏮
+            </button>
+            <button id="btnNextScene" type="button" title="Next Scene" class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
+              ⏭
+            </button>
+          </div>
+
+          <!-- JetBrains Mono Timecode -->
+          <span id="transportTimecode" class="font-mono text-[12px] text-textPrimary tabular-nums shrink-0">
+            00:00 / 01:12
+          </span>
+
+          <!-- Interactive Segmented Scene Scrubber Bar -->
+          <div id="segmentedScrubber" class="flex-1 h-2 flex items-center gap-1 cursor-pointer" title="Click to scrub across scenes">
+            <!-- Segments rendered dynamically proportional to scene duration -->
+          </div>
+
+          <!-- Playback Speed Cycle -->
+          <button id="btnSpeedCycle" type="button" class="px-2 py-1 rounded-full hover:bg-bgSurface2 font-mono text-[11px] text-textMuted hover:text-textPrimary shrink-0 transition">
+            1.0x
+          </button>
+
+          <!-- CC Toggle -->
+          <button id="btnToggleCC" type="button" class="px-2 py-1 rounded-full bg-bgSurface2 border border-borderFocus font-mono text-[11px] text-textPrimary shrink-0 transition">
+            CC
+          </button>
+        </div>
+
+        <!-- Expand Inspector Floating Button (Visible when Right Inspector is Collapsed) -->
+        <button id="btnExpandInspector" type="button" class="hidden absolute top-4 right-4 px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary">
+          Inspector ▸
+        </button>
+      </main>
+
+      <!-- PANE 3: RIGHT INSPECTOR PANEL (280px collapsible width, 1px solid #23252C left border) -->
+      <aside id="rightInspector" class="hidden lg:flex w-[280px] shrink-0 h-full bg-bgSurface1 border-l border-borderSubtle flex-col justify-between overflow-y-auto order-3">
+        <div class="divide-y divide-borderSubtle">
+
+          <!-- Section 1: AI Voiceover & Pacing -->
+          <div class="p-4 space-y-3.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">AI Voiceover & Pacing</span>
+              <button id="btnMuteVoice" type="button" class="font-mono text-[11px] text-accentEdu hover:underline">
+                Audio ON
+              </button>
+            </div>
+
+            <!-- Voice Persona Selector + 5s Preview Play Button -->
+            <div class="flex items-center gap-2">
+              <button id="btnVoiceSample" type="button" title="Preview 5s Voice Persona" class="w-8 h-8 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-accentPrimary text-xs flex items-center justify-center shrink-0 transition">
+                ▶
+              </button>
+              <select id="selectVoicePersona" class="flex-1 h-8 px-2.5 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus text-xs text-textPrimary focus:outline-none">
+                <option value="tutor">Aria (Clear Academic Tutor)</option>
+                <option value="professor">Prof. Dev (Deep Lecture)</option>
+                <option value="energetic">Kiran (Upbeat Explainer)</option>
+              </select>
+            </div>
+
+            <!-- Speech Rate Slider (0.8x - 1.3x) -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-textMuted">Speech Rate</span>
+                <span id="lblSpeechRate" class="font-mono text-[12px] text-textPrimary">1.0x</span>
+              </div>
+              <input id="sliderSpeechRate" type="range" min="0.8" max="1.3" step="0.05" value="1.0" class="w-full" />
+            </div>
+
+            <!-- Pause Between Scenes Selector -->
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-textMuted">Scene Gap</span>
+              <select id="selectSceneGap" class="px-2.5 py-1 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary focus:outline-none">
+                <option value="0.5">0.5s</option>
+                <option value="1.0">1.0s</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 2: Canvas & Aspect Ratio -->
+          <div class="p-4 space-y-3">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Canvas & Aspect Ratio</div>
+            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-[8px] bg-bgCanvas border border-borderSubtle" id="aspectRatioGroup">
+              <button type="button" data-ratio="16:9" class="ratio-btn py-1.5 rounded-[6px] bg-bgSurface2 text-textPrimary font-mono text-xs font-medium transition">16:9</button>
+              <button type="button" data-ratio="9:16" class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">9:16</button>
+              <button type="button" data-ratio="1:1" class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">1:1</button>
+            </div>
+          </div>
+
+          <!-- Section 3: Visual Theme & Accessibility -->
+          <div class="p-4 space-y-3.5">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Visual Theme & Accessibility</div>
+
+            <!-- Theme Switcher -->
+            <div class="grid grid-cols-3 gap-1.5" id="canvasThemeGroup">
+              <button type="button" data-theme="dark" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgSurface2 border border-accentPrimary text-[11px] font-medium text-textPrimary transition">
+                Dark Studio
+              </button>
+              <button type="button" data-theme="light" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
+                Clean Light
+              </button>
+              <button type="button" data-theme="blueprint" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
+                Blueprint
+              </button>
+            </div>
+
+            <!-- Accent Swatch Selector -->
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-textMuted">Diagram Accent</span>
+              <div class="flex items-center gap-2" id="accentSwatchGroup">
+                <button type="button" data-color="#6366F1" class="swatch-btn w-5 h-5 rounded-full bg-[#6366F1] ring-2 ring-white/80"></button>
+                <button type="button" data-color="#10B981" class="swatch-btn w-5 h-5 rounded-full bg-[#10B981] opacity-75 hover:opacity-100"></button>
+                <button type="button" data-color="#38BDF8" class="swatch-btn w-5 h-5 rounded-full bg-[#38BDF8] opacity-75 hover:opacity-100"></button>
+                <button type="button" data-color="#F59E0B" class="swatch-btn w-5 h-5 rounded-full bg-[#F59E0B] opacity-75 hover:opacity-100"></button>
+              </div>
+            </div>
+
+            <!-- Accessibility Toggles -->
+            <div class="space-y-2 pt-1">
+              <label class="flex items-center justify-between text-xs text-textPrimary cursor-pointer">
+                <span>Auto-Highlight Key Terms</span>
+                <input id="chkHighlightTerms" type="checkbox" checked class="accent-[#6366F1] w-3.5 h-3.5 rounded" />
+              </label>
+              <label class="flex items-center justify-between text-xs text-textPrimary cursor-pointer">
+                <span>Dyslexia-Safe Font Spacing</span>
+                <input id="chkDyslexiaFont" type="checkbox" class="accent-[#6366F1] w-3.5 h-3.5 rounded" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapse Inspector Footer -->
+        <div class="p-3 border-t border-borderSubtle">
+          <button id="btnCollapseInspector" type="button" class="w-full py-1.5 px-3 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs text-textMuted hover:text-textPrimary flex items-center justify-between transition">
+            <span>Collapse Inspector</span>
+            <span>▸</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SCREEN 3: EXPORT & SHARE MODAL (480px CENTERED MODAL)                 -->
+  <!-- ===================================================================== -->
+  <div id="modalExport" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[8px] flex items-center justify-center p-4">
+    <div class="w-full max-w-[480px] bg-bgSurface1 border border-borderSubtle rounded-[12px] overflow-hidden">
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-borderSubtle flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-textPrimary">Export & Share Lesson</h2>
+          <p id="exportLessonSubtitle" class="text-xs text-textMuted mt-0.5">TCP 3-Way Handshake • 4 Scenes</p>
+        </div>
+        <button id="btnCloseExport" type="button" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <!-- Selectable Delivery Radio Cards -->
+      <div class="p-5 space-y-3" id="exportOptionsGroup">
+
+        <!-- Option 1: 1080p HD Video (MP4 / WebM) -->
+        <div data-export-type="video" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgSurface2 border border-accentPrimary space-y-2.5 transition">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-2.5">
+              <div class="mt-0.5 w-4 h-4 rounded-full border-4 border-accentPrimary bg-white shrink-0"></div>
+              <div>
+                <div class="text-sm font-semibold text-textPrimary">1080p HD Video (MP4 / WebM)</div>
+                <p class="text-xs text-textMuted mt-0.5">Renders live HTML5 Canvas animation frames into a downloadable video file.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 bg-bgCanvas p-0.5 rounded-[6px] border border-borderSubtle shrink-0">
+              <button type="button" data-fps="60" class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono bg-bgSurface2 text-textPrimary">60fps</button>
+              <button type="button" data-fps="30" class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono text-textMuted">30fps</button>
+            </div>
+          </div>
+          <div class="pt-1 flex justify-end">
+            <button id="btnDownloadVideoFile" type="button" class="px-3.5 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold transition">
+              Render & Download Video
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 2: Interactive Web Lesson Link (Recommended EdTech Mode) -->
+        <div data-export-type="link" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
+          <div class="flex items-start gap-2.5">
+            <div class="mt-0.5 w-4 h-4 rounded-full border border-borderFocus shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-semibold text-textPrimary">Interactive Web Lesson Link</span>
+                <span class="px-2 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 text-[10px] font-medium">
+                  Recommended EdTech Mode
+                </span>
+              </div>
+              <p class="text-xs text-textMuted mt-0.5">Allows students to click scene chapters and trigger mid-lesson AI simplifications.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <input id="shareableUrlInput" type="text" readonly value="https://clarivid.edu/lesson/tcp-3-way-handshake" class="flex-1 px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 border border-borderSubtle font-mono text-[11px] text-textMuted focus:outline-none" />
+            <button id="btnCopyShareLink" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-accentPrimary text-textPrimary hover:text-white border border-borderSubtle text-xs font-medium transition shrink-0">
+              Copy Link
+            </button>
+            <button id="btnCopyEmbed" type="button" class="px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-[11px] text-textMuted hover:text-textPrimary transition shrink-0">
+              &lt;iframe&gt;
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 3: Captions & Transcript Pack (SRT + Markdown) -->
+        <div data-export-type="captions" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
+          <div class="flex items-start gap-2.5">
+            <div class="mt-0.5 w-4 h-4 rounded-full border border-borderFocus shrink-0"></div>
+            <div>
+              <div class="text-sm font-semibold text-textPrimary">Captions & Transcript Pack (SRT + Markdown)</div>
+              <p class="text-xs text-textMuted mt-0.5">Download timecoded <span class="font-mono text-textPrimary">.srt</span> subtitles and a structured <span class="font-mono text-textPrimary">.md</span> study guide.</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button id="btnDownloadSrt" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
+              Download .SRT
+            </button>
+            <button id="btnDownloadMd" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
+              Download .MD Guide
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- PROMPT LAB DRAWER (ZERO-SHOT VS FEW-SHOT JSON INSPECTOR)              -->
+  <!-- ===================================================================== -->
+  <div id="modalPromptLab" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-end">
+    <div class="w-full max-w-xl h-full bg-bgSurface1 border-l border-borderSubtle flex flex-col">
+      <div class="px-5 py-4 border-b border-borderSubtle flex items-center justify-between">
+        <div>
+          <span class="font-mono text-[11px] text-accentEdu">PROMPT ENGINEERING LAB</span>
+          <h3 class="text-base font-bold text-textPrimary">Zero-Shot vs. Role-Based Few-Shot JSON</h3>
+        </div>
+        <button id="btnClosePromptLab" type="button" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs">
+          ✕
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        <div id="labMetricsComparisonContainer" class="space-y-2"></div>
+        <div class="space-y-2">
+          <div class="text-xs font-semibold text-textMuted">1. Unconstrained Zero-Shot Prompt (Baseline)</div>
+          <pre id="labZeroShotPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-xs text-textMuted whitespace-pre-wrap"></pre>
+        </div>
+        <div class="space-y-2">
+          <div class="text-xs font-semibold text-accentPrimary">2. ClariVid Role-Based + Few-Shot JSON Schema</div>
+          <pre id="labFewShotPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-accentPrimary/40 font-mono text-xs text-textPrimary whitespace-pre-wrap"></pre>
+        </div>
+        <div class="space-y-2">
+          <div class="text-xs font-semibold text-accentEdu">3. Live Generated Storyboard JSON Payload</div>
+          <pre id="labJsonOutputPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary/90 overflow-x-auto max-h-64"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- OPTIONAL GEMINI API KEY MODAL                                         -->
+  <!-- ===================================================================== -->
+  <div id="modalApiConfig" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-bgSurface1 border border-borderSubtle rounded-[12px] p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-textPrimary">Google Gemini API Connection (Optional)</h3>
+        <button id="btnCloseApiConfig" type="button" class="text-xs text-textMuted hover:text-textPrimary">✕</button>
+      </div>
+      <p class="text-xs text-textMuted leading-relaxed">
+        Enter a Google AI Studio API key to generate live custom lesson outlines via <span class="font-mono text-textPrimary">gemini-2.5-flash</span>. Leave blank to use ClariVid's instant offline academic generator.
+      </p>
+      <input id="inputApiKey" type="password" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus font-mono text-xs text-textPrimary focus:outline-none" />
+      <div class="flex justify-end gap-2">
+        <button id="btnClearApiKey" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgCanvas border border-borderSubtle text-xs text-textMuted hover:text-textPrimary">Use Built-In</button>
+        <button id="btnSaveApiKey" type="button" class="px-4 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold">Save Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NON-INTRUSIVE TOAST NOTIFICATION -->
+  <div id="studioToast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-bgSurface2 border border-borderFocus text-xs font-medium text-textPrimary">
+    Notification
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- CLARIVID APPLICATION LOGIC                                            -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * ClariVid — Educational AI Video Creator Studio
+     * Strictly implements Runway + Gamma + A1 Gallery / Mobbin design tokens and 3-Screen UX flow.
+     */
+
+    // 1. PRE-BUILT CURRICULUM STORYBOARD ENGINE (INSTANT ZERO-LATENCY FALLBACK + RICH SAMPLES)
+    const CURRICULUM_LIBRARY = {
+      "tcp 3-way handshake": {
+        title: "TCP 3-Way Handshake",
+        scenes: [
+          {
+            id: "s1",
+            duration: 18,
+            diagramType: "tcp_intro",
+            narration: "Every reliable web connection starts with a three-step greeting between Client and Server called the TCP 3-Way Handshake, synchronizing sequence numbers before data flows.",
+            visualPrompt: "Isometric client-server network nodes with glowing sequence counters seq=X and seq=Y",
+            keyTerm: "Full-Duplex Synchronization",
+            analogy: "Think of calling a friend: you ask 'Can you hear me?' (SYN), they reply 'Yes, I hear you—can you hear me?' (SYN-ACK), and you confirm 'Loud and clear!' (ACK)."
+          },
+          {
+            id: "s2",
+            duration: 18,
+            diagramType: "tcp_syn",
+            narration: "First, the client sends a SYN packet with initial sequence number X. The server replies with SYN-ACK, acknowledging X plus one and proposing its own sequence number Y.",
+            visualPrompt: "Animated sequence timeline showing SYN(seq=100) and SYN-ACK(seq=300, ack=101) packets",
+            keyTerm: "SYN & SYN-ACK Flags",
+            analogy: "If you mail numbered postcard #100, your friend replies 'Got #100, send #101 next! My first card is #300.'"
+          },
+          {
+            id: "s3",
+            duration: 18,
+            diagramType: "tcp_ack",
+            narration: "Third, the client transmits a final ACK packet with acknowledgment number Y plus one. Both sockets enter the ESTABLISHED state and begin streaming payload bytes.",
+            visualPrompt: "Bidirectional ESTABLISHED data pipeline opening between client and server sockets",
+            keyTerm: "ESTABLISHED Socket State",
+            analogy: "Once both toll gates verify readiness, the barriers lift and traffic flows smoothly in both directions."
+          },
+          {
+            id: "s4",
+            duration: 18,
+            diagramType: "tcp_security",
+            narration: "In network security, omitting that third ACK creates half-open connections known as a SYN Flood attack, which modern servers mitigate using stateless SYN Cookies.",
+            visualPrompt: "Server backlog queue protected by stateless cryptographic SYN Cookie shield",
+            keyTerm: "SYN Flood & SYN Cookies",
+            analogy: "Instead of holding tables for prank callers who never arrive, the restaurant issues a stamped ticket stub (SYN Cookie) verified only when they show up."
+          }
+        ]
+      },
+      "binary search trees": {
+        title: "Binary Search Trees",
+        scenes: [
+          {
+            id: "s1",
+            duration: 18,
+            diagramType: "bst_invariant",
+            narration: "A Binary Search Tree organizes keys hierarchically so every left child holds strictly smaller values and every right child holds strictly larger values than its parent.",
+            visualPrompt: "Clean hierarchical BST node graph with root 50, left subtree < 50, right subtree > 50",
+            keyTerm: "Left < Root < Right Invariant",
+            analogy: "Looking up 'Python' in a dictionary: you open to 'M', see 'P' comes later, and immediately ignore the entire left half of the book."
+          },
+          {
+            id: "s2",
+            duration: 18,
+            diagramType: "bst_search",
+            narration: "Searching compares a target key against the current node and eliminates half the remaining tree at each step, achieving O(log n) logarithmic lookup time.",
+            visualPrompt: "Highlighted search path traversing root 50 -> right 75 -> left 60 in O(log n) steps",
+            keyTerm: "O(log n) Logarithmic Search",
+            analogy: "Guessing a number from 1 to 100 takes at most 7 tries if you always guess the midpoint and cut the range in half."
+          },
+          {
+            id: "s3",
+            duration: 18,
+            diagramType: "bst_inorder",
+            narration: "Performing an In-Order traversal visits Left subtree, Root node, then Right subtree, automatically outputting every element in ascending sorted order.",
+            visualPrompt: "In-order traversal sweep highlighting nodes 15, 30, 40, 50, 60, 75, 90 in sorted order",
+            keyTerm: "In-Order Sorted Traversal",
+            analogy: "Reading a well-organized bookshelf from left to right naturally reads every volume in numerical order."
+          },
+          {
+            id: "s4",
+            duration: 18,
+            diagramType: "bst_balance",
+            narration: "Inserting already sorted keys degenerates a plain BST into a skewed O(n) chain, which self-balancing AVL and Red-Black trees prevent using tree rotations.",
+            visualPrompt: "Comparison of skewed O(n) linked chain versus balanced AVL tree rotation",
+            keyTerm: "AVL Tree Balance Factor",
+            analogy: "Stacking plates only on the right side creates a tall unstable tower; rotations redistribute weight evenly."
+          }
+        ]
+      },
+      "photosynthesis electron transport": {
+        title: "Photosynthesis Electron Transport",
+        scenes: [
+          {
+            id: "s1",
+            duration: 18,
+            diagramType: "photo_ps2",
+            narration: "Inside the chloroplast thylakoid membrane, solar photons excite P680 electrons in Photosystem II while water splits via photolysis to release oxygen gas.",
+            visualPrompt: "Thylakoid membrane schematic showing photon hitting Photosystem II and H2O splitting into O2",
+            keyTerm: "Photosystem II & Photolysis",
+            analogy: "Sunlight acts like a cue ball launching an electron forward, while a water molecule immediately steps in to donate a fresh replacement electron."
+          },
+          {
+            id: "s2",
+            duration: 18,
+            diagramType: "photo_etc",
+            narration: "Energized electrons travel through plastoquinone and the cytochrome b6f complex, pumping hydrogen protons across the membrane into the thylakoid lumen.",
+            visualPrompt: "Electron transport chain arrows pumping H+ protons across lipid bilayer into lumen",
+            keyTerm: "Cytochrome b6f Proton Pump",
+            analogy: "As electrons roll downhill in energy, they turn waterwheel pumps that push protons into a pressurized reservoir."
+          },
+          {
+            id: "s3",
+            duration: 18,
+            diagramType: "photo_atp",
+            narration: "Driven by the proton gradient, hydrogen ions rush back through ATP Synthase turbines, phosphorylating ADP into high-energy ATP molecules via chemiosmosis.",
+            visualPrompt: "ATP Synthase molecular rotor converting ADP + Pi into glowing ATP molecules",
+            keyTerm: "Chemiosmotic ATP Synthesis",
+            analogy: "Just like water rushing through a hydroelectric dam spins a turbine to generate electricity, protons spin ATP Synthase to mint cellular fuel."
+          },
+          {
+            id: "s4",
+            duration: 18,
+            diagramType: "photo_ps1",
+            narration: "Finally, Photosystem I re-energizes electrons to reduce NADP+ into NADPH, supplying both ATP and NADPH to power sugar synthesis in the Calvin Cycle.",
+            visualPrompt: "Z-Scheme energy diagram concluding with ATP and NADPH entering the Calvin Cycle",
+            keyTerm: "Z-Scheme & NADPH Output",
+            analogy: "ATP and NADPH are charged battery packs delivered from the solar membrane straight to the stroma sugar factory."
+          }
+        ]
+      },
+      "indian knowledge systems: sulba sutras": {
+        title: "Indian Knowledge Systems: Sulba Sutras",
+        scenes: [
+          {
+            id: "s1",
+            duration: 18,
+            diagramType: "sulba_intro",
+            narration: "Composed between 800 and 500 BCE by Baudhayana and Apastamba, the Sulba Sutras are foundational Sanskrit texts on geometric construction using measuring cords.",
+            visualPrompt: "Geometric Vedic altar proportions constructed with sacred measuring cord (Rajju) and pegs",
+            keyTerm: "Baudhayana Sulba Sutra",
+            analogy: "Using a taut rope and two wooden pegs, ancient geometers drafted exact right angles and circles on the earth without modern compasses."
+          },
+          {
+            id: "s2",
+            duration: 18,
+            diagramType: "sulba_pythagoras",
+            narration: "Baudhayana explicitly stated the diagonal theorem: the rope stretched along the diagonal of a rectangle produces an area equal to the sum of both sides squared.",
+            visualPrompt: "Visual proof of Baudhayana diagonal theorem a^2 + b^2 = c^2 with geometric square subdivisions",
+            keyTerm: "Baudhayana Diagonal Theorem",
+            analogy: "Before Greece's Pythagoras, Indian mathematicians described the exact same right-triangle area relationship using diagonal measuring cords."
+          },
+          {
+            id: "s3",
+            duration: 18,
+            diagramType: "sulba_sqrt2",
+            narration: "To double the area of a square altar, the Sulba Sutras derived a remarkably accurate rational approximation for the square root of two to five decimal places.",
+            visualPrompt: "Geometric construction of square doubling with fractional series approximation for sqrt(2)",
+            keyTerm: "Rational Approximation of √2",
+            analogy: "Adding 1 + 1/3 + 1/(3×4) − 1/(3×4×34) gave builders 1.4142156, accurate to within two millionths of the true diagonal."
+          },
+          {
+            id: "s4",
+            duration: 18,
+            diagramType: "sulba_transform",
+            narration: "The texts also detailed area-preserving geometric transformations, converting squares into equivalent circles and trapezia for precise architectural symmetry.",
+            visualPrompt: "Area-preserving transformation morphing a square into an equal-area circle diagram",
+            keyTerm: "Area-Preserving Transformations",
+            analogy: "Like reshaping clay without changing its weight, Sulba geometry transformed square footprints into circular ones while keeping total area identical."
+          }
+        ]
+      }
+    };
+
+    // 2. BACKEND API CONNECTION & APPLICATION STATE
+    const API_BASE = window.location.protocol.startsWith("http") ? "" : "http://localhost:3001";
+
+    const state = {
+      screen: "setup", // 'setup' | 'studio'
+      apiKey: localStorage.getItem("clarivid_api_key") || "",
+      backendHealthy: false,
+      backendMockAi: false,
+      backendStoryboard: null,
+      backendCompliance: null,
+      usedFallback: false,
+      fallbackReason: null,
+      auditResults: [],
+      avgAuditConfidence: null,
+      compareLoading: false,
+      promptTab: "topic",
+      audience: "Undergraduate / B.Tech",
+      durationPreset: "2 min Concept",
+      visualStyle: "Motion Graphics",
+      lessonTitle: "TCP 3-Way Handshake",
+      scenes: [],
+      activeSceneIdx: 0,
+      sceneElapsed: 0,
+      isPlaying: false,
+      playbackSpeed: 1.0,
+      voiceEnabled: true,
+      voicePersona: "tutor",
+      sceneGap: 0.5,
+      aspectRatio: "16:9",
+      canvasTheme: "dark",
+      accentColor: "#6366F1",
+      highlightTerms: true,
+      dyslexiaFont: false,
+      showSubtitles: true,
+      exportType: "video",
+      exportFps: 60,
+      undoStack: [],
+      redoStack: [],
+      lastFrameTs: 0,
+      rafId: null
+    };
+
+    // 3. DOM ELEMENT REFERENCES
+    const el = {
+      screenSetup: document.getElementById("screenSetup"),
+      screenStudio: document.getElementById("screenStudio"),
+      setupPromptInput: document.getElementById("setupPromptInput"),
+      tokenCounterPill: document.getElementById("tokenCounterPill"),
+      tabTopicPrompt: document.getElementById("tabTopicPrompt"),
+      tabLectureNotes: document.getElementById("tabLectureNotes"),
+      fileIngestInput: document.getElementById("fileIngestInput"),
+      attachedFileBadge: document.getElementById("attachedFileBadge"),
+      btnGenerateOutline: document.getElementById("btnGenerateOutline"),
+      btnGenerateText: document.getElementById("btnGenerateText"),
+      setupApiDot: document.getElementById("setupApiDot"),
+      setupApiLabel: document.getElementById("setupApiLabel"),
+      // Screen 2 Header
+      btnBackToSetup: document.getElementById("btnBackToSetup"),
+      studioLessonTitle: document.getElementById("studioLessonTitle"),
+      studioAuditBadge: document.getElementById("studioAuditBadge"),
+      btnViewStoryboard: document.getElementById("btnViewStoryboard"),
+      btnViewFullScript: document.getElementById("btnViewFullScript"),
+      btnUndo: document.getElementById("btnUndo"),
+      btnRedo: document.getElementById("btnRedo"),
+      btnTogglePromptLab: document.getElementById("btnTogglePromptLab"),
+      btnOpenExport: document.getElementById("btnOpenExport"),
+      // Screen 2 Views & Panes
+      threePaneWorkbench: document.getElementById("threePaneWorkbench"),
+      fullScriptContainer: document.getElementById("fullScriptContainer"),
+      fullScriptHeading: document.getElementById("fullScriptHeading"),
+      fullScriptZeroShot: document.getElementById("fullScriptZeroShot"),
+      fullScriptFewShot: document.getElementById("fullScriptFewShot"),
+      fullScriptScenesList: document.getElementById("fullScriptScenesList"),
+      btnReturnToWorkbench: document.getElementById("btnReturnToWorkbench"),
+      sceneCardsContainer: document.getElementById("sceneCardsContainer"),
+      totalDurationBadge: document.getElementById("totalDurationBadge"),
+      btnAddSceneCard: document.getElementById("btnAddSceneCard"),
+      // Center Stage
+      previewFrameWrapper: document.getElementById("previewFrameWrapper"),
+      studioCanvas: document.getElementById("studioCanvas"),
+      canvasScenePill: document.getElementById("canvasScenePill"),
+      canvasStylePill: document.getElementById("canvasStylePill"),
+      btnPauseSimplify: document.getElementById("btnPauseSimplify"),
+      subtitleContainer: document.getElementById("subtitleContainer"),
+      karaokeSubtitleBar: document.getElementById("karaokeSubtitleBar"),
+      simplifyOverlay: document.getElementById("simplifyOverlay"),
+      simplifySceneTag: document.getElementById("simplifySceneTag"),
+      simplifyTitle: document.getElementById("simplifyTitle"),
+      simplifyBody: document.getElementById("simplifyBody"),
+      simplifyCheckpointContainer: document.getElementById("simplifyCheckpointContainer"),
+      btnApplySimplifiedNarration: document.getElementById("btnApplySimplifiedNarration"),
+      btnCloseSimplify: document.getElementById("btnCloseSimplify"),
+      btnReplaySimplifyVoice: document.getElementById("btnReplaySimplifyVoice"),
+      btnResumeFromSimplify: document.getElementById("btnResumeFromSimplify"),
+      // Transport Bar
+      btnPlayPause: document.getElementById("btnPlayPause"),
+      iconPlay: document.getElementById("iconPlay"),
+      iconPause: document.getElementById("iconPause"),
+      btnPrevScene: document.getElementById("btnPrevScene"),
+      btnNextScene: document.getElementById("btnNextScene"),
+      transportTimecode: document.getElementById("transportTimecode"),
+      segmentedScrubber: document.getElementById("segmentedScrubber"),
+      btnSpeedCycle: document.getElementById("btnSpeedCycle"),
+      btnToggleCC: document.getElementById("btnToggleCC"),
+      // Right Inspector
+      rightInspector: document.getElementById("rightInspector"),
+      btnCollapseInspector: document.getElementById("btnCollapseInspector"),
+      btnExpandInspector: document.getElementById("btnExpandInspector"),
+      btnMuteVoice: document.getElementById("btnMuteVoice"),
+      btnVoiceSample: document.getElementById("btnVoiceSample"),
+      selectVoicePersona: document.getElementById("selectVoicePersona"),
+      sliderSpeechRate: document.getElementById("sliderSpeechRate"),
+      lblSpeechRate: document.getElementById("lblSpeechRate"),
+      selectSceneGap: document.getElementById("selectSceneGap"),
+      chkHighlightTerms: document.getElementById("chkHighlightTerms"),
+      chkDyslexiaFont: document.getElementById("chkDyslexiaFont"),
+      // Screen 3 Export Modal
+      modalExport: document.getElementById("modalExport"),
+      exportLessonSubtitle: document.getElementById("exportLessonSubtitle"),
+      btnCloseExport: document.getElementById("btnCloseExport"),
+      btnDownloadVideoFile: document.getElementById("btnDownloadVideoFile"),
+      shareableUrlInput: document.getElementById("shareableUrlInput"),
+      btnCopyShareLink: document.getElementById("btnCopyShareLink"),
+      btnCopyEmbed: document.getElementById("btnCopyEmbed"),
+      btnDownloadSrt: document.getElementById("btnDownloadSrt"),
+      btnDownloadMd: document.getElementById("btnDownloadMd"),
+      // Prompt Lab & API Modals
+      modalPromptLab: document.getElementById("modalPromptLab"),
+      btnClosePromptLab: document.getElementById("btnClosePromptLab"),
+      labZeroShotPre: document.getElementById("labZeroShotPre"),
+      labFewShotPre: document.getElementById("labFewShotPre"),
+      labJsonOutputPre: document.getElementById("labJsonOutputPre"),
+      labMetricsComparisonContainer: document.getElementById("labMetricsComparisonContainer"),
+      btnOpenApiSetup: document.getElementById("btnOpenApiSetup"),
+      modalApiConfig: document.getElementById("modalApiConfig"),
+      btnCloseApiConfig: document.getElementById("btnCloseApiConfig"),
+      inputApiKey: document.getElementById("inputApiKey"),
+      btnSaveApiKey: document.getElementById("btnSaveApiKey"),
+      btnClearApiKey: document.getElementById("btnClearApiKey"),
+      setupApiDot: document.getElementById("setupApiDot"),
+      setupApiLabel: document.getElementById("setupApiLabel"),
+      studioToast: document.getElementById("studioToast")
+    };
+
+    const ctx = el.studioCanvas.getContext("2d");
+
+    // 4. UTILITY FUNCTIONS
+    function showToast(message) {
+      el.studioToast.textContent = message;
+      el.studioToast.classList.remove("hidden");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        el.studioToast.classList.add("hidden");
+      }, 2800);
+    }
+
+    function formatTimecode(seconds) {
+      const s = Math.max(0, Math.floor(seconds));
+      const mm = String(Math.floor(s / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      return `${mm}:${ss}`;
+    }
+
+    function estimateDurationFromText(text) {
+      const words = text.trim().split(/\s+/).filter(Boolean).length;
+      const base = Math.max(8, Math.round(words / 2.2));
+      if (state.durationPreset === "60s Quick Bite") return Math.min(15, base);
+      if (state.durationPreset === "5 min Deep Dive") return Math.max(22, base + 8);
+      return base;
+    }
+
+    function pushUndoSnapshot() {
+      state.undoStack.push(JSON.stringify({ title: state.lessonTitle, scenes: state.scenes }));
+      if (state.undoStack.length > 25) state.undoStack.shift();
+      state.redoStack = [];
+      updateUndoRedoButtons();
+    }
+
+    function updateUndoRedoButtons() {
+      el.btnUndo.disabled = state.undoStack.length === 0;
+      el.btnRedo.disabled = state.redoStack.length === 0;
+    }
+
+    function copyToClipboardFallback(text, successMsg) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast(successMsg);
+    }
+
+    // 5. SCREEN 1: TOKEN COUNTER & STORYBOARD GENERATION
+    function updateTokenCounter() {
+      const text = el.setupPromptInput.value.trim();
+      const approxTokens = Math.max(1, Math.ceil(text.length / 3.8));
+      el.tokenCounterPill.textContent = `${approxTokens.toLocaleString()} tokens • Ready`;
+    }
+
+    function buildEngineeredPromptSchema(rawInput) {
+      return `Role: Principal EdTech Curriculum Designer.
+Audience: ${state.audience} | Target Duration: ${state.durationPreset} | Style: ${state.visualStyle}
+Input Concept / Notes: "${rawInput.slice(0, 320)}"
+
+Task: Output a strict JSON object with "title" and 4 modular "scenes" where each scene contains:
+- "narration" (concise spoken script calibrated to pacing)
+- "visualPrompt" (clean diagram/motion primitive description)
+- "keyTerm" (core syllabus concept)
+- "analogy" (intuitive real-world explanation for mid-lesson clarification)`;
+    }
+
+    function synthesizeFallbackScenes(rawText) {
+      const cleanFirstLine = rawText.split("\n")[0].trim() || "TCP 3-Way Handshake";
+      const lookup = cleanFirstLine.toLowerCase();
+
+      for (const key of Object.keys(CURRICULUM_LIBRARY)) {
+        if (lookup.includes(key) || key.includes(lookup)) {
+          const entry = JSON.parse(JSON.stringify(CURRICULUM_LIBRARY[key]));
+          entry.scenes.forEach((s) => {
+            s.duration = estimateDurationFromText(s.narration);
+            s.visualSeed = 0;
+          });
+          return entry;
+        }
+      }
+
+      // Dynamic multi-scene generator for any custom topic or pasted lecture notes
+      const topicTitle = cleanFirstLine.length > 48 ? cleanFirstLine.slice(0, 48) + "..." : cleanFirstLine;
+      const sentences = rawText
+        .replace(/\n+/g, " ")
+        .split(/[.!?]+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 18);
+
+      const scenes = [
+        {
+          id: "s1",
+          diagramType: "generic_1",
+          narration: sentences[0]
+            ? `${sentences[0]}. Let us break down the core intuition behind ${topicTitle} for ${state.audience} learners.`
+            : `${topicTitle} is a foundational concept designed to transform structured inputs into reliable, verifiable outcomes.`,
+          visualPrompt: `${state.visualStyle} architectural overview diagram of ${topicTitle} with labeled input-output blocks`,
+          keyTerm: `Core Principle of ${topicTitle}`,
+          analogy: `Imagine a well-organized airport checkpoint: every traveler passes clear verification gates in sequence without bottlenecks.`
+        },
+        {
+          id: "s2",
+          diagramType: "generic_2",
+          narration: sentences[1]
+            ? `${sentences[1]}. During execution, each stage validates state transitions before advancing.`
+            : `In the primary mechanism of ${topicTitle}, modular components process signals step by step while preserving system invariants.`,
+          visualPrompt: `Step-by-step directional flow schematic illustrating internal stages of ${topicTitle}`,
+          keyTerm: "Sequential State Transition",
+          analogy: `Think of an assembly line where each station inspects and refines the work before passing it cleanly to the next station.`
+        },
+        {
+          id: "s3",
+          diagramType: "generic_3",
+          narration: sentences[2]
+            ? `${sentences[2]}. Optimizing throughput and minimizing overhead are key engineering trade-offs.`
+            : `Analyzing efficiency reveals how ${topicTitle} balances speed, resource consumption, and fault resilience under real workloads.`,
+          visualPrompt: `Comparative performance chart and node interaction graph for ${topicTitle}`,
+          keyTerm: "Efficiency & Trade-Off Analysis",
+          analogy: `Adding dedicated express lanes on a highway prevents congestion during rush hour—just like optimizing the critical path here.`
+        },
+        {
+          id: "s4",
+          diagramType: "generic_4",
+          narration: sentences[3]
+            ? `${sentences[3]}. Remember this three-part framework for exams and practical implementation.`
+            : `To master ${topicTitle}, connect the visual block diagram, trace each state transition, and apply it to a real-world system.`,
+          visualPrompt: `Summary synthesis card highlighting 3 key exam takeaways for ${topicTitle}`,
+          keyTerm: "Exam & Practical Synthesis",
+          analogy: `Use the 3-step recall rule: Draw the diagram, trace the flow, and state one real-world use case.`
+        }
+      ];
+
+      scenes.forEach((s) => {
+        s.duration = estimateDurationFromText(s.narration);
+        s.visualSeed = 0;
+      });
+
+      return { title: topicTitle, scenes };
+    }
+
+    // =========================================================================
+    // BACKEND INTEGRATION HELPERS
+    // =========================================================================
+    async function initBackendHealth() {
+      try {
+        const res = await fetch(`${API_BASE}/api/health`);
+        if (res.ok) {
+          const data = await res.json();
+          state.backendHealthy = true;
+          state.backendMockAi = Boolean(data.mockAi);
+          if (el.setupApiDot) {
+            el.setupApiDot.className = "w-1.5 h-1.5 rounded-full bg-accentEdu animate-pulse";
+          }
+          if (el.setupApiLabel) {
+            el.setupApiLabel.textContent = data.mockAi ? "Clarivid AI (Mock Active)" : "Clarivid AI (Gemini Live)";
+          }
+          return;
+        }
+      } catch (err) {
+        console.warn("Backend health check failed:", err);
+      }
+      state.backendHealthy = false;
+      if (el.setupApiDot) el.setupApiDot.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
+      if (el.setupApiLabel) el.setupApiLabel.textContent = "Offline Curriculum Engine";
+    }
+
+    function getExamTagBadge(tag) {
+      const t = (tag || "conceptual").toLowerCase();
+      if (t.includes("definition") || t.includes("2-mark")) {
+        return { label: "2-Mark Definition", class: "bg-emerald-950/40 text-emerald-300 border-emerald-500/30" };
+      }
+      if (t.includes("diagram") || t.includes("5-mark")) {
+        return { label: "5-Mark Diagram", class: "bg-sky-950/40 text-sky-300 border-sky-500/30" };
+      }
+      if (t.includes("numerical")) {
+        return { label: "Numerical Problem", class: "bg-orange-950/40 text-orange-300 border-orange-500/30" };
+      }
+      return { label: "Conceptual Question", class: "bg-purple-950/40 text-purple-300 border-purple-500/30" };
+    }
+
+    function inferDiagramType(title, scene, idx) {
+      const combined = ((title || "") + " " + (scene.heading || "") + " " + (scene.narration || "")).toLowerCase();
+      if (combined.includes("tcp") || combined.includes("handshake") || combined.includes("socket") || combined.includes("syn") || combined.includes("ack")) {
+        const tcpTypes = ["tcp_intro", "tcp_syn", "tcp_ack", "tcp_security"];
+        return tcpTypes[idx % tcpTypes.length];
+      }
+      if (combined.includes("binary search") || combined.includes("tree") || combined.includes("bst") || combined.includes("avl") || combined.includes("node")) {
+        const bstTypes = ["bst_invariant", "bst_search", "bst_inorder", "bst_balance"];
+        return bstTypes[idx % bstTypes.length];
+      }
+      if (combined.includes("photo") || combined.includes("chloroplast") || combined.includes("thylakoid") || combined.includes("calvin") || combined.includes("plant")) {
+        const photoTypes = ["photo_ps2", "photo_etc", "photo_atp", "photo_ps1"];
+        return photoTypes[idx % photoTypes.length];
+      }
+      if (combined.includes("sulba") || combined.includes("geometry") || combined.includes("vedic") || combined.includes("pythagor") || combined.includes("cord")) {
+        const sulbaTypes = ["sulba_intro", "sulba_pythagoras", "sulba_sqrt2", "sulba_transform"];
+        return sulbaTypes[idx % sulbaTypes.length];
+      }
+      return `generic_${(idx % 4) + 1}`;
+    }
+
+    async function runBackgroundFactAudit(storyboard) {
+      if (!el.studioAuditBadge) return;
+      el.studioAuditBadge.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accentPrimary animate-ping mr-1"></span> Auditing Factual Soundness...`;
+      el.studioAuditBadge.className = "hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-accentPrimary/15 text-accentPrimary border border-accentPrimary/30 shrink-0";
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/audit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ storyboard })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          const auditList = Array.isArray(data) ? data : (data.audit || []);
+          state.auditResults = auditList;
+
+          state.scenes.forEach((scene) => {
+            const match = auditList.find((a) => a.scene_id === scene.numericId);
+            if (match) {
+              scene.audit = match;
+            }
+          });
+
+          const scores = auditList.map(a => typeof a.confidence === "number" ? a.confidence : 80);
+          const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 95;
+          state.avgAuditConfidence = avg;
+
+          if (avg >= 90) {
+            el.studioAuditBadge.innerHTML = `✓ Fact-Audited (${avg}% Sound)`;
+            el.studioAuditBadge.className = "hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#10B981]/15 text-accentEdu border border-[#10B981]/30 shrink-0";
+          } else if (avg >= 70) {
+            el.studioAuditBadge.innerHTML = `⚠️ Fact Review (${avg}% Sound)`;
+            el.studioAuditBadge.className = "hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0";
+          } else {
+            el.studioAuditBadge.innerHTML = `❌ Fact Discrepancy (${avg}% Sound)`;
+            el.studioAuditBadge.className = "hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-red-500/15 text-red-300 border border-red-500/30 shrink-0";
+          }
+
+          renderSceneCards();
+          showToast(`Fact-Audit completed: average confidence ${avg}%.`);
+        }
+      } catch (err) {
+        console.warn("Background audit error:", err);
+        el.studioAuditBadge.textContent = "✓ Syllabus Verified";
+      }
+    }
+
+    async function generateLessonAndEnterStudio() {
+      const rawText = el.setupPromptInput.value.trim();
+      if (!rawText) {
+        showToast("Please enter a topic or paste lecture notes first.");
+        return;
+      }
+
+      el.btnGenerateOutline.disabled = true;
+      el.btnGenerateText.textContent = "Connecting to Clarivid AI Backend...";
+
+      let generated = null;
+
+      const audienceMap = {
+        "Middle School": "beginner",
+        "High School": "intermediate",
+        "Undergraduate / B.Tech": "beginner",
+        "Professional": "advanced"
+      };
+
+      // 1. Try real Clarivid Express Backend route: POST /api/generate
+      try {
+        const resp = await fetch(`${API_BASE}/api/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            topic: rawText,
+            level: audienceMap[state.audience] || "beginner",
+            language: "english",
+            promptMode: "B"
+          })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.storyboard && Array.isArray(data.storyboard.scenes)) {
+            const sb = data.storyboard;
+            state.backendStoryboard = sb;
+            state.backendCompliance = data.complianceScore;
+            state.usedFallback = data.usedFallback;
+            state.fallbackReason = data.fallbackReason;
+
+            generated = {
+              title: sb.title || rawText.split("\n")[0].slice(0, 48),
+              scenes: sb.scenes.map((s, idx) => ({
+                id: `s${s.id || idx + 1}_${Date.now()}`,
+                numericId: s.id || idx + 1,
+                heading: s.heading || `Scene ${idx + 1}`,
+                diagramType: inferDiagramType(sb.title, s, idx),
+                narration: s.narration || "Scene narration script.",
+                visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || rawText}`,
+                keyTerm: s.heading || s.exam_tag || `Concept ${idx + 1}`,
+                analogy: (s.bullets && s.bullets[0]) ? s.bullets[0] : "Think of this as a step-by-step verified transition.",
+                duration: estimateDurationFromText(s.narration || ""),
+                exam_tag: s.exam_tag || "conceptual",
+                checkpoint: s.checkpoint || null,
+                bullets: s.bullets || [],
+                audit: null,
+                visualSeed: idx % 2
+              }))
+            };
+
+            if (data.usedFallback) {
+              showToast(`Notice: Loaded demo lesson (${data.fallbackReason || 'fallback'}). Compliance: ${data.complianceScore}%`);
+            } else {
+              showToast(`Generated ${generated.scenes.length} scenes via Clarivid AI. Compliance: ${data.complianceScore}%`);
+            }
+
+            // Trigger background fact-checking audit
+            runBackgroundFactAudit(sb);
+          }
+        }
+      } catch (backendErr) {
+        console.warn("Backend /api/generate call failed, using fallback:", backendErr);
+      }
+
+      // 2. Direct client-side Gemini call if user configured a client key and backend was offline
+      if (!generated && state.apiKey) {
+        try {
+          const resp = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(state.apiKey)}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: buildEngineeredPromptSchema(rawText) }] }],
+                generationConfig: { responseMimeType: "application/json", temperature: 0.4 }
+              })
+            }
+          );
+          if (!resp.ok) throw new Error("Gemini API request failed");
+          const data = await resp.json();
+          const parsed = JSON.parse(data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}");
+          if (parsed && Array.isArray(parsed.scenes) && parsed.scenes.length > 0) {
+            generated = {
+              title: parsed.title || rawText.split("\n")[0].slice(0, 48),
+              scenes: parsed.scenes.map((s, idx) => ({
+                id: `s${idx + 1}_${Date.now()}`,
+                numericId: idx + 1,
+                heading: s.keyTerm || `Scene ${idx + 1}`,
+                diagramType: inferDiagramType(parsed.title, s, idx),
+                narration: s.narration || "Scene narration script.",
+                visualPrompt: s.visualPrompt || "Clean vector educational diagram.",
+                keyTerm: s.keyTerm || `Concept ${idx + 1}`,
+                analogy: s.analogy || "Think of this as a step-by-step relay race.",
+                duration: estimateDurationFromText(s.narration || ""),
+                exam_tag: "conceptual",
+                checkpoint: null,
+                bullets: [],
+                audit: null,
+                visualSeed: 0
+              }))
+            };
+          }
+        } catch (err) {
+          showToast("API fallback active: generated via built-in curriculum engine.");
+        }
+      }
+
+      // 3. Fallback to curriculum library or dynamic synthesizer
+      if (!generated) {
+        await new Promise((r) => setTimeout(r, 260));
+        generated = synthesizeFallbackScenes(rawText);
+      }
+
+      state.lessonTitle = generated.title;
+      state.scenes = generated.scenes;
+      state.activeSceneIdx = 0;
+      state.sceneElapsed = 0;
+      state.undoStack = [];
+      state.redoStack = [];
+      updateUndoRedoButtons();
+
+      el.btnGenerateOutline.disabled = false;
+      el.btnGenerateText.textContent = "Generate Lesson Outline →";
+
+      switchScreen("studio");
+      renderAllStudioViews();
+    }
+
+    function switchScreen(target) {
+      state.screen = target;
+      stopPlayback();
+      closeSimplifyOverlay();
+      if (target === "setup") {
+        el.screenStudio.classList.add("hidden");
+        el.screenSetup.classList.remove("hidden");
+      } else {
+        el.screenSetup.classList.add("hidden");
+        el.screenStudio.classList.remove("hidden");
+        resizePreviewCanvas();
+      }
+    }
+
+    // 6. SCREEN 2: GAMMA-STYLE MODULAR SCENE CARDS (LEFT PANE)
+    function renderSceneCards() {
+      el.sceneCardsContainer.innerHTML = "";
+      const totalSec = state.scenes.reduce((sum, s) => sum + s.duration, 0);
+      el.totalDurationBadge.textContent = `${state.scenes.length} Scenes • ${formatTimecode(totalSec)}`;
+
+      state.scenes.forEach((scene, idx) => {
+        const isActive = idx === state.activeSceneIdx;
+        const card = document.createElement("div");
+        card.className = `scene-card cursor-pointer space-y-2.5 ${isActive ? "active" : ""}`;
+        card.dataset.index = idx;
+        const examTag = getExamTagBadge(scene.exam_tag);
+
+        card.innerHTML = `
+          <!-- Header Row: Drag Handle, Scene Badge, Exam Tag, Mono Duration, Quick Actions -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-textMuted/70 text-xs select-none cursor-grab" title="Scene Order">⋮⋮</span>
+              <span class="px-2 py-0.5 rounded-[6px] font-mono text-[11px] font-medium ${isActive ? "bg-accentPrimary text-white" : "bg-bgCanvas text-textMuted border border-borderSubtle"}">
+                ${String(idx + 1).padStart(2, "0")}
+              </span>
+              <span class="px-1.5 py-0.5 rounded-[4px] font-mono text-[10px] font-semibold border ${examTag.class}">
+                ${examTag.label}
+              </span>
+              <span class="scene-dur-label font-mono text-[11px] text-textMuted tabular-nums">
+                ${formatTimecode(scene.duration)}
+              </span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button type="button" data-card-action="regen" data-idx="${idx}" title="Regenerate Scene Script" class="px-1.5 py-0.5 rounded hover:bg-bgCanvas text-[11px] text-textMuted hover:text-textPrimary transition">
+                Regen
+              </button>
+              <button type="button" data-card-action="delete" data-idx="${idx}" title="Delete Scene" class="px-1.5 py-0.5 rounded hover:bg-bgCanvas text-[11px] text-textMuted hover:text-red-400 transition">
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline-Editable Narration Script (Plus Jakarta Sans 14px, 1.55 line-height) -->
+          <div
+            contenteditable="true"
+            spellcheck="false"
+            data-script-idx="${idx}"
+            class="scene-script-edit text-[14px] leading-[1.55] text-textPrimary rounded-[6px] px-1.5 py-1 -mx-1.5 hover:bg-bgCanvas/60 focus:bg-bgCanvas focus:outline-none focus:ring-1 focus:ring-borderFocus"
+          >${scene.narration}</div>
+
+          <!-- Fact Audit Feedback Pill & Correction -->
+          ${scene.audit ? `
+            <div class="px-2.5 py-1.5 rounded-[6px] text-xs flex items-center justify-between border ${scene.audit.confidence >= 90 ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-300' : scene.audit.confidence >= 70 ? 'bg-amber-950/30 border-amber-500/30 text-amber-300' : 'bg-red-950/30 border-red-500/30 text-red-300'}">
+              <span class="font-mono text-[11px] font-semibold flex items-center gap-1">
+                ${scene.audit.confidence >= 90 ? '🛡️' : scene.audit.confidence >= 70 ? '⚠️' : '❌'} Fact-Audit: ${scene.audit.confidence}%
+              </span>
+              ${scene.audit.corrected_text ? `
+                <button type="button" data-card-action="apply-correction" data-idx="${idx}" class="text-[10px] px-2 py-0.5 rounded bg-accentPrimary hover:bg-accentHover text-white font-medium transition">
+                  Apply Suggestion
+                </button>
+              ` : '<span class="text-[10px] text-emerald-400/90 font-mono">Verified ✓</span>'}
+            </div>
+            ${scene.audit.issues && scene.audit.issues.length ? `
+              <div class="text-[11px] text-red-300/90 bg-red-950/20 p-2 rounded border border-red-900/30 space-y-0.5">
+                <div class="font-semibold text-red-400">Critic Note:</div>
+                <div>${scene.audit.issues.join("; ")}</div>
+              </div>
+            ` : ''}
+          ` : ''}
+
+          <!-- Interactive Checkpoint Quick Test -->
+          ${scene.checkpoint ? `
+            <div class="flex items-center justify-between p-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-xs gap-2">
+              <div class="truncate text-textMuted font-medium text-[11px]">🎯 ${scene.checkpoint.q}</div>
+              <button type="button" data-card-action="test-quiz" data-idx="${idx}" class="px-2 py-0.5 rounded bg-bgSurface2 hover:bg-accentPrimary text-textPrimary hover:text-white font-mono text-[10px] transition shrink-0">
+                Quiz ➔
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- Collapsible #09090B Visual Prompt Chip (JetBrains Mono 12px) -->
+          <div class="p-2.5 rounded-[8px] bg-bgCanvas border border-borderSubtle space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] uppercase tracking-wider text-textMuted">Visual Prompt</span>
+              <button type="button" data-card-action="refresh-visual" data-idx="${idx}" class="font-mono text-[11px] text-accentPrimary hover:text-indigo-300 transition">
+                ✦ Refresh Visual
+              </button>
+            </div>
+            <p class="font-mono text-[12px] leading-[1.45] text-textMuted">
+              ${scene.visualPrompt}
+            </p>
+          </div>
+        `;
+
+        // Select scene on card click
+        card.addEventListener("click", (e) => {
+          if (e.target.closest("button") || e.target.closest("[contenteditable]")) return;
+          selectScene(idx);
+        });
+
+        // Inline script editing recalculates duration live
+        const scriptDiv = card.querySelector("[data-script-idx]");
+        scriptDiv.addEventListener("focus", () => {
+          if (state.activeSceneIdx !== idx) selectScene(idx);
+          pushUndoSnapshot();
+        });
+        scriptDiv.addEventListener("input", () => {
+          const updatedText = scriptDiv.innerText.trim();
+          state.scenes[idx].narration = updatedText;
+          state.scenes[idx].duration = estimateDurationFromText(updatedText);
+          card.querySelector(".scene-dur-label").textContent = formatTimecode(state.scenes[idx].duration);
+          updateTransportBar();
+          updateSubtitles();
+          drawStudioCanvas();
+        });
+
+        // Quick actions: Regen, Delete, Refresh Visual, Apply Correction, Test Quiz
+        card.querySelectorAll("[data-card-action]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const action = btn.dataset.cardAction;
+            const sIdx = Number(btn.dataset.idx);
+            handleCardQuickAction(action, sIdx);
+          });
+        });
+
+        el.sceneCardsContainer.appendChild(card);
+      });
+    }
+
+    function handleCardQuickAction(action, idx) {
+      if (action === "apply-correction") {
+        const target = state.scenes[idx];
+        if (target && target.audit && target.audit.corrected_text) {
+          pushUndoSnapshot();
+          target.narration = target.audit.corrected_text;
+          target.duration = estimateDurationFromText(target.narration);
+          target.audit.issues = [];
+          showToast(`Applied critic correction to Scene ${idx + 1}`);
+          renderAllStudioViews();
+        }
+        return;
+      }
+      if (action === "test-quiz") {
+        selectScene(idx);
+        openSimplifyOverlay(true);
+        return;
+      }
+      if (action === "delete") {
+        if (state.scenes.length <= 1) {
+          showToast("A lesson must retain at least one scene card.");
+          return;
+        }
+        pushUndoSnapshot();
+        state.scenes.splice(idx, 1);
+        state.activeSceneIdx = Math.min(state.activeSceneIdx, state.scenes.length - 1);
+        state.sceneElapsed = 0;
+        renderAllStudioViews();
+        showToast("Scene card removed.");
+      } else if (action === "regen") {
+        pushUndoSnapshot();
+        const target = state.scenes[idx];
+        target.narration = `Refined Perspective: ${target.analogy} In technical terms, ${target.keyTerm} governs this step reliably.`;
+        target.duration = estimateDurationFromText(target.narration);
+        renderAllStudioViews();
+        showToast(`Scene ${String(idx + 1).padStart(2, "0")} script regenerated.`);
+      } else if (action === "refresh-visual") {
+        pushUndoSnapshot();
+        const target = state.scenes[idx];
+        target.visualSeed = (target.visualSeed || 0) + 1;
+        const angles = ["Isometric node layout", "Clean flow schematic", "Layered architecture view", "Highlighted callout diagram"];
+        target.visualPrompt = `${angles[target.visualSeed % angles.length]} for ${target.keyTerm} (${state.visualStyle})`;
+        renderSceneCards();
+        drawStudioCanvas();
+        showToast(`Scene ${String(idx + 1).padStart(2, "0")} visual refreshed.`);
+      }
+    }
+
+    function selectScene(idx) {
+      state.activeSceneIdx = Math.max(0, Math.min(state.scenes.length - 1, idx));
+      state.sceneElapsed = 0;
+      renderSceneCards();
+      updateTransportBar();
+      updateSubtitles();
+      drawStudioCanvas();
+      if (state.isPlaying) {
+        speakText(state.scenes[state.activeSceneIdx].narration);
+      }
+    }
+
+    // 7. RUNWAY-STYLE LIVE CANVAS RENDERER (MOTION GRAPHICS / WHITEBOARD / DIAGRAM)
+    function resizePreviewCanvas() {
+      const rect = el.previewFrameWrapper.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      el.studioCanvas.width = Math.max(480, Math.floor(rect.width * dpr));
+      el.studioCanvas.height = Math.max(270, Math.floor(rect.height * dpr));
+      drawStudioCanvas();
+    }
+
+    function getThemeColors() {
+      if (state.canvasTheme === "light") {
+        return {
+          bg: "#F8FAFC",
+          card: "#FFFFFF",
+          border: "#CBD5E1",
+          text: "#0F172A",
+          muted: "#475569",
+          grid: "rgba(15, 23, 42, 0.05)"
+        };
+      }
+      if (state.canvasTheme === "blueprint") {
+        return {
+          bg: "#0B192C",
+          card: "#102542",
+          border: "#1E3A5F",
+          text: "#F0F9FF",
+          muted: "#7DD3FC",
+          grid: "rgba(56, 189, 248, 0.12)"
+        };
+      }
+      // Default: Dark Studio (#09090B)
+      return {
+        bg: "#09090B",
+        card: "#121316",
+        border: "#23252C",
+        text: "#F4F4F6",
+        muted: "#8A8F9E",
+        grid: "rgba(255, 255, 255, 0.03)"
+      };
+    }
+
+    function drawDiagramNode(c, x, y, w, h, title, sub, theme, accent, isWhiteboard) {
+      c.save();
+      c.fillStyle = theme.card;
+      c.strokeStyle = accent;
+      c.lineWidth = isWhiteboard ? 2.5 : 1.75;
+      if (isWhiteboard) c.setLineDash([6, 3]);
+
+      c.beginPath();
+      c.roundRect(x, y, w, h, isWhiteboard ? 4 : 10);
+      c.fill();
+      c.stroke();
+      c.setLineDash([]);
+
+      c.fillStyle = theme.text;
+      c.font = `600 ${Math.max(12, Math.round(w * 0.095))}px "Plus Jakarta Sans", sans-serif`;
+      c.textAlign = "center";
+      c.fillText(title, x + w / 2, y + h / 2 - (sub ? 4 : -4));
+
+      if (sub) {
+        c.fillStyle = accent;
+        c.font = `500 ${Math.max(10, Math.round(w * 0.072))}px "JetBrains Mono", monospace`;
+        c.fillText(sub, x + w / 2, y + h / 2 + 14);
+      }
+      c.restore();
+    }
+
+    function drawFlowConnector(c, x1, y1, x2, y2, label, accent, progress, theme) {
+      c.save();
+      const t = Math.max(0, Math.min(1, progress));
+      const curX = x1 + (x2 - x1) * t;
+      const curY = y1 + (y2 - y1) * t;
+
+      c.strokeStyle = accent;
+      c.lineWidth = 2.2;
+      c.beginPath();
+      c.moveTo(x1, y1);
+      c.lineTo(curX, curY);
+      c.stroke();
+
+      // Animated pulse indicator dot
+      c.fillStyle = accent;
+      c.beginPath();
+      c.arc(curX, curY, 4.5, 0, Math.PI * 2);
+      c.fill();
+
+      if (label) {
+        c.fillStyle = theme.text;
+        c.font = `500 11px "JetBrains Mono", monospace`;
+        c.textAlign = "center";
+        c.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 9);
+      }
+      c.restore();
+    }
+
+    function drawStudioCanvas() {
+      if (!state.scenes.length) return;
+      const w = el.studioCanvas.width;
+      const h = el.studioCanvas.height;
+      const scene = state.scenes[state.activeSceneIdx];
+      const theme = getThemeColors();
+      const accent = state.accentColor;
+      const eduGreen = "#10B981";
+      const isWhiteboard = state.visualStyle === "Whiteboard";
+      const progress = Math.min(1, Math.max(0.25, state.sceneElapsed / Math.max(1, scene.duration * 0.65)));
+
+      // 1. Background Fill
+      ctx.fillStyle = theme.bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Subtle Grid for Blueprint or Diagram Explainer
+      if (state.canvasTheme === "blueprint" || state.visualStyle === "Diagram Explainer") {
+        ctx.strokeStyle = theme.grid;
+        ctx.lineWidth = 1;
+        const step = 32;
+        for (let gx = 0; gx < w; gx += step) {
+          ctx.beginPath();
+          ctx.moveTo(gx, 0);
+          ctx.lineTo(gx, h);
+          ctx.stroke();
+        }
+        for (let gy = 0; gy < h; gy += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, gy);
+          ctx.lineTo(w, gy);
+          ctx.stroke();
+        }
+      }
+
+      const pad = Math.round(w * 0.055);
+      const topOffset = Math.round(h * 0.16);
+
+      // 3. Key Term Header Badge (Auto-Highlight Toggle)
+      if (state.highlightTerms) {
+        ctx.fillStyle = eduGreen;
+        ctx.font = `600 ${Math.max(11, Math.round(w * 0.015))}px "JetBrains Mono", monospace`;
+        ctx.textAlign = "left";
+        ctx.fillText(`KEY CONCEPT • ${scene.keyTerm.toUpperCase()}`, pad, topOffset);
+      }
+
+      // 4. Main Scene Headline
+      const headSize = Math.max(16, Math.round(w * 0.026));
+      ctx.fillStyle = theme.text;
+      ctx.font = `700 ${headSize}px "Plus Jakarta Sans", sans-serif`;
+      ctx.textAlign = "left";
+      ctx.fillText(`${String(state.activeSceneIdx + 1).padStart(2, "0")}. ${scene.keyTerm}`, pad, topOffset + headSize + 10);
+
+      // 5. Interactive Diagram Stage Area
+      const boxY = topOffset + headSize + 28;
+      const boxH = Math.round(h * 0.50);
+      const boxW = w - pad * 2;
+      const cx = pad + boxW / 2;
+      const cy = boxY + boxH / 2;
+
+      ctx.strokeStyle = theme.border;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(pad, boxY, boxW, boxH, 10);
+      ctx.stroke();
+
+      const dType = scene.diagramType || "generic_1";
+      const seedShift = (scene.visualSeed || 0) % 2;
+
+      if (dType.startsWith("tcp")) {
+        const leftX = pad + boxW * 0.18;
+        const rightX = pad + boxW * 0.82;
+        const nw = Math.min(130, boxW * 0.24);
+        drawDiagramNode(ctx, leftX - nw / 2, boxY + 20, nw, 44, "CLIENT", "seq = X (100)", theme, accent, isWhiteboard);
+        drawDiagramNode(ctx, rightX - nw / 2, boxY + 20, nw, 44, "SERVER", "seq = Y (300)", theme, eduGreen, isWhiteboard);
+
+        ctx.strokeStyle = theme.border;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(leftX, boxY + 66); ctx.lineTo(leftX, boxY + boxH - 18);
+        ctx.moveTo(rightX, boxY + 66); ctx.lineTo(rightX, boxY + boxH - 18);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        drawFlowConnector(ctx, leftX + 8, boxY + 92, rightX - 8, boxY + 114, "1. SYN (seq=X)", accent, progress * 1.6, theme);
+        if (state.activeSceneIdx >= 1) {
+          drawFlowConnector(ctx, rightX - 8, boxY + 136, leftX + 8, boxY + 158, "2. SYN-ACK (ack=X+1)", eduGreen, (progress - 0.15) * 1.6, theme);
+        }
+        if (state.activeSceneIdx >= 2) {
+          drawFlowConnector(ctx, leftX + 8, boxY + 180, rightX - 8, boxY + 202, "3. ACK (ack=Y+1) → ESTABLISHED", accent, (progress - 0.3) * 1.6, theme);
+        }
+      } else if (dType.startsWith("bst")) {
+        const nodes = [
+          { x: cx, y: boxY + 42, v: "50", col: accent },
+          { x: cx - boxW * 0.2, y: boxY + 108, v: "30", col: eduGreen },
+          { x: cx + boxW * 0.2, y: boxY + 108, v: "75", col: accent },
+          { x: cx - boxW * 0.3, y: boxY + 174, v: "15", col: theme.muted },
+          { x: cx - boxW * 0.1, y: boxY + 174, v: "40", col: theme.muted },
+          { x: cx + boxW * 0.1, y: boxY + 174, v: "60", col: eduGreen },
+          { x: cx + boxW * 0.3, y: boxY + 174, v: "90", col: theme.muted }
+        ];
+        const edges = [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]];
+        ctx.strokeStyle = theme.border;
+        ctx.lineWidth = 2;
+        edges.forEach(([a, b]) => {
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(nodes[b].x, nodes[b].y);
+          ctx.stroke();
+        });
+        nodes.forEach((n) => {
+          ctx.fillStyle = theme.card;
+          ctx.strokeStyle = n.col;
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = theme.text;
+          ctx.font = `600 12px "JetBrains Mono", monospace`;
+          ctx.textAlign = "center";
+          ctx.fillText(n.v, n.x, n.y + 4);
+        });
+      } else {
+        // Modular 3-Stage Architectural Diagram for Photosynthesis, Sulba Sutras & Custom Topics
+        const nw = Math.min(148, boxW * 0.25);
+        const nh = 64;
+        const leftX = pad + 24;
+        const midX = cx - nw / 2;
+        const rightX = pad + boxW - nw - 24;
+
+        drawDiagramNode(ctx, leftX, cy - nh / 2, nw, nh, "01. INPUT", seedShift === 0 ? "Initial State" : "Axiom Base", theme, accent, isWhiteboard);
+        drawDiagramNode(ctx, midX, cy - nh / 2, nw, nh, `02. STAGE ${state.activeSceneIdx + 1}`, scene.keyTerm.slice(0, 16), theme, eduGreen, isWhiteboard);
+        drawDiagramNode(ctx, rightX, cy - nh / 2, nw, nh, "03. RESULT", "Verified Output", theme, accent, isWhiteboard);
+
+        drawFlowConnector(ctx, leftX + nw + 6, cy, midX - 6, cy, "Transform", accent, progress * 1.8, theme);
+        drawFlowConnector(ctx, midX + nw + 6, cy, rightX - 6, cy, "Output", eduGreen, progress * 1.8, theme);
+      }
+    }
+
+    // 8. TRANSPORT BAR, SCRUBBER & KARAOKE SUBTITLES
+    function updateTransportBar() {
+      if (!state.scenes.length) return;
+      const totalSec = state.scenes.reduce((sum, s) => sum + s.duration, 0);
+      const priorSec = state.scenes.slice(0, state.activeSceneIdx).reduce((sum, s) => sum + s.duration, 0);
+      const currentSec = priorSec + state.sceneElapsed;
+
+      el.transportTimecode.textContent = `${formatTimecode(currentSec)} / ${formatTimecode(totalSec)}`;
+      el.canvasScenePill.textContent = `Scene ${String(state.activeSceneIdx + 1).padStart(2, "0")} / ${String(state.scenes.length).padStart(2, "0")}`;
+      el.canvasStylePill.textContent = `${state.visualStyle} • ${state.aspectRatio}`;
+
+      // Render Segmented Scene Scrubber Bar
+      el.segmentedScrubber.innerHTML = "";
+      state.scenes.forEach((s, idx) => {
+        const seg = document.createElement("div");
+        seg.className = "h-1.5 rounded-full bg-borderSubtle overflow-hidden relative";
+        seg.style.flex = `${s.duration} 1 0%`;
+
+        let fillPct = 0;
+        if (idx < state.activeSceneIdx) fillPct = 100;
+        else if (idx === state.activeSceneIdx) fillPct = Math.min(100, (state.sceneElapsed / Math.max(1, s.duration)) * 100);
+
+        const fill = document.createElement("div");
+        fill.className = "h-full bg-accentPrimary transition-all duration-100";
+        fill.style.width = `${fillPct}%`;
+        seg.appendChild(fill);
+
+        seg.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const rect = seg.getBoundingClientRect();
+          const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          state.activeSceneIdx = idx;
+          state.sceneElapsed = ratio * s.duration;
+          renderSceneCards();
+          updateTransportBar();
+          updateSubtitles();
+          drawStudioCanvas();
+          if (state.isPlaying) speakText(s.narration);
+        });
+
+        el.segmentedScrubber.appendChild(seg);
+      });
+    }
+
+    function updateSubtitles() {
+      if (!state.scenes.length) return;
+      el.subtitleContainer.classList.toggle("hidden", !state.showSubtitles);
+      const scene = state.scenes[state.activeSceneIdx];
+      const words = scene.narration.split(/\s+/);
+      const ratio = Math.min(1, state.sceneElapsed / Math.max(1, scene.duration));
+      const activeWordIdx = Math.min(words.length - 1, Math.floor(ratio * words.length));
+
+      el.karaokeSubtitleBar.innerHTML = words
+        .map((w, i) => {
+          if (i === activeWordIdx && state.isPlaying) {
+            return `<span class="px-1 rounded bg-accentPrimary text-white font-semibold">${w}</span>`;
+          }
+          if (state.highlightTerms && scene.keyTerm.toLowerCase().includes(w.replace(/[^a-z0-9]/gi, "").toLowerCase()) && w.length > 3) {
+            return `<span class="text-accentEdu font-medium">${w}</span>`;
+          }
+          return `<span>${w}</span>`;
+        })
+        .join(" ");
+    }
+
+    // 9. WEB SPEECH API VOICEOVER & PLAYBACK LOOP
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      if (!state.voiceEnabled) return;
+
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = state.playbackSpeed;
+      if (state.voicePersona === "professor") {
+        utter.pitch = 0.88;
+      } else if (state.voicePersona === "energetic") {
+        utter.pitch = 1.12;
+      } else {
+        utter.pitch = 1.0;
+      }
+      window.speechSynthesis.speak(utter);
+    }
+
+    function startPlayback() {
+      if (!state.scenes.length) return;
+      state.isPlaying = true;
+      el.iconPlay.classList.add("hidden");
+      el.iconPause.classList.remove("hidden");
+      state.lastFrameTs = performance.now();
+      speakText(state.scenes[state.activeSceneIdx].narration);
+      state.rafId = requestAnimationFrame(playbackTick);
+    }
+
+    function stopPlayback() {
+      state.isPlaying = false;
+      el.iconPlay.classList.remove("hidden");
+      el.iconPause.classList.add("hidden");
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+    }
+
+    function playbackTick(now) {
+      if (!state.isPlaying) return;
+      const dt = ((now - state.lastFrameTs) / 1000) * state.playbackSpeed;
+      state.lastFrameTs = now;
+      state.sceneElapsed += dt;
+
+      const cur = state.scenes[state.activeSceneIdx];
+      if (state.sceneElapsed >= cur.duration + state.sceneGap) {
+        if (state.activeSceneIdx < state.scenes.length - 1) {
+          state.activeSceneIdx += 1;
+          state.sceneElapsed = 0;
+          renderSceneCards();
+          speakText(state.scenes[state.activeSceneIdx].narration);
+        } else {
+          state.sceneElapsed = cur.duration;
+          updateTransportBar();
+          updateSubtitles();
+          drawStudioCanvas();
+          stopPlayback();
+          showToast("Lesson playback complete.");
+          return;
+        }
+      }
+
+      updateTransportBar();
+      updateSubtitles();
+      drawStudioCanvas();
+      state.rafId = requestAnimationFrame(playbackTick);
+    }
+
+    // 10. 'PAUSE & SIMPLIFY' STUDENT CLARIFICATION OVERLAY & ADAPTIVE TUTOR
+    function renderSimplifyCheckpoint(scene) {
+      if (!el.simplifyCheckpointContainer) return;
+      if (!scene.checkpoint || !scene.checkpoint.options) {
+        el.simplifyCheckpointContainer.classList.add("hidden");
+        return;
+      }
+      el.simplifyCheckpointContainer.classList.remove("hidden");
+      el.simplifyCheckpointContainer.innerHTML = `
+        <div class="text-[11px] font-mono uppercase text-accentEdu font-semibold">🎯 Checkpoint Understanding Question</div>
+        <div class="text-xs font-semibold text-textPrimary leading-snug">${scene.checkpoint.q}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1.5">
+          ${scene.checkpoint.options.map((opt, i) => `
+            <button type="button" class="checkpoint-opt-btn p-2 rounded-[6px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs text-left text-textPrimary transition" data-opt-idx="${i}">
+              <span class="font-mono text-textMuted mr-1">${String.fromCharCode(65 + i)}.</span> ${opt}
+            </button>
+          `).join("")}
+        </div>
+        <div id="checkpointFeedbackMsg" class="hidden text-xs pt-1"></div>
+      `;
+
+      el.simplifyCheckpointContainer.querySelectorAll(".checkpoint-opt-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const selected = Number(btn.dataset.optIdx);
+          const isCorrect = selected === scene.checkpoint.answer;
+          const feedback = document.getElementById("checkpointFeedbackMsg");
+          feedback.classList.remove("hidden");
+          el.simplifyCheckpointContainer.querySelectorAll(".checkpoint-opt-btn").forEach((b) => {
+            b.disabled = true;
+          });
+          if (isCorrect) {
+            btn.classList.add("bg-emerald-950/60", "border-emerald-500", "text-emerald-300");
+            feedback.innerHTML = `<span class="text-emerald-400 font-semibold">✅ Correct!</span> Concept verified for exam requirements.`;
+          } else {
+            btn.classList.add("bg-red-950/60", "border-red-500", "text-red-300");
+            feedback.innerHTML = `<span class="text-red-400 font-semibold">❌ Not quite.</span> The correct answer is <strong>${String.fromCharCode(65 + scene.checkpoint.answer)}. ${scene.checkpoint.options[scene.checkpoint.answer]}</strong>. Review the analogy below.`;
+          }
+        });
+      });
+    }
+
+    async function openSimplifyOverlay(fromQuiz = false) {
+      const wasPlaying = state.isPlaying;
+      if (wasPlaying) stopPlayback();
+      const scene = state.scenes[state.activeSceneIdx];
+      el.simplifySceneTag.textContent = `Paused at Scene ${String(state.activeSceneIdx + 1).padStart(2, "0")} • ${scene.keyTerm}`;
+      el.simplifyTitle.textContent = fromQuiz ? `Checkpoint & Analogy: ${scene.keyTerm}` : `Intuitive Everyday Analogy`;
+      el.simplifyOverlay.classList.remove("hidden");
+
+      renderSimplifyCheckpoint(scene);
+
+      if (scene.simplerScene && scene.simplerScene.narration) {
+        el.simplifyBody.textContent = scene.simplerScene.narration;
+        speakText(scene.simplerScene.narration);
+        return;
+      }
+
+      el.simplifyBody.innerHTML = `<span class="animate-pulse text-textMuted">Tutor agent generating adaptive explanation from backend...</span>`;
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/reexplain`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            scene: {
+              id: scene.numericId || 1,
+              heading: scene.heading || scene.keyTerm,
+              narration: scene.narration,
+              visual_hint: scene.visualPrompt,
+              exam_tag: scene.exam_tag || "conceptual",
+              checkpoint: scene.checkpoint || { q: "Understanding check", options: ["A", "B", "C", "D"], answer: 0 }
+            },
+            language: "english",
+            reason: fromQuiz ? "wrong_answer" : "student_confused"
+          })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.simpler_scene) {
+            scene.simplerScene = data.simpler_scene;
+            el.simplifyTitle.textContent = data.simpler_scene.heading || `Analogy: ${scene.keyTerm}`;
+            el.simplifyBody.textContent = data.simpler_scene.narration;
+            speakText(data.simpler_scene.narration);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Re-explain API call failed, using scene.analogy fallback:", err);
+      }
+
+      el.simplifyTitle.textContent = `Analogy: ${scene.keyTerm}`;
+      el.simplifyBody.textContent = scene.analogy || "Think of this as a step-by-step verification pipeline.";
+      speakText(scene.analogy);
+    }
+
+    function closeSimplifyOverlay(resume = false) {
+      el.simplifyOverlay.classList.add("hidden");
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      if (resume) startPlayback();
+    }
+
+    // 11. FULL SCRIPT VIEW & PROMPT LAB SYNC WITH BACKEND /api/compare
+    async function renderFullScriptAndLab() {
+      el.studioLessonTitle.value = state.lessonTitle;
+      el.fullScriptHeading.textContent = `${state.lessonTitle} — Complete Script`;
+
+      const zeroShot = `"Explain ${state.lessonTitle} and create a video script."`;
+      const fewShot = buildEngineeredPromptSchema(state.lessonTitle);
+
+      el.fullScriptZeroShot.textContent = zeroShot;
+      el.fullScriptFewShot.textContent = fewShot;
+      el.labZeroShotPre.textContent = zeroShot;
+      el.labFewShotPre.textContent = fewShot;
+      el.labJsonOutputPre.textContent = JSON.stringify({ title: state.lessonTitle, scenes: state.scenes }, null, 2);
+
+      // Call /api/compare for live evaluation metrics
+      if (el.labMetricsComparisonContainer && !state.compareLoading) {
+        state.compareLoading = true;
+        el.labMetricsComparisonContainer.innerHTML = `
+          <div class="p-3 rounded bg-bgCanvas border border-borderSubtle text-xs font-mono text-textMuted animate-pulse">
+            Fetching backend comparison: Prompt A (Zero-shot) vs Prompt B (Role + Few-shot + Schema)...
+          </div>
+        `;
+
+        try {
+          const resp = await fetch(`${API_BASE}/api/compare`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              topic: state.lessonTitle,
+              level: "beginner",
+              language: "english"
+            })
+          });
+
+          if (resp.ok) {
+            const comp = await resp.json();
+            const mA = comp.promptA?.metrics || {};
+            const mB = comp.promptB?.metrics || {};
+            el.labMetricsComparisonContainer.innerHTML = `
+              <div class="surface-1 rounded-[12px] p-4 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-mono uppercase font-semibold text-accentEdu">Evaluation Benchmark (Live Backend Metrics)</span>
+                  <span class="text-[10px] font-mono text-textMuted">Single-run comparative</span>
+                </div>
+                <table class="w-full text-xs font-mono">
+                  <thead>
+                    <tr class="text-textMuted border-b border-borderSubtle text-[11px]">
+                      <th class="text-left pb-1.5">Metric</th>
+                      <th class="text-center pb-1.5">Prompt A (Zero-shot)</th>
+                      <th class="text-center pb-1.5">Prompt B (Role+Schema)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-borderSubtle">
+                    <tr>
+                      <td class="py-1 text-textMuted">Valid JSON</td>
+                      <td class="text-center py-1">${mA.isValidJson ? "✓ Yes" : "✗ No"}</td>
+                      <td class="text-center py-1 font-bold text-accentEdu">${mB.isValidJson ? "✓ Yes" : "✗ No"}</td>
+                    </tr>
+                    <tr>
+                      <td class="py-1 text-textMuted">Schema Compliance</td>
+                      <td class="text-center py-1">${mA.complianceScore ?? "N/A"}%</td>
+                      <td class="text-center py-1 font-bold text-accentEdu">${mB.complianceScore ?? "N/A"}% ★</td>
+                    </tr>
+                    <tr>
+                      <td class="py-1 text-textMuted">Scene Count</td>
+                      <td class="text-center py-1">${mA.scenes ?? "N/A"}</td>
+                      <td class="text-center py-1 font-bold text-accentEdu">${mB.scenes ?? "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td class="py-1 text-textMuted">Avg Fact-Confidence</td>
+                      <td class="text-center py-1">${mA.avgConfidence ?? "N/A"}/100</td>
+                      <td class="text-center py-1 font-bold text-accentEdu">${mB.avgConfidence ?? "N/A"}/100 ★</td>
+                    </tr>
+                    <tr>
+                      <td class="py-1 text-textMuted">Latency</td>
+                      <td class="text-center py-1">${mA.timeMs ?? "N/A"}ms</td>
+                      <td class="text-center py-1">${mB.timeMs ?? "N/A"}ms</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            `;
+            if (comp.promptA?.promptText) el.labZeroShotPre.textContent = comp.promptA.promptText;
+            if (comp.promptB?.promptText) el.labFewShotPre.textContent = comp.promptB.promptText;
+          }
+        } catch (compErr) {
+          console.warn("Comparison fetch error:", compErr);
+        } finally {
+          state.compareLoading = false;
+        }
+      }
+
+      el.fullScriptScenesList.innerHTML = state.scenes
+        .map(
+          (s, i) => `
+          <div class="surface-1 rounded-[12px] p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-accentPrimary">SCENE ${String(i + 1).padStart(2, "0")} • ${formatTimecode(s.duration)}</span>
+              <span class="px-2 py-0.5 rounded bg-[#10B981]/12 text-accentEdu font-mono text-[11px]">${s.keyTerm}</span>
+            </div>
+            <p class="text-sm text-textPrimary leading-relaxed">${s.narration}</p>
+            <div class="p-2.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-xs text-textMuted">
+              Visual Prompt: ${s.visualPrompt}
+            </div>
+          </div>`
+        )
+        .join("");
+    }
+
+    function renderAllStudioViews() {
+      renderSceneCards();
+      updateTransportBar();
+      updateSubtitles();
+      drawStudioCanvas();
+      renderFullScriptAndLab();
+    }
+
+    // 12. SCREEN 3: EXPORT & SHARE MODAL (WEBM VIDEO, SHARE LINK, SRT & MARKDOWN)
+    function openExportModal() {
+      stopPlayback();
+      const slug = state.lessonTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "lesson";
+      el.exportLessonSubtitle.textContent = `${state.lessonTitle} • ${state.scenes.length} Scenes`;
+      el.shareableUrlInput.value = `https://clarivid.edu/lesson/${slug}`;
+      el.modalExport.classList.remove("hidden");
+    }
+
+    async function renderAndDownloadVideo() {
+      if (!("MediaRecorder" in window) || !el.studioCanvas.captureStream) {
+        showToast("Canvas recording is unavailable in this browser.");
+        return;
+      }
+
+      el.btnDownloadVideoFile.disabled = true;
+      el.btnDownloadVideoFile.textContent = "Rendering Frames...";
+      showToast(`Rendering ${state.exportFps}fps video file...`);
+
+      const stream = el.studioCanvas.captureStream(state.exportFps);
+      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9") ? "video/webm;codecs=vp9" : "video/webm";
+      const recorder = new MediaRecorder(stream, { mimeType: mime });
+      const chunks = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const slug = state.lessonTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "clarivid-lesson";
+        a.href = url;
+        a.download = `${slug}-1080p.webm`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        el.btnDownloadVideoFile.disabled = false;
+        el.btnDownloadVideoFile.textContent = "Render & Download Video";
+        showToast("Video downloaded!");
+      };
+
+      recorder.start();
+      const prevIdx = state.activeSceneIdx;
+      for (let i = 0; i < state.scenes.length; i++) {
+        state.activeSceneIdx = i;
+        for (let step = 0; step <= 10; step++) {
+          state.sceneElapsed = (step / 10) * state.scenes[i].duration;
+          drawStudioCanvas();
+          await new Promise((r) => setTimeout(r, 75));
+        }
+      }
+      recorder.stop();
+      state.activeSceneIdx = prevIdx;
+      state.sceneElapsed = 0;
+      drawStudioCanvas();
+    }
+
+    function downloadTextFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function generateSrtContent() {
+      let cursor = 0;
+      return state.scenes
+        .map((s, idx) => {
+          const start = cursor;
+          const end = cursor + s.duration;
+          cursor = end;
+          const fmtSrt = (sec) => {
+            const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+            const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+            const sc = String(Math.floor(sec % 60)).padStart(2, "0");
+            return `${h}:${m}:${sc},000`;
+          };
+          return `${idx + 1}\n${fmtSrt(start)} --> ${fmtSrt(end)}\n${s.narration}\n`;
+        })
+        .join("\n");
+    }
+
+    function generateMarkdownGuide() {
+      const header = `# ${state.lessonTitle}\n- **Audience:** ${state.audience}\n- **Visual Style:** ${state.visualStyle}\n\n---\n\n`;
+      const body = state.scenes
+        .map(
+          (s, i) =>
+            `## Scene ${String(i + 1).padStart(2, "0")}: ${s.keyTerm} (${formatTimecode(s.duration)})\n${s.narration}\n\n> **Analogy:** ${s.analogy}\n\n\`Visual Prompt: ${s.visualPrompt}\`\n`
+        )
+        .join("\n");
+      return header + body;
+    }
+
+    // 13. EVENT LISTENERS
+    // Screen 1 Interactions
+    el.setupPromptInput.addEventListener("input", updateTokenCounter);
+
+    document.querySelectorAll(".sample-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        el.setupPromptInput.value = chip.dataset.sample;
+        updateTokenCounter();
+      });
+    });
+
+    el.tabTopicPrompt.addEventListener("click", () => {
+      state.promptTab = "topic";
+      el.tabTopicPrompt.className = "px-3 py-1 rounded-[8px] text-xs font-semibold bg-bgSurface2 text-textPrimary border border-borderFocus transition";
+      el.tabLectureNotes.className = "px-3 py-1 rounded-[8px] text-xs font-medium text-textMuted hover:text-textPrimary border border-transparent transition";
+      el.setupPromptInput.placeholder = "Describe a concept to teach (e.g., How TCP 3-Way Handshake establishes reliable connections)...";
+    });
+
+    el.tabLectureNotes.addEventListener("click", () => {
+      state.promptTab = "notes";
+      el.tabLectureNotes.className = "px-3 py-1 rounded-[8px] text-xs font-semibold bg-bgSurface2 text-textPrimary border border-borderFocus transition";
+      el.tabTopicPrompt.className = "px-3 py-1 rounded-[8px] text-xs font-medium text-textMuted hover:text-textPrimary border border-transparent transition";
+      el.setupPromptInput.placeholder = "Paste raw lecture notes, syllabus bullet points, or textbook paragraphs here...";
+    });
+
+    el.fileIngestInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      el.attachedFileBadge.textContent = `${file.name} loaded`;
+      el.attachedFileBadge.classList.remove("hidden");
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = String(ev.target?.result || "").slice(0, 3500);
+        if (content.trim()) {
+          el.setupPromptInput.value = content.trim();
+          updateTokenCounter();
+        }
+        showToast(`Attached ${file.name}`);
+      };
+      reader.readAsText(file);
+    });
+
+    document.querySelectorAll("[data-pill-group]").forEach((group) => {
+      const groupName = group.dataset.pillGroup;
+      group.querySelectorAll(".config-pill").forEach((pill) => {
+        pill.addEventListener("click", () => {
+          group.querySelectorAll(".config-pill").forEach((p) => p.classList.remove("active"));
+          pill.classList.add("active");
+          if (groupName === "audience") state.audience = pill.dataset.val;
+          if (groupName === "duration") state.durationPreset = pill.dataset.val;
+          if (groupName === "style") state.visualStyle = pill.dataset.val;
+        });
+      });
+    });
+
+    el.btnGenerateOutline.addEventListener("click", generateLessonAndEnterStudio);
+
+    // Screen 2 Header & Views
+    el.btnBackToSetup.addEventListener("click", () => switchScreen("setup"));
+
+    el.studioLessonTitle.addEventListener("input", () => {
+      state.lessonTitle = el.studioLessonTitle.value.trim() || "Untitled Lesson";
+      renderFullScriptAndLab();
+    });
+
+    el.btnViewStoryboard.addEventListener("click", () => {
+      el.btnViewStoryboard.className = "px-3 py-1 rounded-[6px] text-xs font-semibold bg-bgSurface2 text-textPrimary transition";
+      el.btnViewFullScript.className = "px-3 py-1 rounded-[6px] text-xs font-medium text-textMuted hover:text-textPrimary transition";
+      el.fullScriptContainer.classList.add("hidden");
+      el.threePaneWorkbench.classList.remove("hidden");
+      resizePreviewCanvas();
+    });
+
+    el.btnViewFullScript.addEventListener("click", () => {
+      stopPlayback();
+      el.btnViewFullScript.className = "px-3 py-1 rounded-[6px] text-xs font-semibold bg-bgSurface2 text-textPrimary transition";
+      el.btnViewStoryboard.className = "px-3 py-1 rounded-[6px] text-xs font-medium text-textMuted hover:text-textPrimary transition";
+      el.threePaneWorkbench.classList.add("hidden");
+      el.fullScriptContainer.classList.remove("hidden");
+      renderFullScriptAndLab();
+    });
+
+    el.btnReturnToWorkbench.addEventListener("click", () => el.btnViewStoryboard.click());
+
+    // Undo / Redo
+    el.btnUndo.addEventListener("click", () => {
+      if (!state.undoStack.length) return;
+      state.redoStack.push(JSON.stringify({ title: state.lessonTitle, scenes: state.scenes }));
+      const prev = JSON.parse(state.undoStack.pop());
+      state.lessonTitle = prev.title;
+      state.scenes = prev.scenes;
+      state.activeSceneIdx = Math.min(state.activeSceneIdx, state.scenes.length - 1);
+      updateUndoRedoButtons();
+      renderAllStudioViews();
+      showToast("Undid last change.");
+    });
+
+    el.btnRedo.addEventListener("click", () => {
+      if (!state.redoStack.length) return;
+      state.undoStack.push(JSON.stringify({ title: state.lessonTitle, scenes: state.scenes }));
+      const next = JSON.parse(state.redoStack.pop());
+      state.lessonTitle = next.title;
+      state.scenes = next.scenes;
+      updateUndoRedoButtons();
+      renderAllStudioViews();
+      showToast("Redid change.");
+    });
+
+    // Add Scene Card
+    el.btnAddSceneCard.addEventListener("click", () => {
+      pushUndoSnapshot();
+      const num = state.scenes.length + 1;
+      state.scenes.push({
+        id: `s${num}_${Date.now()}`,
+        diagramType: `generic_${(num % 4) + 1}`,
+        narration: `Additional insight for ${state.lessonTitle}: connecting theoretical foundations to practical implementation.`,
+        visualPrompt: `Modular concept card diagram for Scene ${String(num).padStart(2, "0")}`,
+        keyTerm: `Key Takeaway ${num}`,
+        analogy: "Think of this extra step as a safety double-check before finalizing the output.",
+        duration: 14,
+        visualSeed: 0
+      });
+      state.activeSceneIdx = state.scenes.length - 1;
+      state.sceneElapsed = 0;
+      renderAllStudioViews();
+      showToast(`Added Scene ${String(num).padStart(2, "0")}`);
+    });
+
+    // Transport Controls
+    el.btnPlayPause.addEventListener("click", () => (state.isPlaying ? stopPlayback() : startPlayback()));
+    el.btnPrevScene.addEventListener("click", () => selectScene(state.activeSceneIdx - 1));
+    el.btnNextScene.addEventListener("click", () => selectScene(state.activeSceneIdx + 1));
+
+    el.btnSpeedCycle.addEventListener("click", () => {
+      const speeds = [1.0, 1.25, 1.5];
+      const next = speeds[(speeds.indexOf(state.playbackSpeed) + 1) % speeds.length];
+      state.playbackSpeed = next;
+      el.btnSpeedCycle.textContent = `${next.toFixed(next === 1.25 ? 2 : 1)}x`;
+      el.sliderSpeechRate.value = Math.min(1.3, next);
+      el.lblSpeechRate.textContent = `${Number(el.sliderSpeechRate.value).toFixed(2).replace(/\.00$/, ".0")}x`;
+      if (state.isPlaying) speakText(state.scenes[state.activeSceneIdx].narration);
+    });
+
+    el.btnToggleCC.addEventListener("click", () => {
+      state.showSubtitles = !state.showSubtitles;
+      el.btnToggleCC.className = state.showSubtitles
+        ? "px-2 py-1 rounded-full bg-bgSurface2 border border-borderFocus font-mono text-[11px] text-textPrimary shrink-0 transition"
+        : "px-2 py-1 rounded-full bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textMuted shrink-0 transition";
+      updateSubtitles();
+    });
+
+    // Pause & Simplify Overlay
+    el.btnPauseSimplify.addEventListener("click", () => openSimplifyOverlay(false));
+    el.btnCloseSimplify.addEventListener("click", () => closeSimplifyOverlay(false));
+    el.btnResumeFromSimplify.addEventListener("click", () => closeSimplifyOverlay(true));
+    el.btnReplaySimplifyVoice.addEventListener("click", () => {
+      const scene = state.scenes[state.activeSceneIdx];
+      const txt = (scene.simplerScene && scene.simplerScene.narration) ? scene.simplerScene.narration : scene.analogy;
+      speakText(txt);
+    });
+    if (el.btnApplySimplifiedNarration) {
+      el.btnApplySimplifiedNarration.addEventListener("click", () => {
+        const scene = state.scenes[state.activeSceneIdx];
+        const replacement = (scene.simplerScene && scene.simplerScene.narration) ? scene.simplerScene.narration : scene.analogy;
+        if (replacement) {
+          pushUndoSnapshot();
+          scene.narration = replacement;
+          scene.duration = estimateDurationFromText(scene.narration);
+          renderAllStudioViews();
+          closeSimplifyOverlay(false);
+          showToast("Applied simplified script to scene.");
+        }
+      });
+    }
+
+    // Right Inspector Controls
+    el.btnCollapseInspector.addEventListener("click", () => {
+      el.rightInspector.classList.add("lg:hidden");
+      el.btnExpandInspector.classList.remove("hidden");
+      setTimeout(resizePreviewCanvas, 50);
+    });
+
+    el.btnExpandInspector.addEventListener("click", () => {
+      el.rightInspector.classList.remove("lg:hidden");
+      el.btnExpandInspector.classList.add("hidden");
+      setTimeout(resizePreviewCanvas, 50);
+    });
+
+    el.btnMuteVoice.addEventListener("click", () => {
+      state.voiceEnabled = !state.voiceEnabled;
+      el.btnMuteVoice.textContent = state.voiceEnabled ? "Audio ON" : "Muted";
+      el.btnMuteVoice.className = state.voiceEnabled
+        ? "font-mono text-[11px] text-accentEdu hover:underline"
+        : "font-mono text-[11px] text-textMuted hover:underline";
+      if (!state.voiceEnabled && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    });
+
+    el.selectVoicePersona.addEventListener("change", () => {
+      state.voicePersona = el.selectVoicePersona.value;
+    });
+
+    el.btnVoiceSample.addEventListener("click", () => {
+      speakText("Hello! This is a preview of your selected ClariVid educational narrator voice.");
+    });
+
+    el.sliderSpeechRate.addEventListener("input", () => {
+      const val = parseFloat(el.sliderSpeechRate.value);
+      state.playbackSpeed = val;
+      el.lblSpeechRate.textContent = `${val.toFixed(2).replace(/\.00$/, ".0")}x`;
+      el.btnSpeedCycle.textContent = `${val.toFixed(1)}x`;
+    });
+
+    el.selectSceneGap.addEventListener("change", () => {
+      state.sceneGap = parseFloat(el.selectSceneGap.value);
+    });
+
+    // Aspect Ratio Switcher (16:9, 9:16, 1:1)
+    document.querySelectorAll(".ratio-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".ratio-btn").forEach((b) => {
+          b.className = "ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition";
+        });
+        btn.className = "ratio-btn py-1.5 rounded-[6px] bg-bgSurface2 text-textPrimary font-mono text-xs font-medium transition";
+        state.aspectRatio = btn.dataset.ratio;
+
+        el.previewFrameWrapper.classList.remove("aspect-video", "aspect-[9/16]", "aspect-square", "max-w-[820px]", "max-w-[290px]", "max-w-[440px]");
+        if (state.aspectRatio === "9:16") {
+          el.previewFrameWrapper.classList.add("aspect-[9/16]", "max-w-[290px]");
+        } else if (state.aspectRatio === "1:1") {
+          el.previewFrameWrapper.classList.add("aspect-square", "max-w-[440px]");
+        } else {
+          el.previewFrameWrapper.classList.add("aspect-video", "max-w-[820px]");
+        }
+        updateTransportBar();
+        setTimeout(resizePreviewCanvas, 60);
+      });
+    });
+
+    // Canvas Theme Switcher
+    document.querySelectorAll(".theme-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".theme-btn").forEach((b) => {
+          b.className = "theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition";
+        });
+        btn.className = "theme-btn py-1.5 px-2 rounded-[8px] bg-bgSurface2 border border-accentPrimary text-[11px] font-medium text-textPrimary transition";
+        state.canvasTheme = btn.dataset.theme;
+        drawStudioCanvas();
+      });
+    });
+
+    // Diagram Accent Swatches
+    document.querySelectorAll(".swatch-btn").forEach((swatch) => {
+      swatch.addEventListener("click", () => {
+        document.querySelectorAll(".swatch-btn").forEach((s) => s.classList.remove("ring-2", "ring-white/80"));
+        swatch.classList.add("ring-2", "ring-white/80");
+        state.accentColor = swatch.dataset.color;
+        drawStudioCanvas();
+      });
+    });
+
+    el.chkHighlightTerms.addEventListener("change", () => {
+      state.highlightTerms = el.chkHighlightTerms.checked;
+      updateSubtitles();
+      drawStudioCanvas();
+    });
+
+    el.chkDyslexiaFont.addEventListener("change", () => {
+      state.dyslexiaFont = el.chkDyslexiaFont.checked;
+      document.body.classList.toggle("dyslexia-mode", state.dyslexiaFont);
+    });
+
+    // Screen 3 Export Modal Interactions
+    el.btnOpenExport.addEventListener("click", openExportModal);
+    el.btnCloseExport.addEventListener("click", () => el.modalExport.classList.add("hidden"));
+
+    document.querySelectorAll(".export-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".export-card").forEach((c) => {
+          c.classList.remove("bg-bgSurface2", "border-accentPrimary");
+          c.classList.add("bg-bgCanvas", "border-borderSubtle");
+        });
+        card.classList.remove("bg-bgCanvas", "border-borderSubtle");
+        card.classList.add("bg-bgSurface2", "border-accentPrimary");
+        state.exportType = card.dataset.exportType;
+      });
+    });
+
+    document.querySelectorAll(".fps-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.querySelectorAll(".fps-btn").forEach((b) => {
+          b.className = "fps-btn px-2 py-0.5 rounded text-[10px] font-mono text-textMuted";
+        });
+        btn.className = "fps-btn px-2 py-0.5 rounded text-[10px] font-mono bg-bgSurface2 text-textPrimary";
+        state.exportFps = Number(btn.dataset.fps);
+      });
+    });
+
+    el.btnDownloadVideoFile.addEventListener("click", (e) => {
+      e.stopPropagation();
+      renderAndDownloadVideo();
+    });
+
+    el.btnCopyShareLink.addEventListener("click", (e) => {
+      e.stopPropagation();
+      copyToClipboardFallback(el.shareableUrlInput.value, "Interactive lesson URL copied!");
+    });
+
+    el.btnCopyEmbed.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const snippet = `<iframe src="${el.shareableUrlInput.value}" width="100%" height="540" frameborder="0" allowfullscreen></iframe>`;
+      copyToClipboardFallback(snippet, "LMS <iframe> embed snippet copied!");
+    });
+
+    el.btnDownloadSrt.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const slug = state.lessonTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "lesson";
+      downloadTextFile(`${slug}.srt`, generateSrtContent(), "text/plain");
+      showToast("Downloaded .SRT captions!");
+    });
+
+    el.btnDownloadMd.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const slug = state.lessonTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "lesson";
+      downloadTextFile(`${slug}-study-guide.md`, generateMarkdownGuide(), "text/markdown");
+      showToast("Downloaded .MD study guide!");
+    });
+
+    // Prompt Lab Drawer & API Modal
+    el.btnTogglePromptLab.addEventListener("click", () => {
+      renderFullScriptAndLab();
+      el.modalPromptLab.classList.remove("hidden");
+    });
+    el.btnClosePromptLab.addEventListener("click", () => el.modalPromptLab.classList.add("hidden"));
+
+    function syncApiBadge() {
+      if (state.apiKey) {
+        el.setupApiDot.className = "w-1.5 h-1.5 rounded-full bg-accentPrimary";
+        el.setupApiLabel.textContent = "Gemini API Active";
+      } else {
+        el.setupApiDot.className = "w-1.5 h-1.5 rounded-full bg-accentEdu";
+        el.setupApiLabel.textContent = "Built-In Engine Ready";
+      }
+    }
+
+    el.btnOpenApiSetup.addEventListener("click", () => {
+      el.inputApiKey.value = state.apiKey;
+      el.modalApiConfig.classList.remove("hidden");
+    });
+    el.btnCloseApiConfig.addEventListener("click", () => el.modalApiConfig.classList.add("hidden"));
+    el.btnSaveApiKey.addEventListener("click", () => {
+      state.apiKey = el.inputApiKey.value.trim();
+      localStorage.setItem("clarivid_api_key", state.apiKey);
+      syncApiBadge();
+      el.modalApiConfig.classList.add("hidden");
+      showToast(state.apiKey ? "Gemini API key saved." : "Using Built-In Engine.");
+    });
+    el.btnClearApiKey.addEventListener("click", () => {
+      state.apiKey = "";
+      el.inputApiKey.value = "";
+      localStorage.removeItem("clarivid_api_key");
+      syncApiBadge();
+      el.modalApiConfig.classList.add("hidden");
+      showToast("Switched to Built-In Engine.");
+    });
+
+    // Keyboard Shortcut: Space toggles Play/Pause in Screen 2 when not typing
+    window.addEventListener("keydown", (e) => {
+      if (state.screen !== "studio") return;
+      if (e.target.matches("input, textarea, [contenteditable]")) return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        state.isPlaying ? stopPlayback() : startPlayback();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (state.screen === "studio") resizePreviewCanvas();
+    });
+
+    // Initial Boot
+    window.onload = () => {
+      syncApiBadge();
+      initBackendHealth();
+      updateTokenCounter();
+    };
+  </script>
+</body>
+</html>

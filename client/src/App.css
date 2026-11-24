@@ -740,6 +740,18 @@ body {
   box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
 }
 
+.studio-pill-link {
+  text-decoration: none;
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+}
+
+.studio-pill-link:hover {
+  background: rgba(99, 102, 241, 0.4);
+  color: #ffffff;
+}
+
 .prompt-inspector {
   display: flex;
   flex-direction: column;
