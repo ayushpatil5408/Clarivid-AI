@@ -1,0 +1,75 @@
+{
+  "title": "Indian Knowledge Systems: Sulba Sutras",
+  "language": "english",
+  "level": "beginner",
+  "scenes": [
+    {
+      "id": 1,
+      "heading": "Baudhayana Sulba Sutra & Sacred Geometry",
+      "bullets": [
+        "Composed between 800 and 500 BCE by Baudhayana and Apastamba",
+        "Foundational Sanskrit texts on geometric construction using measuring cords",
+        "Constructed exact Vedic fire altars with precise ratios and symmetry"
+      ],
+      "narration": "Composed between 800 and 500 BCE by Baudhayana and Apastamba, the Sulba Sutras are foundational Sanskrit texts on geometric construction using measuring cords. Using a taut rope and two wooden pegs, ancient geometers drafted exact right angles and circles on the earth without modern compasses.",
+      "visual_hint": "Geometric Vedic altar proportions constructed with sacred measuring cord (Rajju) and pegs",
+      "exam_tag": "2-mark definition",
+      "checkpoint": {
+        "q": "What is the primary tool described in the Sulba Sutras for geometric construction?",
+        "options": ["Measuring cord (Rajju) and pegs", "Telescope", "Slide rule", "Astrolabe"],
+        "answer": 0
+      }
+    },
+    {
+      "id": 2,
+      "heading": "Baudhayana Diagonal Theorem",
+      "bullets": [
+        "Pre-Pythagorean statement of the diagonal theorem",
+        "The rope along the diagonal of a rectangle produces an area equal to both sides squared",
+        "Applied to square and rectangular sacrificial altars"
+      ],
+      "narration": "Baudhayana explicitly stated the diagonal theorem: the rope stretched along the diagonal of a rectangle produces an area equal to the sum of both sides squared. Long before Pythagoras, Indian mathematicians described this exact right-triangle relationship.",
+      "visual_hint": "Visual proof of Baudhayana diagonal theorem a^2 + b^2 = c^2 with geometric square subdivisions",
+      "exam_tag": "conceptual",
+      "checkpoint": {
+        "q": "Which Sulba Sutra explicitly formulated the diagonal theorem for rectangles?",
+        "options": ["Baudhayana Sulba Sutra", "Charaka Samhita", "Surya Siddhanta", "Arthashastra"],
+        "answer": 0
+      }
+    },
+    {
+      "id": 3,
+      "heading": "Rational Approximation of Square Root of Two",
+      "bullets": [
+        "Derived to solve the problem of doubling a square altar area",
+        "Expressed as 1 + 1/3 + 1/(3*4) - 1/(3*4*34)",
+        "Calculates 1.4142156, accurate to five decimal places"
+      ],
+      "narration": "To double the area of a square altar, the Sulba Sutras derived a remarkably accurate rational approximation for the square root of two to five decimal places. Adding one plus one third plus one twelfth minus one over four hundred and eight gave builders one point four one four two one five six.",
+      "visual_hint": "Geometric construction of square doubling with fractional series approximation for sqrt(2)",
+      "exam_tag": "numerical",
+      "checkpoint": {
+        "q": "What mathematical constant did the Sulba Sutras approximate to 5 decimal places?",
+        "options": ["Square root of 2", "Euler's number (e)", "Golden ratio", "Logarithm of 10"],
+        "answer": 0
+      }
+    },
+    {
+      "id": 4,
+      "heading": "Area-Preserving Geometric Transformations",
+      "bullets": [
+        "Methods for transforming squares into circles of equivalent area",
+        "Squaring the circle and circling the square",
+        "Preserving total sacred altar volume and surface area"
+      ],
+      "narration": "The texts also detailed area-preserving geometric transformations, converting squares into equivalent circles and trapezia for precise architectural symmetry. Like reshaping clay without changing its weight, Sulba geometry transformed square footprints into circular ones while keeping total area identical.",
+      "visual_hint": "Area-preserving transformation morphing a square into an equal-area circle diagram",
+      "exam_tag": "5-mark diagram",
+      "checkpoint": {
+        "q": "What was the purpose of area-preserving transformations in the Sulba Sutras?",
+        "options": ["Converting altars between square and circular shapes while keeping area constant", "Increasing the total weight of materials", "Estimating planetary motion", "Encoding cryptographic messages"],
+        "answer": 0
+      }
+    }
+  ]
+}

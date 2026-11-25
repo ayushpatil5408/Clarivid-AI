@@ -1,1 +1,1062 @@
-[]
+[
+  {
+    "timestamp": "2026-11-25T04:30:36.317Z",
+    "model": "gemini-3.5-flash-lite",
+    "topic": "Indian Knowledge Systems: Sulba Sutras",
+    "level": "beginner",
+    "language": "english",
+    "metrics": {
+      "promptA": {
+        "isValidJson": false,
+        "complianceScore": 0,
+        "scenes": 4,
+        "avgConfidence": 95,
+        "timeMs": 2951
+      },
+      "promptB": {
+        "isValidJson": true,
+        "complianceScore": 100,
+        "scenes": 5,
+        "avgConfidence": 100,
+        "timeMs": 4216
+      }
+    },
+    "outputs": {
+      "promptA": {
+        "promptText": "Generate a lesson storyboard about <<<TOPIC>>>Indian Knowledge Systems: Sulba Sutras<<<END_TOPIC>>> for beginner level students in english.\nReturn valid JSON with this structure:\n{ \"title\": \"\", \"language\": \"english\", \"level\": \"beginner\", \"scenes\": [ { \"id\": 1, \"heading\": \"\", \"bullets\": [], \"narration\": \"\", \"visual_hint\": \"\", \"exam_tag\": \"\", \"checkpoint\": { \"q\": \"\", \"options\": [\"\", \"\", \"\", \"\"], \"answer\": 0 } } ] }",
+        "storyboard": {
+          "title": "Introduction to Sulba Sutras",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "What are the Sulba Sutras?",
+              "bullets": [
+                "Ancient Indian manual texts on geometry",
+                "Part of the larger Vedic literature (Vedanga)",
+                "Written in the form of short, memorable rules (sutras)"
+              ],
+              "narration": "Welcome! Today we will explore the Sulba Sutras, ancient Indian texts that laid down the foundational rules of geometry. The word 'Sulba' means 'cord' or 'string', referring to the ropes used for measuring and building.",
+              "visual_hint": "An ancient manuscript scroll alongside a simple diagram of a knotted rope.",
+              "exam_tag": "History of Mathematics",
+              "checkpoint": {
+                "q": "What does the word 'Sulba' mean in the context of Sulba Sutras?",
+                "options": [
+                  "Fire altar",
+                  "Cord or string",
+                  "Sacred chant",
+                  "Star pattern"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Why Were They Created?",
+              "bullets": [
+                "Designed for constructing Vedic fire altars (vedi)",
+                "Required precise geometric measurements and shapes",
+                "Combined religious rituals with advanced mathematics"
+              ],
+              "narration": "Ancient sages needed precise shapes and sizes to build altars for rituals. Different altars required exact areas and specific geometric figures like squares, circles, and triangles, driving the need for accurate geometry.",
+              "visual_hint": "Illustration of ancient priests constructing a geometric fire altar outdoors.",
+              "exam_tag": "Vedic Science",
+              "checkpoint": {
+                "q": "What was the primary practical purpose of the Sulba Sutras?",
+                "options": [
+                  "Navigation at sea",
+                  "Building fire altars",
+                  "Trading goods",
+                  "Predicting eclipses"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Early Knowledge of Pythagoras Theorem",
+              "bullets": [
+                "Contains early statements of the right-angled triangle rule",
+                "Used rope-stretchers to form perfect right angles",
+                "Predates Pythagoras by several centuries"
+              ],
+              "narration": "Long before Pythagoras in Greece, the authors of the Sulba Sutras knew that the square of the hypotenuse of a right-angled triangle equals the sum of the squares of the other two sides. They used ropes with specific knot ratios to verify right angles.",
+              "visual_hint": "A right-angled triangle with side lengths labeled 3, 4, and 5 using knotted ropes.",
+              "exam_tag": "Geometry Basics",
+              "checkpoint": {
+                "q": "Which geometric rule is notably found in the Sulba Sutras?",
+                "options": [
+                  "Area of a circle",
+                  "Pythagoras theorem",
+                  "Binomial theorem",
+                  "Law of gravity"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Squaring the Circle and Fractions",
+              "bullets": [
+                "Methods to convert circles into squares of equal area",
+                "Approximate values for the square root of 2",
+                "Showcases advanced ancient arithmetic skills"
+              ],
+              "narration": "The Sulba Sutras also tackled complex problems, like transforming a circle into a square of the exact same area, and calculated surprisingly accurate square roots, such as the square root of 2, to help in ritual construction.",
+              "visual_hint": "Animation transitioning smoothly from a circle to a square of equal visual area.",
+              "exam_tag": "Ancient Mathematics",
+              "checkpoint": {
+                "q": "What was one of the complex geometric challenges solved in the Sulba Sutras?",
+                "options": [
+                  "Squaring the circle",
+                  "Calculating the speed of light",
+                  "Measuring the depth of oceans",
+                  "Weighing planets"
+                ],
+                "answer": 0
+              }
+            }
+          ]
+        }
+      },
+      "promptB": {
+        "promptText": "You are an experienced B.Tech professor who creates concise, exam-focused lesson storyboards.\n\nTASK: Generate a storyboard of 5-7 scenes about <<<TOPIC>>>Indian Knowledge Systems: Sulba Sutras<<<END_TOPIC>>> for beginner students in english.\n\nLANGUAGE RULES:\n- If language is \"hinglish\": write narration as natural code-mixed Hindi-English (not a translation). Use Devanagari sparingly; prefer Roman Hinglish.\n- If language is \"english\": use clear, formal but friendly English.\n\nCONSTRAINTS:\n- Narration per scene: maximum 120 words\n- exam_tag must be one of: \"2-mark definition\", \"5-mark diagram\", \"numerical\", \"conceptual\"\n- Every scene must have a checkpoint with exactly 4 options\n- Checkpoint answer must be a 0-indexed number indicating the correct option\n- Output must be valid JSON only — no markdown fences, no commentary\n\nJSON SCHEMA:\n{\n  \"title\": \"string\",\n  \"language\": \"string\",\n  \"level\": \"string\",\n  \"scenes\": [\n    {\n      \"id\": \"number\",\n      \"heading\": \"string\",\n      \"bullets\": [\"string\"],\n      \"narration\": \"string\",\n      \"visual_hint\": \"string\",\n      \"exam_tag\": \"string\",\n      \"checkpoint\": { \"q\": \"string\", \"options\": [\"string\", \"string\", \"string\", \"string\"], \"answer\": \"number\" }\n    }\n  ]\n}\n\nEXAMPLE SCENE:\n{\n  \"id\": 1,\n  \"heading\": \"What is a handshake?\",\n  \"bullets\": [\n    \"Two devices agree before talking\",\n    \"Uses SYN, SYN-ACK, ACK\"\n  ],\n  \"narration\": \"Socho do log phone par baat shuru karne se pehle confirm karte hain ki dono ready hain — exactly aisa hi TCP karta hai.\",\n  \"visual_hint\": \"Diagram of client and server exchanging three arrows labelled SYN, SYN-ACK, ACK\",\n  \"exam_tag\": \"2-mark definition\",\n  \"checkpoint\": {\n    \"q\": \"Which flag does the client send first?\",\n    \"options\": [\n      \"ACK\",\n      \"SYN\",\n      \"FIN\",\n      \"RST\"\n    ],\n    \"answer\": 1\n  }\n}\n\nNow generate the full storyboard for topic: <<<TOPIC>>>Indian Knowledge Systems: Sulba Sutras<<<END_TOPIC>>>",
+        "storyboard": {
+          "title": "Indian Knowledge Systems: Sulba Sutras",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to Sulba Sutras",
+              "bullets": [
+                "Part of Vedanga literature dealing with geometry",
+                "Ancient manuals for constructing Vedic fire altars",
+                "Means 'rules of the cord or string'"
+              ],
+              "narration": "Welcome students! Today we explore the Sulba Sutras, ancient Sanskrit texts that form a crucial part of Indian geometry. The word 'Sulba' literally means a measuring cord. These texts were manual guides used by ancient priests to precisely measure and construct complex Vedic fire altars using ropes and stakes.",
+              "visual_hint": "An ancient sage holding a measuring cord next to a sketched geometric altar.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "What does the term 'Sulba' refer to in Sulba Sutras?",
+                "options": [
+                  "Measuring cord",
+                  "Fire ritual",
+                  "Astronomical calendar",
+                  "Musical note"
+                ],
+                "answer": 0
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Geometry and Altar Construction",
+              "bullets": [
+                "Altars required exact geometric transformations",
+                "Converting a square to a circle or vice versa",
+                "Preserved area while changing shapes"
+              ],
+              "narration": "Why did priests need geometry? The rituals demanded specific altar areas without altering their volume or surface area. This led to advanced geometric problems like squaring the circle and circling the square. These practical ritualistic needs paved the way for sophisticated spatial mathematics in ancient India.",
+              "visual_hint": "Animation transitioning from a square altar shape to a circular altar shape of equal area.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "What was the primary practical purpose of geometry in the Sulba Sutras?",
+                "options": [
+                  "Navigation and mapping",
+                  "Building architectural fortresses",
+                  "Constructing fire altars with precise areas",
+                  "Calculating planetary motion"
+                ],
+                "answer": 2
+              }
+            },
+            {
+              "id": 3,
+              "heading": "The Pythagorean Theorem",
+              "bullets": [
+                "Stated centuries before Pythagoras",
+                "Found in Baudhayana and Apastamba Sulba Sutras",
+                "Used rope-stretching techniques for right angles"
+              ],
+              "narration": "Here is a fascinating historical fact for your exams. Long before Pythagoras, the Baudhayana Sulba Sutra stated the relation for the diagonal of a rectangle: the diagonal produces together the areas which the two sides produce separately. They used ropes with specific knot ratios like 3-4-5 to construct perfect right angles on the ground.",
+              "visual_hint": "A right-angled triangle formed by a knotted rope with sides labeled 3, 4, and 5.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "Which Sulba Sutra is famously credited with an early statement of the Pythagorean theorem?",
+                "options": [
+                  "Katyayana Sulba Sutra",
+                  "Baudhayana Sulba Sutra",
+                  "Manava Sulba Sutra",
+                  "Varahamihira Sutra"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Square Roots and Approximations",
+              "bullets": [
+                "Remarkably accurate value for root 2",
+                "Expressed as 1 + 1/3 + (1/3 * 1/4) - (1/3 * 1/4 * 1/34)",
+                "Accurate to five decimal places"
+              ],
+              "narration": "The ancient mathematicians were also masters of arithmetic approximations. The Baudhayana text gives an incredible approximation for the square root of 2. When converted to decimals, it is accurate up to five decimal places! This shows they understood irrational numbers and iterative correction methods long before modern calculators.",
+              "visual_hint": "Mathematical formula for root 2 approximation written on a blackboard next to its decimal value.",
+              "exam_tag": "numerical",
+              "checkpoint": {
+                "q": "The Sulba Sutras provide a remarkably accurate approximation for the square root of which number?",
+                "options": [
+                  "Root 3",
+                  "Root 5",
+                  "Root 2",
+                  "Root 7"
+                ],
+                "answer": 2
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Legacy and Significance in Mathematics",
+              "bullets": [
+                "Foundations of Indian geometric tradition",
+                "Influenced later mathematicians like Aryabhata and Bhaskara",
+                "Bridge between ritual architecture and pure math"
+              ],
+              "narration": "To conclude, the Sulba Sutras are not just religious texts; they are foundational milestones in the history of mathematics. They demonstrate how practical engineering and ritual architecture can stimulate pure mathematical inquiry. Remember these key texts and formulas well for your upcoming exams!",
+              "visual_hint": "A timeline connecting Sulba Sutras to later classical Indian mathematicians.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "Which broader category of ancient Indian literature do the Sulba Sutras belong to?",
+                "options": [
+                  "Vedangas",
+                  "Puranas",
+                  "Upanishads",
+                  "Itihasas"
+                ],
+                "answer": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-11-25T04:31:49.023Z",
+    "model": "gemini-3.5-flash-lite",
+    "topic": "Abhimanyu and the Chakravyuh Formation",
+    "level": "beginner",
+    "language": "english",
+    "metrics": {
+      "promptA": {
+        "isValidJson": false,
+        "complianceScore": 0,
+        "scenes": 5,
+        "avgConfidence": 93,
+        "timeMs": 3247
+      },
+      "promptB": {
+        "isValidJson": true,
+        "complianceScore": 100,
+        "scenes": 5,
+        "avgConfidence": 80,
+        "timeMs": 8468
+      }
+    },
+    "outputs": {
+      "promptA": {
+        "promptText": "Generate a lesson storyboard about <<<TOPIC>>>Abhimanyu and the Chakravyuh Formation<<<END_TOPIC>>> for beginner level students in english.\nReturn valid JSON with this structure:\n{ \"title\": \"\", \"language\": \"english\", \"level\": \"beginner\", \"scenes\": [ { \"id\": 1, \"heading\": \"\", \"bullets\": [], \"narration\": \"\", \"visual_hint\": \"\", \"exam_tag\": \"\", \"checkpoint\": { \"q\": \"\", \"options\": [\"\", \"\", \"\", \"\"], \"answer\": 0 } } ] }",
+        "storyboard": {
+          "title": "Abhimanyu and the Chakravyuh Formation",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "The Great War of Mahabharata",
+              "bullets": [
+                "A fierce war between Pandavas and Kauravas",
+                "Happened at the battlefield of Kurukshetra",
+                "Both sides had powerful armies and warriors"
+              ],
+              "narration": "Welcome! Today we will learn a famous story from the Mahabharata. It was a great war fought at Kurukshetra between two families: the righteous Pandavas and their cousins, the Kauravas.",
+              "visual_hint": "An ancient Indian battlefield with large armies facing each other under a cloudy sky.",
+              "exam_tag": "Introduction",
+              "checkpoint": {
+                "q": "Where did the great war of Mahabharata take place?",
+                "options": [
+                  "Ayodhya",
+                  "Kurukshetra",
+                  "Hastinapura",
+                  "Indraprastha"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "The Deadly Chakravyuh Trap",
+              "bullets": [
+                "Kauravas created a spinning maze formation",
+                "Named Chakravyuh, shaped like a rotating wheel",
+                "Very difficult to break because the soldiers kept moving"
+              ],
+              "narration": "On one fateful day, the Kaurava commanders created a special military formation called the Chakravyuh. It looked like a giant, spinning wheel maze. It was designed to trap and destroy enemy warriors.",
+              "visual_hint": "A complex, circular military formation of soldiers moving like a wheel maze on the field.",
+              "exam_tag": "Key Concept",
+              "checkpoint": {
+                "q": "What shape did the Chakravyuh formation resemble?",
+                "options": [
+                  "A flying bird",
+                  "A spinning wheel",
+                  "A giant shield",
+                  "A straight wall"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Brave Young Abhimanyu",
+              "bullets": [
+                "Son of Arjuna and Subhadra",
+                "Knew how to enter the Chakravyuh",
+                "Learned the secret while in his mother's womb"
+              ],
+              "narration": "The Pandavas were worried because only Arjuna knew how to break this formation, and he was far away. But Arjuna's brave young son, Abhimanyu, stepped forward. He knew how to enter the maze, having heard the secret when he was in his mother's womb.",
+              "visual_hint": "A young, heroic warrior in shiny armor holding a bow, looking confident and determined.",
+              "exam_tag": "Character Focus",
+              "checkpoint": {
+                "q": "Whose son was Abhimanyu?",
+                "options": [
+                  "Bheema",
+                  "Duryodhana",
+                  "Arjuna",
+                  "Karna"
+                ],
+                "answer": 2
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Entering the Maze",
+              "bullets": [
+                "Abhimanyu enters the Chakravyuh alone",
+                "Defeats many enemy warriors effortlessly",
+                "Pandava army follows to support him"
+              ],
+              "narration": "Abhimanyu entered the deadly Chakravyuh like a roaring lion. He broke through the layers of the formation easily, defeating great warriors. The Pandava army tried to follow him inside to support him.",
+              "visual_hint": "Abhimanyu shooting arrows while charging fearlessly into the rotating circles of enemy soldiers.",
+              "exam_tag": "Action",
+              "checkpoint": {
+                "q": "How did Abhimanyu enter the Chakravyuh?",
+                "options": [
+                  "Alone and fearlessly",
+                  "By hiding in a chariot",
+                  "With an entire army beside him",
+                  "By flying over it"
+                ],
+                "answer": 0
+              }
+            },
+            {
+              "id": 5,
+              "heading": "The Unfair Battle and Legacy",
+              "bullets": [
+                "Kauravas break the rules to attack him together",
+                "Abhimanyu fights valiantly till his last breath",
+                "Remembered as a supreme hero of courage"
+              ],
+              "narration": "Sadly, the Kaurava commanders broke the rules of war and attacked young Abhimanyu all at once. Even without his chariot and weapons, he fought fiercely with a wheel piece. Though he lost his life, his unmatched bravery makes him a legendary hero forever.",
+              "visual_hint": "A dramatic scene of young Abhimanyu fighting bravely with a broken chariot wheel surrounded by enemies.",
+              "exam_tag": "Moral/Conclusion",
+              "checkpoint": {
+                "q": "What quality of Abhimanyu is remembered the most?",
+                "options": [
+                  "His wealth",
+                  "His great fear",
+                  "His unmatched bravery",
+                  "His magic powers"
+                ],
+                "answer": 2
+              }
+            }
+          ]
+        }
+      },
+      "promptB": {
+        "promptText": "You are an experienced B.Tech professor who creates concise, exam-focused lesson storyboards.\n\nTASK: Generate a storyboard of 5-7 scenes about <<<TOPIC>>>Abhimanyu and the Chakravyuh Formation<<<END_TOPIC>>> for beginner students in english.\n\nLANGUAGE RULES:\n- If language is \"hinglish\": write narration as natural code-mixed Hindi-English (not a translation). Use Devanagari sparingly; prefer Roman Hinglish.\n- If language is \"english\": use clear, formal but friendly English.\n\nCONSTRAINTS:\n- Narration per scene: maximum 120 words\n- exam_tag must be one of: \"2-mark definition\", \"5-mark diagram\", \"numerical\", \"conceptual\"\n- Every scene must have a checkpoint with exactly 4 options\n- Checkpoint answer must be a 0-indexed number indicating the correct option\n- Output must be valid JSON only — no markdown fences, no commentary\n\nJSON SCHEMA:\n{\n  \"title\": \"string\",\n  \"language\": \"string\",\n  \"level\": \"string\",\n  \"scenes\": [\n    {\n      \"id\": \"number\",\n      \"heading\": \"string\",\n      \"bullets\": [\"string\"],\n      \"narration\": \"string\",\n      \"visual_hint\": \"string\",\n      \"exam_tag\": \"string\",\n      \"checkpoint\": { \"q\": \"string\", \"options\": [\"string\", \"string\", \"string\", \"string\"], \"answer\": \"number\" }\n    }\n  ]\n}\n\nEXAMPLE SCENE:\n{\n  \"id\": 1,\n  \"heading\": \"What is a handshake?\",\n  \"bullets\": [\n    \"Two devices agree before talking\",\n    \"Uses SYN, SYN-ACK, ACK\"\n  ],\n  \"narration\": \"Socho do log phone par baat shuru karne se pehle confirm karte hain ki dono ready hain — exactly aisa hi TCP karta hai.\",\n  \"visual_hint\": \"Diagram of client and server exchanging three arrows labelled SYN, SYN-ACK, ACK\",\n  \"exam_tag\": \"2-mark definition\",\n  \"checkpoint\": {\n    \"q\": \"Which flag does the client send first?\",\n    \"options\": [\n      \"ACK\",\n      \"SYN\",\n      \"FIN\",\n      \"RST\"\n    ],\n    \"answer\": 1\n  }\n}\n\nNow generate the full storyboard for topic: <<<TOPIC>>>Abhimanyu and the Chakravyuh Formation<<<END_TOPIC>>>",
+        "storyboard": {
+          "title": "Abhimanyu and the Chakravyuh Formation",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to the Chakravyuh",
+              "bullets": [
+                "A multi-tiered circular military formation",
+                "Resembles a rotating maze or labyrinth",
+                "Designed by Dronacharya in the Mahabharata war"
+              ],
+              "narration": "Welcome students. Today we study a legendary tactical formation from the Mahabharata: the Chakravyuh. Think of it as a dynamic, multi-layered defensive algorithm that shifts continuously, trapping anyone who enters without knowing the exit protocol.",
+              "visual_hint": "An animated concentric circular military formation with moving soldiers.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "Who designed the Chakravyuh formation in the Mahabharata?",
+                "options": [
+                  "Arjuna",
+                  "Dronacharya",
+                  "Bhishma",
+                  "Karna"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Abhimanyu's Knowledge",
+              "bullets": [
+                "He learned how to enter while in the womb",
+                "He heard the entry algorithm from Arjuna",
+                "Missed the exit protocol due to interruption"
+              ],
+              "narration": "Young Abhimanyu possessed partial knowledge. While still in utero, he listened to Arjuna explain how to breach this complex array. However, before the exit strategy could be explained, the conversation was cut short, leaving him with an incomplete algorithm.",
+              "visual_hint": "Illustration of Abhimanyu listening intently, with a split-screen showing a glowing entry path.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "What crucial piece of information did Abhimanyu miss regarding the Chakravyuh?",
+                "options": [
+                  "The entry strategy",
+                  "The exit strategy",
+                  "The commander's identity",
+                  "The weapon types used"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Breaching the Formation",
+              "bullets": [
+                "Abhimanyu enters successfully alone",
+                "Destroys outer layers of the rotating guards",
+                "Pandava army fails to follow him inside"
+              ],
+              "narration": "With supreme courage, Abhimanyu breaks through the outermost gates. The formation is like a series of nested loops in programming; he successfully executes the entry condition. Tragically, the supporting Pandava troops are blocked from entering behind him.",
+              "visual_hint": "Abhimanyu's chariot cutting through the outer rings of soldiers.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "Why couldn't the other Pandavas follow Abhimanyu into the Chakravyuh?",
+                "options": [
+                  "They were asleep",
+                  "Jayadratha blocked them",
+                  "They lacked chariots",
+                  "They retreated voluntarily"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "The Trap and Unfair Warfare",
+              "bullets": [
+                "Trapped deep inside the inner circles",
+                "Surrounded by multiple veteran warriors",
+                "Breakdown of war ethics in the final layer"
+              ],
+              "narration": "Once inside, Abhimanyu faces overwhelming odds. Multiple seasoned commanders simultaneously attack a single warrior, violating the traditional rules of engagement. In technical terms, it is a classic Distributed Denial of Service attack against a single node.",
+              "visual_hint": "Abhimanyu surrounded by multiple chariot-warriors attacking simultaneously.",
+              "exam_tag": "5-mark diagram",
+              "checkpoint": {
+                "q": "How many senior commanders collectively attacked Abhimanyu at the end?",
+                "options": [
+                  "One",
+                  "Three",
+                  "Five",
+                  "Seven"
+                ],
+                "answer": 3
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Lessons in Strategy and Risk",
+              "bullets": [
+                "Incomplete knowledge leads to system failure",
+                "Importance of backup and exit planning",
+                "Historical study of tactical formations"
+              ],
+              "narration": "The tragic end of Abhimanyu teaches us a timeless lesson: never execute a critical operation without a complete plan and reliable backup. In engineering and strategy, incomplete redundancy or missing exit protocols can lead to catastrophic failure.",
+              "visual_hint": "A glowing scroll showing strategic lessons and tactical takeaways.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "What is the primary tactical takeaway from Abhimanyu's entry into the Chakravyuh?",
+                "options": [
+                  "Attack without planning",
+                  "Incomplete knowledge without exit strategy is fatal",
+                  "Numbers do not matter in war",
+                  "Always fight alone"
+                ],
+                "answer": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-11-25T04:46:29.260Z",
+    "model": "gemini-3.5-flash-lite",
+    "topic": "Mastering Pandas loc and iloc",
+    "level": "beginner",
+    "language": "english",
+    "metrics": {
+      "promptA": {
+        "isValidJson": false,
+        "complianceScore": 0,
+        "scenes": 5,
+        "avgConfidence": 100,
+        "timeMs": 3967
+      },
+      "promptB": {
+        "isValidJson": true,
+        "complianceScore": 100,
+        "scenes": 5,
+        "avgConfidence": 100,
+        "timeMs": 3969
+      }
+    },
+    "outputs": {
+      "promptA": {
+        "promptText": "Generate a lesson storyboard about <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>> for beginner level students in english.\nReturn valid JSON with this structure:\n{ \"title\": \"\", \"language\": \"english\", \"level\": \"beginner\", \"scenes\": [ { \"id\": 1, \"heading\": \"\", \"bullets\": [], \"narration\": \"\", \"visual_hint\": \"\", \"exam_tag\": \"\", \"checkpoint\": { \"q\": \"\", \"options\": [\"\", \"\", \"\", \"\"], \"answer\": 0 } } ] }",
+        "storyboard": {
+          "title": "Mastering Pandas loc and iloc",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to Data Selection",
+              "bullets": [
+                "Learn how to extract specific data from a Pandas DataFrame",
+                "Understand the difference between label-based and integer-based indexing",
+                "Meet loc and iloc: your primary tools for data retrieval"
+              ],
+              "narration": "Welcome! When working with Pandas, filtering and selecting the exact data you need is a daily task. Today, we will master two fundamental indexers: loc and iloc.",
+              "visual_hint": "An animation showing a large spreadsheet with a magnifying glass zooming into specific rows and columns.",
+              "exam_tag": "Basics",
+              "checkpoint": {
+                "q": "What are the two main indexing methods we are covering?",
+                "options": [
+                  "find and search",
+                  "loc and iloc",
+                  "get and fetch",
+                  "select and extract"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Integer-Based Indexing with iloc",
+              "bullets": [
+                "iloc stands for 'integer location'",
+                "Uses zero-based integer positions for rows and columns",
+                "Excludes the upper bound in standard Python slicing"
+              ],
+              "narration": "Let's start with iloc. Think of iloc as using the physical integer coordinates of your data, just like standard Python lists. Row zero is the first row, column one is the second column.",
+              "visual_hint": "Code snippet showing df.iloc[0:3, 1:4] with highlighted rows and columns corresponding to integer indices.",
+              "exam_tag": "iloc",
+              "checkpoint": {
+                "q": "What does iloc primarily use to select data?",
+                "options": [
+                  "Column names",
+                  "Integer positions",
+                  "Boolean masks",
+                  "Index labels"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Label-Based Indexing with loc",
+              "bullets": [
+                "loc stands for 'location'",
+                "Uses explicit row and column labels (names)",
+                "Includes the upper bound when slicing"
+              ],
+              "narration": "Next up is loc. Unlike iloc, loc relies on the actual labels of your rows and columns. If your row index is named 'Alice' or '2023-01-01', you use those exact names in loc.",
+              "visual_hint": "Code snippet showing df.loc['Alice':'Bob', 'Age':'Salary'] with visual callouts to label names.",
+              "exam_tag": "loc",
+              "checkpoint": {
+                "q": "When using loc for slicing, is the upper bound included?",
+                "options": [
+                  "No, it is excluded",
+                  "Yes, it is included",
+                  "Only for rows",
+                  "Only for columns"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Conditional Selection with loc",
+              "bullets": [
+                "Combine loc with conditions for powerful filtering",
+                "Pass boolean Series directly into the row parameter",
+                "Select specific columns while filtering rows simultaneously"
+              ],
+              "narration": "One of the best features of loc is conditional filtering. You can pass a boolean condition, like 'age greater than thirty', directly into loc to get only the rows that match.",
+              "visual_hint": "A split screen showing a boolean condition evaluating to True/False alongside the resulting filtered DataFrame.",
+              "exam_tag": "Advanced loc",
+              "checkpoint": {
+                "q": "How can you filter rows based on a condition using loc?",
+                "options": [
+                  "Pass a list of integers",
+                  "Pass a boolean condition inside loc",
+                  "Use the iloc function instead",
+                  "Sort the dataframe first"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Summary and Best Practices",
+              "bullets": [
+                "Use iloc when you know the numerical position",
+                "Use loc when you know the label or need conditional filtering",
+                "Practice regularly to avoid IndexErrors"
+              ],
+              "narration": "To wrap up: remember, iloc is for integer positions, and loc is for labels and conditions. Keep practicing, and data selection will become second nature!",
+              "visual_hint": "A side-by-side comparison table summarizing the key differences between loc and iloc.",
+              "exam_tag": "Review",
+              "checkpoint": {
+                "q": "Which indexer would you choose if you want to select data using column names?",
+                "options": [
+                  "iloc",
+                  "loc",
+                  "index",
+                  "slice"
+                ],
+                "answer": 1
+              }
+            }
+          ]
+        }
+      },
+      "promptB": {
+        "promptText": "You are an experienced B.Tech professor who creates concise, exam-focused lesson storyboards.\n\nTASK: Generate a storyboard of 5-7 scenes about <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>> for beginner students in english.\n\nLANGUAGE RULES:\n- If language is \"hinglish\": write narration as natural code-mixed Hindi-English (not a translation). Use Devanagari sparingly; prefer Roman Hinglish.\n- If language is \"english\": use clear, formal but friendly English.\n\nCONSTRAINTS:\n- Narration per scene: maximum 120 words\n- exam_tag must be one of: \"2-mark definition\", \"5-mark diagram\", \"numerical\", \"conceptual\"\n- Every scene must have a checkpoint with exactly 4 options\n- Checkpoint answer must be a 0-indexed number indicating the correct option\n- Output must be valid JSON only — no markdown fences, no commentary\n\nJSON SCHEMA:\n{\n  \"title\": \"string\",\n  \"language\": \"string\",\n  \"level\": \"string\",\n  \"scenes\": [\n    {\n      \"id\": \"number\",\n      \"heading\": \"string\",\n      \"bullets\": [\"string\"],\n      \"narration\": \"string\",\n      \"visual_hint\": \"string\",\n      \"exam_tag\": \"string\",\n      \"checkpoint\": { \"q\": \"string\", \"options\": [\"string\", \"string\", \"string\", \"string\"], \"answer\": \"number\" }\n    }\n  ]\n}\n\nEXAMPLE SCENE:\n{\n  \"id\": 1,\n  \"heading\": \"What is a handshake?\",\n  \"bullets\": [\n    \"Two devices agree before talking\",\n    \"Uses SYN, SYN-ACK, ACK\"\n  ],\n  \"narration\": \"Socho do log phone par baat shuru karne se pehle confirm karte hain ki dono ready hain — exactly aisa hi TCP karta hai.\",\n  \"visual_hint\": \"Diagram of client and server exchanging three arrows labelled SYN, SYN-ACK, ACK\",\n  \"exam_tag\": \"2-mark definition\",\n  \"checkpoint\": {\n    \"q\": \"Which flag does the client send first?\",\n    \"options\": [\n      \"ACK\",\n      \"SYN\",\n      \"FIN\",\n      \"RST\"\n    ],\n    \"answer\": 1\n  }\n}\n\nNow generate the full storyboard for topic: <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>>",
+        "storyboard": {
+          "title": "Mastering Pandas loc and iloc",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to Data Selection",
+              "bullets": [
+                "DataFrames are 2D data structures in Pandas",
+                "Selecting specific rows and columns is a fundamental operation",
+                " loc and iloc are the two primary indexers"
+              ],
+              "narration": "Welcome everyone! When working with Pandas DataFrames in your exams and projects, you often need to extract specific subsets of data. Instead of writing complex loops, Pandas provides two powerful indexers: loc and iloc. Understanding their differences is crucial for scoring high in data analysis questions.",
+              "visual_hint": "An image of a Pandas DataFrame with rows and columns highlighted",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "What are the two primary indexers used for data selection in Pandas?",
+                "options": [
+                  "get and set",
+                  "loc and iloc",
+                  "find and search",
+                  "select and extract"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Understanding iloc (Integer Location)",
+              "bullets": [
+                "Stands for integer-location based indexing",
+                "Purely integer-location based from 0 to length-1",
+                "Exclusive of the upper bound in slicing"
+              ],
+              "narration": "Let's start with iloc. The 'i' stands for integer. This means iloc strictly uses integer positions, similar to standard Python list indexing. If you want the first three rows, you use integer indices. Remember, just like Python ranges, the stop index in iloc slicing is exclusive.",
+              "visual_hint": "Code snippet showing df.iloc[0:3, 0:2] with corresponding matrix positions",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "What does the 'i' stand for in iloc?",
+                "options": [
+                  "Index",
+                  "Integer",
+                  "Internal",
+                  "Item"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Understanding loc (Label Location)",
+              "bullets": [
+                "Stands for label-based indexing",
+                "Uses row and column labels/names",
+                "Inclusive of the upper bound in slicing"
+              ],
+              "narration": "Next up is loc, which stands for location based on labels. Here, you pass the actual names of the rows (index labels) and columns instead of numbers. A very important exam point to remember: unlike iloc, slicing with loc is inclusive of the end label! Watch out for this trap in coding questions.",
+              "visual_hint": "Code snippet showing df.loc['row1':'row3', 'columnA':'columnC'] with labels highlighted",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "In Pandas loc, when you slice using labels like df.loc['A':'C'], is the upper bound included?",
+                "options": [
+                  "No, it is exclusive",
+                  "Yes, it is inclusive",
+                  "It depends on the data type",
+                  "It throws an error"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Syntax and Comparison",
+              "bullets": [
+                "iloc uses integer positions: df.iloc[row_idx, col_idx]",
+                "loc uses labels: df.loc[row_label, col_label]",
+                "Both support boolean masking and slicing"
+              ],
+              "narration": "Let's compare their syntax side by side. Both take row and column arguments separated by a comma. With iloc, numbers like 0, 1, 2 are expected. With loc, string names like 'Name', 'Age' are expected. Both also support slicing using the colon operator and conditional filtering.",
+              "visual_hint": "A split-screen comparison table showing iloc vs loc syntax and behavior",
+              "exam_tag": "5-mark diagram",
+              "checkpoint": {
+                "q": "Which of the following is invalid syntax for selecting the first row using iloc?",
+                "options": [
+                  "df.iloc[0]",
+                  "df.iloc[0, :]",
+                  "df.iloc['row1']",
+                  "df.iloc[[0]]"
+                ],
+                "answer": 2
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Common Exam Trap: Slicing Out-of-Bounds",
+              "bullets": [
+                "iloc raises IndexError if integer position does not exist",
+                "loc raises KeyError if label does not exist",
+                "Carefully check index type before applying indexers"
+              ],
+              "narration": "A very common viva and exam question tests error handling. If you use an integer that exceeds the DataFrame size with iloc, Python throws an IndexError. However, if you pass a non-existent name to loc, it raises a KeyError. Always verify if your DataFrame index consists of default integers or custom labels.",
+              "visual_hint": "Terminal output showing IndexError for iloc and KeyError for loc",
+              "exam_tag": "numerical",
+              "checkpoint": {
+                "q": "What exception is raised when a non-existent label is passed to loc?",
+                "options": [
+                  "IndexError",
+                  "KeyError",
+                  "ValueError",
+                  "TypeError"
+                ],
+                "answer": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-11-25T04:47:33.771Z",
+    "model": "gemini-3.5-flash-lite",
+    "topic": "Mastering Pandas loc and iloc",
+    "level": "beginner",
+    "language": "english",
+    "metrics": {
+      "promptA": {
+        "isValidJson": false,
+        "complianceScore": 0,
+        "scenes": 6,
+        "avgConfidence": 100,
+        "timeMs": 4275
+      },
+      "promptB": {
+        "isValidJson": true,
+        "complianceScore": 100,
+        "scenes": 5,
+        "avgConfidence": 100,
+        "timeMs": 4193
+      }
+    },
+    "outputs": {
+      "promptA": {
+        "promptText": "Generate a lesson storyboard about <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>> for beginner level students in english.\nReturn valid JSON with this structure:\n{ \"title\": \"\", \"language\": \"english\", \"level\": \"beginner\", \"scenes\": [ { \"id\": 1, \"heading\": \"\", \"bullets\": [], \"narration\": \"\", \"visual_hint\": \"\", \"exam_tag\": \"\", \"checkpoint\": { \"q\": \"\", \"options\": [\"\", \"\", \"\", \"\"], \"answer\": 0 } } ] }",
+        "storyboard": {
+          "title": "Mastering Pandas loc and iloc",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to Data Selection",
+              "bullets": [
+                "DataFrames are like digital spreadsheets with rows and columns",
+                "We often need to extract specific rows or columns",
+                "Pandas provides two main tools for this: loc and iloc"
+              ],
+              "narration": "Welcome! When working with data in Pandas, you often need to pick out specific rows and columns. To do this efficiently, Pandas gives us two powerful indexers: loc and iloc.",
+              "visual_hint": "An animation showing a large spreadsheet glowing as specific cells are highlighted.",
+              "exam_tag": "Basics",
+              "checkpoint": {
+                "q": "What are the two primary tools in Pandas for selecting data by location?",
+                "options": [
+                  "find and search",
+                  "loc and iloc",
+                  "get and grab",
+                  "select and filter"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Understanding iloc (Integer Location)",
+              "bullets": [
+                "iloc stands for integer location",
+                "It uses zero-based indexing (counting starts at 0)",
+                "Syntax: df.iloc[row_index, column_index]"
+              ],
+              "narration": "Let's start with iloc, which stands for integer location. Think of iloc as using the numbered coordinates of your rows and columns, just like matrix math. Remember, Python always starts counting at zero!",
+              "visual_hint": "A DataFrame displayed with clear row and column numbers 0, 1, 2 highlighted.",
+              "exam_tag": "iloc",
+              "checkpoint": {
+                "q": "What type of values does iloc use for selection?",
+                "options": [
+                  "Row and column names",
+                  "Integer-based positions",
+                  "Boolean True/False values",
+                  "Random sample IDs"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Slicing with iloc",
+              "bullets": [
+                "Can select ranges using the colon operator (:)",
+                "df.iloc[0:3, 1:4] selects rows 0-2 and columns 1-3",
+                "Stop index is exclusive in ranges"
+              ],
+              "narration": "You can also slice ranges with iloc. When you write zero to three, it grabs rows zero, one, and two. Notice that the stop index is exclusive, meaning the last number is not included.",
+              "visual_hint": "Code snippet showing df.iloc[0:2, 0:2] alongside a visual block of the selected cells.",
+              "exam_tag": "iloc",
+              "checkpoint": {
+                "q": "In df.iloc[0:3], is row index 3 included in the output?",
+                "options": [
+                  "Yes, always",
+                  "No, the stop index is exclusive",
+                  "Only if it contains text",
+                  "Depends on the column count"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Understanding loc (Label Location)",
+              "bullets": [
+                "loc stands for label location",
+                "It uses the actual names of rows and columns",
+                "Syntax: df.loc[row_label, column_label]"
+              ],
+              "narration": "Next up is loc, which stands for label location. Instead of numbers, loc uses the actual labels or names of your rows and columns. This makes your code much easier to read when your data has meaningful headers.",
+              "visual_hint": "A DataFrame highlighting string labels like 'Name', 'Age', and row index labels like 'row1', 'row2'.",
+              "exam_tag": "loc",
+              "checkpoint": {
+                "q": "What does loc use to select data?",
+                "options": [
+                  "Index positions starting at 0",
+                  "Row and column labels/names",
+                  "File paths",
+                  "Data types"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Slicing with loc (Inclusive)",
+              "bullets": [
+                "df.loc['row1':'row3', 'Name':'Age']",
+                "Unlike iloc, the stop label IS inclusive",
+                "Great for filtering with conditional statements"
+              ],
+              "narration": "Here is a crucial difference: while iloc is exclusive on the stop index, loc is inclusive! If you slice from row one to row three using loc, row three will actually be included in your results.",
+              "visual_hint": "A side-by-side comparison graphic showing iloc (exclusive stop) vs loc (inclusive stop).",
+              "exam_tag": "loc",
+              "checkpoint": {
+                "q": "How does the stop boundary differ in loc compared to iloc?",
+                "options": [
+                  "loc is inclusive of the stop label",
+                  "loc ignores the stop label completely",
+                  "loc requires integer inputs for stopping",
+                  "There is no difference"
+                ],
+                "answer": 0
+              }
+            },
+            {
+              "id": 6,
+              "heading": "Summary and Best Practices",
+              "bullets": [
+                "Use iloc when you know the integer position",
+                "Use loc when you know the label or name",
+                "Both return Series (1D) or DataFrames (2D)"
+              ],
+              "narration": "To wrap up: use iloc when working with positions and numbers, and use loc when working with labels and names. Mastering both will make you a Pandas data selection pro!",
+              "visual_hint": "A checklist graphic summarizing when to use loc vs iloc.",
+              "exam_tag": "Review",
+              "checkpoint": {
+                "q": "When should you prefer loc over iloc?",
+                "options": [
+                  "When you want to use numeric row numbers",
+                  "When you want to use row and column names",
+                  "When the DataFrame has no columns",
+                  "When you want faster mathematical operations"
+                ],
+                "answer": 1
+              }
+            }
+          ]
+        }
+      },
+      "promptB": {
+        "promptText": "You are an experienced B.Tech professor who creates concise, exam-focused lesson storyboards.\n\nTASK: Generate a storyboard of 5-7 scenes about <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>> for beginner students in english.\n\nLANGUAGE RULES:\n- If language is \"hinglish\": write narration as natural code-mixed Hindi-English (not a translation). Use Devanagari sparingly; prefer Roman Hinglish.\n- If language is \"english\": use clear, formal but friendly English.\n\nCONSTRAINTS:\n- Narration per scene: maximum 120 words\n- exam_tag must be one of: \"2-mark definition\", \"5-mark diagram\", \"numerical\", \"conceptual\"\n- Every scene must have a checkpoint with exactly 4 options\n- Checkpoint answer must be a 0-indexed number indicating the correct option\n- Output must be valid JSON only — no markdown fences, no commentary\n\nJSON SCHEMA:\n{\n  \"title\": \"string\",\n  \"language\": \"string\",\n  \"level\": \"string\",\n  \"scenes\": [\n    {\n      \"id\": \"number\",\n      \"heading\": \"string\",\n      \"bullets\": [\"string\"],\n      \"narration\": \"string\",\n      \"visual_hint\": \"string\",\n      \"exam_tag\": \"string\",\n      \"checkpoint\": { \"q\": \"string\", \"options\": [\"string\", \"string\", \"string\", \"string\"], \"answer\": \"number\" }\n    }\n  ]\n}\n\nEXAMPLE SCENE:\n{\n  \"id\": 1,\n  \"heading\": \"What is a handshake?\",\n  \"bullets\": [\n    \"Two devices agree before talking\",\n    \"Uses SYN, SYN-ACK, ACK\"\n  ],\n  \"narration\": \"Socho do log phone par baat shuru karne se pehle confirm karte hain ki dono ready hain — exactly aisa hi TCP karta hai.\",\n  \"visual_hint\": \"Diagram of client and server exchanging three arrows labelled SYN, SYN-ACK, ACK\",\n  \"exam_tag\": \"2-mark definition\",\n  \"checkpoint\": {\n    \"q\": \"Which flag does the client send first?\",\n    \"options\": [\n      \"ACK\",\n      \"SYN\",\n      \"FIN\",\n      \"RST\"\n    ],\n    \"answer\": 1\n  }\n}\n\nNow generate the full storyboard for topic: <<<TOPIC>>>Mastering Pandas loc and iloc<<<END_TOPIC>>>",
+        "storyboard": {
+          "title": "Mastering Pandas loc and iloc",
+          "language": "english",
+          "level": "beginner",
+          "scenes": [
+            {
+              "id": 1,
+              "heading": "Introduction to Data Selection in Pandas",
+              "bullets": [
+                "DataFrames store tabular data with rows and columns",
+                "Indexing is essential for data analysis and filtering",
+                "Two primary indexers: loc and iloc"
+              ],
+              "narration": "Welcome students! When working with Pandas DataFrames, one of the most frequent tasks you will face in exams and practicals is extracting specific rows and columns. We use two main indexers for this: loc and iloc. Think of them as your precision tools to navigate through rows and columns inside a dataset.",
+              "visual_hint": "A visual representation of a DataFrame table with highlighted rows and columns.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "What are the two primary indexers used in Pandas for data selection?",
+                "options": [
+                  "find and search",
+                  "loc and iloc",
+                  "select and extract",
+                  "get and fetch"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 2,
+              "heading": "Understanding iloc (Integer Location)",
+              "bullets": [
+                "Stands for integer location-based indexing",
+                "Works purely on integer positions from 0 to n-1",
+                "Upper bound of slice is exclusive"
+              ],
+              "narration": "Let's start with iloc. The 'i' stands for integer. This means iloc cares only about the numerical integer index of the rows and columns, just like standard Python lists or NumPy arrays. When you slice using iloc, remember that the stop index is exclusive. For instance, df.iloc[0:3] will fetch rows 0, 1, and 2.",
+              "visual_hint": "Code snippet showing df.iloc[0:2, 0:3] and the resulting subset.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "What type of indexing does iloc rely on?",
+                "options": [
+                  "Row label names",
+                  "Boolean masks only",
+                  "Integer-based positions",
+                  "Column data types"
+                ],
+                "answer": 2
+              }
+            },
+            {
+              "id": 3,
+              "heading": "Understanding loc (Label Location)",
+              "bullets": [
+                "Stands for label-based indexing",
+                "Uses row and column names (labels)",
+                "Upper bound of slice is inclusive"
+              ],
+              "narration": "Next up is loc, which stands for label location. Instead of numbers, loc uses the actual names or labels of the rows and columns. A very important rule frequently asked in exams: when you slice using loc, the stop bound is inclusive! If your index labels are strings or custom integers, loc will include the final specified label in the output.",
+              "visual_hint": "Diagram comparing integer positions vs string labels in a DataFrame.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "Which of the following statements is true regarding df.loc slicing?",
+                "options": [
+                  "The stop bound is exclusive",
+                  "The stop bound is inclusive",
+                  "It only accepts integer positions",
+                  "It ignores column names"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 4,
+              "heading": "Syntax and Parameter Format",
+              "bullets": [
+                "Format: dataframe.loc[row_selector, column_selector]",
+                "Use ':' to select all rows or columns",
+                "Pass lists for non-contiguous selection"
+              ],
+              "narration": "The syntax for both loc and iloc follows a strict structure: dataframe.index_type[row_selection, column_selection]. You can use a colon to select everything along an axis, or pass a list of specific row/column names or indices if you need non-contiguous data. Mastering this comma-separated syntax is crucial for writing bug-free exam code.",
+              "visual_hint": "A syntax breakdown diagram highlighting row and column parameters.",
+              "exam_tag": "2-mark definition",
+              "checkpoint": {
+                "q": "In dataframe.loc[row, col], what does the comma separate?",
+                "options": [
+                  "Two different dataframes",
+                  "Rows selection from columns selection",
+                  "The index from the values",
+                  "Mean and median functions"
+                ],
+                "answer": 1
+              }
+            },
+            {
+              "id": 5,
+              "heading": "Common Exam Pitfalls and Indexing Errors",
+              "bullets": [
+                "Using label names with iloc raises IndexError",
+                "Using integer positions with loc raises KeyError",
+                "Watch out for SettingWithCopyWarning"
+              ],
+              "narration": "In exams, external examiners love to test your conceptual clarity by giving code snippets that throw errors. Remember, passing string labels into iloc will trigger an IndexError because it expects integers. Conversely, passing integer positions into loc when the index consists of strings will trigger a KeyError. Always double-check your index type!",
+              "visual_hint": "Screenshot of a Python traceback showing KeyError and IndexError.",
+              "exam_tag": "conceptual",
+              "checkpoint": {
+                "q": "What error occurs if you pass string labels into the iloc indexer?",
+                "options": [
+                  "KeyError",
+                  "IndexError",
+                  "ValueError",
+                  "TypeError"
+                ],
+                "answer": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

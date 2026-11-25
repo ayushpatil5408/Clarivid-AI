@@ -26,6 +26,24 @@ export default function App() {
     replaceScene
   } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
+  const [redirectCountdown, setRedirectCountdown] = useState(null)
+  const [redirectCancelled, setRedirectCancelled] = useState(false)
+
+  // Countdown timer to auto-redirect to Video Creator Studio
+  useEffect(() => {
+    if (redirectCountdown === null || redirectCancelled || !storyboard) return
+
+    if (redirectCountdown <= 0) {
+      window.location.href = '/studio.html?autoload=1'
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setRedirectCountdown((prev) => (prev > 0 ? prev - 1 : 0))
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [redirectCountdown, redirectCancelled, storyboard])
 
   // Calm Mode support via ?calm=1 URL parameter
   useEffect(() => {
@@ -40,6 +58,8 @@ export default function App() {
   }, [])
 
   const handleGenerate = (params) => {
+    setRedirectCountdown(3)
+    setRedirectCancelled(false)
     setCurrentParams(params)
     generate(params)
   }
@@ -131,6 +151,37 @@ export default function App() {
                 <span>🎯 Schema Compliance: {metrics.complianceScore}%</span>
                 {metrics.cached && <span className="cached-indicator">📦 Cached</span>}
                 {metrics.retried && <span className="retry-indicator">🔄 Retried</span>}
+              </div>
+            )}
+
+            {storyboard && !loading && (
+              <div className="studio-redirect-banner" role="status">
+                <div className="studio-redirect-info">
+                  <span className="studio-redirect-badge">🚀 STUDIO READY</span>
+                  <span className="studio-redirect-text">
+                    Storyboard generated! {redirectCountdown !== null ? `Redirecting to Video Creator Studio in ${redirectCountdown}s...` : 'Ready to customize, re-narrate, and preview video.'}
+                  </span>
+                </div>
+                <div className="studio-redirect-actions">
+                  <a
+                    href="/studio.html?autoload=1"
+                    className="studio-redirect-btn-primary"
+                  >
+                    OPEN STUDIO NOW ↗
+                  </a>
+                  {redirectCountdown !== null && (
+                    <button
+                      type="button"
+                      className="studio-redirect-btn-cancel"
+                      onClick={() => {
+                        setRedirectCountdown(null)
+                        setRedirectCancelled(true)
+                      }}
+                    >
+                      Stay on this page
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 

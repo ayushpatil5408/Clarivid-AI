@@ -1,0 +1,26 @@
+[
+  {
+    "scene_id": 1,
+    "confidence": 98,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 2,
+    "confidence": 96,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 3,
+    "confidence": 99,
+    "issues": [],
+    "corrected_text": null
+  },
+  {
+    "scene_id": 4,
+    "confidence": 95,
+    "issues": [],
+    "corrected_text": null
+  }
+]

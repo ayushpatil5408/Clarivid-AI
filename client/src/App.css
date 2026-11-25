@@ -1473,3 +1473,116 @@ body.calm .studio-pill-link:hover {
     justify-content: center;
   }
 }
+
+/* Studio Redirect Banner (Gen Z Chaos) */
+.studio-redirect-banner {
+  background: var(--lime);
+  border: 4px solid var(--black);
+  box-shadow: 6px 6px 0 var(--black);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: jitter 0.4s ease 1;
+}
+
+.studio-redirect-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.studio-redirect-badge {
+  background: var(--black);
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  font-family: "Arial Black", Impact, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+}
+
+.studio-redirect-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.studio-redirect-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.studio-redirect-btn-primary {
+  display: inline-block;
+  background: var(--black) !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-family: "Arial Black", Impact, sans-serif !important;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  border: 3px solid var(--black) !important;
+  box-shadow: 4px 4px 0 var(--black) !important;
+  border-radius: 6px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.studio-redirect-btn-primary:hover {
+  background: var(--blue) !important;
+  animation: jitter 0.18s infinite linear;
+}
+
+.studio-redirect-btn-cancel {
+  background: #ffffff !important;
+  color: var(--black) !important;
+  border: 2px solid var(--black) !important;
+  box-shadow: 3px 3px 0 var(--black) !important;
+  padding: 0.55rem 0.95rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.studio-redirect-btn-cancel:hover {
+  background: #f1f5f9 !important;
+}
+
+.scene-open-studio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--magenta) !important;
+  color: #000000 !important;
+  text-decoration: none;
+  font-family: "Arial Black", Impact, sans-serif !important;
+  font-size: 0.82rem;
+  border: 2px solid var(--black) !important;
+  box-shadow: 3px 3px 0 var(--black) !important;
+  border-radius: 4px;
+  text-transform: uppercase;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.scene-open-studio-btn:hover {
+  background: var(--lime) !important;
+  animation: jitter 0.18s infinite linear;
+}
+
+body.calm .studio-redirect-banner {
+  animation: none !important;
+  border-width: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: #e0f2fe;
+}
+body.calm .studio-redirect-btn-primary:hover {
+  animation: none !important;
+}

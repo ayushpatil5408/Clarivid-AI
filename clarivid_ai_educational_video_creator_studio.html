@@ -180,13 +180,368 @@
       transition: width 0.25s ease, height 0.25s ease, aspect-ratio 0.25s ease;
     }
   </style>
+
+  <!-- Gen Z Chaos / Neo-Brutalist Visual Theme Override -->
+  <style id="genZChaosStyle">
+    :root {
+      --magenta: #FF00FF;
+      --lime: #00FF00;
+      --yellow: #FFFF00;
+      --blue: #0000FF;
+      --coral: #FF6B6B;
+      --teal: #4ECDC4;
+      --black: #000000;
+      --white: #FFFFFF;
+
+      --bg-canvas: #FFFF00;
+      --bg-surface-1: #FFFFFF;
+      --bg-surface-2: #F1F5F9;
+      --border-subtle: #000000;
+      --border-focus: #000000;
+      --accent-primary: #000000;
+      --accent-edu: #059669;
+      --text-primary: #000000;
+      --text-muted: #1e293b;
+    }
+
+    body {
+      background-color: var(--yellow) !important;
+      color: var(--black) !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      font-weight: 500;
+    }
+
+    /* Gen Z Jitter Animation */
+    @keyframes jitter {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-2px, 2px) rotate(-1.5deg); }
+      50% { transform: translate(2px, -1px) rotate(1.5deg); }
+      75% { transform: translate(-1px, -2px) rotate(-1deg); }
+      100% { transform: translate(1px, 1px) rotate(1deg); }
+    }
+
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Decorative Stickers */
+    .chaos-sticker {
+      position: absolute;
+      font-size: 2.5rem;
+      pointer-events: none;
+      user-select: none;
+      filter: drop-shadow(4px 4px 0 #000);
+      z-index: 50;
+    }
+    .sticker-1 { top: 10px; left: 16px; transform: rotate(-15deg); }
+    .sticker-2 { top: 12px; right: 24px; transform: rotate(18deg); }
+    .sticker-3 { bottom: 18px; left: 18px; transform: rotate(14deg); }
+    .sticker-4 { bottom: 18px; right: 18px; transform: rotate(-12deg); }
+
+    /* Marquee Strip */
+    .chaos-marquee-strip {
+      width: 100%;
+      overflow: hidden;
+      background: var(--black);
+      border-top: 3px solid var(--black);
+      border-bottom: 3px solid var(--black);
+      box-shadow: 0 4px 0 var(--black);
+      padding: 0.4rem 0;
+      white-space: nowrap;
+      z-index: 25;
+    }
+    .chaos-marquee-track {
+      display: inline-flex;
+      width: max-content;
+      animation: marquee-scroll 20s linear infinite;
+    }
+    .chaos-marquee-content {
+      color: var(--lime);
+      font-family: "Arial Black", Impact, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Screen 1 Setup Styling */
+    #screenSetup {
+      background: var(--yellow) !important;
+      position: relative;
+    }
+    #screenSetup header {
+      background: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 4px 4px 0 #000000 !important;
+      border-radius: 8px;
+    }
+    #screenSetup h1 {
+      font-family: "Arial Black", Impact, sans-serif !important;
+      text-transform: uppercase !important;
+      color: var(--black) !important;
+      text-shadow: 4px 4px 0 var(--magenta) !important;
+      transform: rotate(-1.5deg);
+      letter-spacing: -0.02em;
+    }
+    .glass-bar {
+      background: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 4px 4px 0 #000000 !important;
+      color: var(--black) !important;
+    }
+    .glass-bar.rounded-\[12px\] {
+      background: var(--teal) !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 8px 8px 0 #000000 !important;
+      border-radius: 8px !important;
+      transform: rotate(0.5deg);
+    }
+    #setupPromptInput {
+      background: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 3px 3px 0 #000000 !important;
+      color: #000000 !important;
+      border-radius: 6px !important;
+      font-weight: 600;
+    }
+
+    /* Screen 2 Top Studio Header */
+    #screenStudio {
+      background: var(--yellow) !important;
+      position: relative;
+    }
+    #screenStudio > header {
+      background: #FFFFFF !important;
+      border-bottom: 3px solid #000000 !important;
+      box-shadow: 0 4px 0 #000000 !important;
+      position: relative;
+      z-index: 20;
+    }
+
+    #studioLessonTitle {
+      font-family: "Arial Black", Impact, sans-serif !important;
+      color: var(--black) !important;
+      border: 2px solid #000000 !important;
+      background: #FFFFFF !important;
+      box-shadow: 2px 2px 0 #000000 !important;
+      border-radius: 4px !important;
+    }
+
+    #studioAuditBadge {
+      background: var(--lime) !important;
+      color: var(--black) !important;
+      border: 2px solid var(--black) !important;
+      box-shadow: 2px 2px 0 var(--black) !important;
+      font-family: "Arial Black", Impact, sans-serif !important;
+      text-transform: uppercase;
+    }
+
+    /* Buttons & Controls */
+    #btnBackToSetup,
+    #btnUndo,
+    #btnRedo,
+    #btnTogglePromptLab,
+    #btnOpenExport,
+    #btnGenerateOutline,
+    #btnAddSceneCard,
+    .sample-chip,
+    .ratio-btn,
+    .theme-chip,
+    #btnViewStoryboard,
+    #btnViewFullScript,
+    #btnOpenApiSetup {
+      border: 3px solid #000000 !important;
+      box-shadow: 3px 3px 0 #000000 !important;
+      border-radius: 6px !important;
+      font-family: "Arial Black", Impact, sans-serif !important;
+      text-transform: uppercase !important;
+      transition: all 0.15s ease !important;
+    }
+
+    #btnOpenExport {
+      background: var(--magenta) !important;
+      color: #000000 !important;
+    }
+    #btnOpenExport:hover {
+      background: var(--blue) !important;
+      color: #FFFFFF !important;
+      animation: jitter 0.18s infinite linear;
+    }
+
+    #btnGenerateOutline {
+      background: var(--black) !important;
+      color: #FFFFFF !important;
+      box-shadow: 6px 6px 0 var(--black) !important;
+      font-size: 1.15rem !important;
+    }
+    #btnGenerateOutline:hover {
+      background: var(--blue) !important;
+      animation: jitter 0.18s infinite linear;
+    }
+
+    /* Left Sidebar: Modular Scenes */
+    #threePaneWorkbench > aside:first-child {
+      background: var(--teal) !important;
+      border-right: 3px solid #000000 !important;
+      border-bottom: 3px solid #000000 !important;
+    }
+    #threePaneWorkbench > aside:first-child > div:first-child {
+      background: var(--black) !important;
+      color: #FFFFFF !important;
+      border-bottom: 3px solid #000000 !important;
+      font-family: "Arial Black", Impact, sans-serif !important;
+    }
+    #totalDurationBadge {
+      color: var(--yellow) !important;
+      font-weight: 700;
+    }
+
+    /* Modular Scene Cards */
+    .scene-card {
+      background-color: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 4px 4px 0 #000000 !important;
+      border-radius: 6px !important;
+      color: #000000 !important;
+      padding: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .scene-card:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 6px 6px 0 #000000 !important;
+    }
+    .scene-card.active {
+      background-color: #FFFFFF !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 6px 6px 0 #000000 !important;
+      outline: 3px solid var(--blue);
+    }
+    .scene-card textarea,
+    .scene-card input {
+      border: 2px solid #000000 !important;
+      background: #FFFFFF !important;
+      color: #000000 !important;
+      border-radius: 4px !important;
+    }
+
+    /* Center Stage: Video Monitor & Canvas */
+    #threePaneWorkbench > main {
+      background: var(--yellow) !important;
+    }
+    .preview-frame-shell {
+      border: 4px solid #000000 !important;
+      box-shadow: 8px 8px 0 #000000 !important;
+      background: #000000 !important;
+      border-radius: 8px !important;
+    }
+    #karaokeSubtitleBar {
+      background: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 4px 4px 0 #000000 !important;
+      color: #000000 !important;
+      font-weight: 700 !important;
+    }
+    #btnPauseSimplify {
+      background: var(--black) !important;
+      color: var(--lime) !important;
+      border: 2px solid var(--black) !important;
+      box-shadow: 3px 3px 0 var(--black) !important;
+      font-family: "Arial Black", Impact, sans-serif !important;
+    }
+    #btnPauseSimplify:hover {
+      background: var(--blue) !important;
+      animation: jitter 0.18s infinite linear;
+    }
+    #btnPlayPause {
+      background: var(--black) !important;
+      color: #FFFFFF !important;
+      border: 2px solid var(--black) !important;
+      box-shadow: 2px 2px 0 var(--black) !important;
+    }
+    #btnPlayPause:hover {
+      background: var(--blue) !important;
+      animation: jitter 0.18s infinite linear;
+    }
+
+    /* Right Sidebar: Inspector */
+    #rightInspector {
+      background: var(--coral) !important;
+      border-left: 3px solid #000000 !important;
+      color: #000000 !important;
+    }
+    #rightInspector > div > div {
+      background: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 4px 4px 0 #000000 !important;
+      margin: 12px !important;
+      border-radius: 6px !important;
+    }
+    #rightInspector select,
+    #rightInspector input[type="range"] {
+      border: 2px solid #000000 !important;
+      background: #FFFFFF !important;
+      color: #000000 !important;
+      border-radius: 4px !important;
+    }
+
+    /* Full Script View */
+    #fullScriptContainer {
+      background: var(--yellow) !important;
+      color: #000000 !important;
+    }
+    .surface-1 {
+      background-color: #FFFFFF !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 6px 6px 0 #000000 !important;
+      border-radius: 8px !important;
+    }
+
+    /* Minimal Studio Scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFFFF;
+      border-left: 1px solid #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #000000;
+      border-radius: 0;
+    }
+
+    /* Calm Mode */
+    body.calm {
+      background: #f8fafc !important;
+    }
+    body.calm .chaos-sticker,
+    body.calm .chaos-marquee-strip {
+      display: none !important;
+    }
+    body.calm #screenSetup h1 {
+      transform: none !important;
+      text-shadow: none !important;
+    }
+    body.calm .scene-card,
+    body.calm .preview-frame-shell,
+    body.calm .glass-bar {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+      border-width: 2px !important;
+    }
+  </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
   <!-- ===================================================================== -->
   <!-- SCREEN 1: PROMPT & LESSON SETUP (GAMMA-INSPIRED)                      -->
   <!-- ===================================================================== -->
-  <section id="screenSetup" class="min-h-screen w-full studio-radial-glow flex flex-col justify-between px-4 sm:px-6 py-5">
+  <section id="screenSetup" class="min-h-screen w-full studio-radial-glow flex flex-col justify-between px-4 sm:px-6 py-5 relative">
+    <span class="chaos-sticker sticker-1" aria-hidden="true">🎓</span>
+    <span class="chaos-sticker sticker-2" aria-hidden="true">✨</span>
+    <span class="chaos-sticker sticker-3" aria-hidden="true">🔥</span>
+    <span class="chaos-sticker sticker-4" aria-hidden="true">🧠</span>
+
     <!-- Minimal Top Brand Bar -->
     <header class="max-w-6xl w-full mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2.5">
@@ -344,7 +699,9 @@
   <!-- ===================================================================== -->
   <!-- SCREEN 2: MODULAR STORYBOARD & SCRIPT EDITOR (GAMMA + RUNWAY HYBRID)  -->
   <!-- ===================================================================== -->
-  <section id="screenStudio" class="hidden min-h-screen h-screen flex flex-col bg-bgCanvas overflow-hidden">
+  <section id="screenStudio" class="hidden min-h-screen h-screen flex flex-col bg-bgCanvas overflow-hidden relative">
+    <span class="chaos-sticker sticker-1" aria-hidden="true">🎓</span>
+    <span class="chaos-sticker sticker-2" aria-hidden="true">✨</span>
 
     <!-- TOP STUDIO HEADER (48px height, 1px solid #23252C bottom border) -->
     <header class="h-[48px] shrink-0 px-3 sm:px-4 bg-bgSurface1 border-b border-borderSubtle flex items-center justify-between gap-2">
@@ -391,6 +748,18 @@
         </button>
       </div>
     </header>
+
+    <!-- Gen Z Chaos Marquee strip -->
+    <div class="chaos-marquee-strip" role="region" aria-label="Announcement marquee">
+      <div class="chaos-marquee-track">
+        <span class="chaos-marquee-content">
+          FACT-CHECKED • HINGLISH • EXAM TAGS • VIDEO CREATOR STUDIO • RUNWAY + GAMMA CANVAS •&nbsp;
+        </span>
+        <span class="chaos-marquee-content" aria-hidden="true">
+          FACT-CHECKED • HINGLISH • EXAM TAGS • VIDEO CREATOR STUDIO • RUNWAY + GAMMA CANVAS •&nbsp;
+        </span>
+      </div>
+    </div>
 
     <!-- FULL SCRIPT & PROMPT LAB VIEW (Shown when 'Full Script View' is active) -->
     <div id="fullScriptContainer" class="hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-bgCanvas">
@@ -1315,15 +1684,15 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
     function getExamTagBadge(tag) {
       const t = (tag || "conceptual").toLowerCase();
       if (t.includes("definition") || t.includes("2-mark")) {
-        return { label: "2-Mark Definition", class: "bg-emerald-950/40 text-emerald-300 border-emerald-500/30" };
+        return { label: "2-Mark Definition", class: "bg-[#dcfce7] text-[#14532d] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
       }
       if (t.includes("diagram") || t.includes("5-mark")) {
-        return { label: "5-Mark Diagram", class: "bg-sky-950/40 text-sky-300 border-sky-500/30" };
+        return { label: "5-Mark Diagram", class: "bg-[#e0e7ff] text-[#312e81] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
       }
       if (t.includes("numerical")) {
-        return { label: "Numerical Problem", class: "bg-orange-950/40 text-orange-300 border-orange-500/30" };
+        return { label: "Numerical Problem", class: "bg-[#ffedd5] text-[#7c2d12] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
       }
-      return { label: "Conceptual Question", class: "bg-purple-950/40 text-purple-300 border-purple-500/30" };
+      return { label: "Conceptual Question", class: "bg-[#f3e8ff] text-[#581c87] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
     }
 
     function inferDiagramType(title, scene, idx) {
@@ -1440,11 +1809,11 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
               scenes: sb.scenes.map((s, idx) => ({
                 id: `s${s.id || idx + 1}_${Date.now()}`,
                 numericId: s.id || idx + 1,
-                heading: s.heading || `Scene ${idx + 1}`,
+                heading: s.heading || s.scene_title || `Scene ${idx + 1}`,
                 diagramType: inferDiagramType(sb.title, s, idx),
                 narration: s.narration || "Scene narration script.",
-                visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || rawText}`,
-                keyTerm: s.heading || s.exam_tag || `Concept ${idx + 1}`,
+                visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || s.scene_title || rawText}`,
+                keyTerm: s.heading || s.scene_title || s.exam_tag || `Concept ${idx + 1}`,
                 analogy: (s.bullets && s.bullets[0]) ? s.bullets[0] : "Think of this as a step-by-step verified transition.",
                 duration: estimateDurationFromText(s.narration || ""),
                 exam_tag: s.exam_tag || "conceptual",
@@ -2805,6 +3174,64 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
       syncApiBadge();
       initBackendHealth();
       updateTokenCounter();
+
+      // Calm mode support via ?calm=1
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("calm") === "1") {
+        document.body.classList.add("calm");
+      }
+
+      // Check for autoloaded storyboard from Clarivid generator
+      const isAutoload = urlParams.get("autoload") === "1" || urlParams.get("storyboard") === "1" || urlParams.has("autoload");
+      const storedBundleStr = localStorage.getItem("clarivid_active_storyboard");
+      if (storedBundleStr && isAutoload) {
+        try {
+          const bundle = JSON.parse(storedBundleStr);
+          if (bundle && bundle.storyboard && Array.isArray(bundle.storyboard.scenes) && bundle.storyboard.scenes.length > 0) {
+            const sb = bundle.storyboard;
+            state.backendStoryboard = sb;
+            state.lessonTitle = sb.title || bundle.requestedTopic || "Clarivid Lesson";
+            state.auditResults = bundle.audit || [];
+            if (bundle.metrics) {
+              state.backendCompliance = bundle.metrics.complianceScore;
+              state.usedFallback = bundle.metrics.usedFallback;
+              state.fallbackReason = bundle.metrics.fallbackReason;
+            }
+            if (bundle.requestedTopic && el.setupPromptInput) {
+              el.setupPromptInput.value = bundle.requestedTopic;
+            }
+
+            state.scenes = sb.scenes.map((s, idx) => ({
+              id: `s${s.id || idx + 1}_${Date.now()}`,
+              numericId: s.id || idx + 1,
+              heading: s.heading || s.scene_title || `Scene ${idx + 1}`,
+              diagramType: inferDiagramType(sb.title, s, idx),
+              narration: s.narration || "Scene narration script.",
+              visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || s.scene_title || sb.title}`,
+              keyTerm: s.heading || s.scene_title || s.exam_tag || `Concept ${idx + 1}`,
+              analogy: (s.bullets && s.bullets[0]) ? s.bullets[0] : "Step-by-step verified transition.",
+              duration: estimateDurationFromText(s.narration || ""),
+              exam_tag: s.exam_tag || "conceptual",
+              checkpoint: s.checkpoint || null,
+              bullets: s.bullets || [],
+              audit: (state.auditResults && (state.auditResults.find(a => a.scene_id === s.id) || state.auditResults[idx])) || null,
+              visualSeed: idx % 2
+            }));
+
+            state.activeSceneIdx = 0;
+            state.sceneElapsed = 0;
+            state.undoStack = [];
+            state.redoStack = [];
+
+            if (el.studioLessonTitle) el.studioLessonTitle.value = state.lessonTitle;
+            switchScreen("studio");
+            renderAllStudioViews();
+            showToast(`🚀 Loaded "${state.lessonTitle}" (${state.scenes.length} scenes) into Video Creator Studio!`);
+          }
+        } catch (e) {
+          console.warn("Autoload parse failed:", e);
+        }
+      }
     };
   </script>
 </body>

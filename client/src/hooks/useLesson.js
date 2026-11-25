@@ -72,6 +72,32 @@ export function useLesson() {
           complianceScore: data.complianceScore,
           cached: data.cached
         })
+
+        // Persist for Video Creator Studio autoload
+        if (data.storyboard && typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(
+              'clarivid_active_storyboard',
+              JSON.stringify({
+                storyboard: data.storyboard,
+                metrics: {
+                  generationTimeMs: data.generationTimeMs,
+                  promptMode: data.promptMode,
+                  complianceScore: data.complianceScore,
+                  usedFallback: Boolean(data.usedFallback),
+                  fallbackReason: data.fallbackReason,
+                  fallbackTopic: data.fallbackTopic
+                },
+                requestedTopic: data.requestedTopic || params.topic,
+                level: params.level,
+                language: params.language,
+                updatedAt: Date.now()
+              })
+            )
+          } catch (e) {
+            console.warn('Could not persist storyboard to localStorage:', e)
+          }
+        }
       } catch (err) {
         const msg = err.response?.data?.error || err.message || 'Failed to generate lesson'
         setError(msg)
@@ -84,8 +110,19 @@ export function useLesson() {
         setAuditing(true)
         try {
           const auditResult = await auditLesson(generatedStoryboard, fallbackKey)
-          setAudit(Array.isArray(auditResult.audit) ? auditResult.audit : [])
+          const auditArr = Array.isArray(auditResult.audit) ? auditResult.audit : []
+          setAudit(auditArr)
           setAuditSource(auditResult.source || 'live')
+          if (typeof window !== 'undefined') {
+            try {
+              const current = JSON.parse(localStorage.getItem('clarivid_active_storyboard') || '{}')
+              current.audit = auditArr
+              current.auditSource = auditResult.source || 'live'
+              localStorage.setItem('clarivid_active_storyboard', JSON.stringify(current))
+            } catch (_err) {
+              console.warn('Failed to update audit in localStorage:', _err)
+            }
+          }
         } catch (auditErr) {
           console.warn('Background fact-audit failed or was unavailable:', auditErr)
           // Keep audit as [] so neutral "Not audited" badge is shown without blocking the lesson

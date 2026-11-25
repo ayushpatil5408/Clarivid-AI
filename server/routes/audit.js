@@ -16,6 +16,9 @@ const PRECOMPUTED_AUDITS = {
   'photosynthesis.json': JSON.parse(
     readFileSync(join(__dirname, '../fallback/audits/photosynthesis.json'), 'utf8')
   ),
+  'sulba-sutras.json': JSON.parse(
+    readFileSync(join(__dirname, '../fallback/audits/sulba-sutras.json'), 'utf8')
+  ),
   'tcp-handshake-flawed.json': JSON.parse(
     readFileSync(join(__dirname, '../fallback/audits/tcp-handshake-flawed.json'), 'utf8')
   ),
@@ -31,6 +34,7 @@ const FIXTURE_AUDIT = JSON.parse(
 const BUNDLED_FALLBACK_TITLES = new Set([
   'TCP Three-Way Handshake',
   'Photosynthesis: The Plant Energy Engine',
+  'Indian Knowledge Systems: Sulba Sutras',
   'TCP Three-Way Handshake (Flawed Demo)',
   'Photosynthesis: The Plant Energy Engine (Flawed Demo)'
 ])
@@ -53,6 +57,9 @@ function matchPrecomputedAudit(storyboard, fallbackKey, forceLive) {
   }
   if (lowerTitle.includes('photo') && lowerTitle.includes('flawed')) {
     return PRECOMPUTED_AUDITS['photosynthesis-flawed.json']
+  }
+  if (lowerTitle.includes('sulba') || lowerTitle.includes('vedic')) {
+    return PRECOMPUTED_AUDITS['sulba-sutras.json']
   }
   if (lowerTitle.includes('tcp') && lowerTitle.includes('handshake')) {
     return PRECOMPUTED_AUDITS['tcp-handshake.json']

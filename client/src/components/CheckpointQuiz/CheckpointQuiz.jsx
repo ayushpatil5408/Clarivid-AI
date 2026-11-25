@@ -11,11 +11,6 @@ export default function CheckpointQuiz({
   onReplaceNextScene,
   onNext
 }) {
-  const checkpoint = scene?.checkpoint
-  if (!checkpoint || !Array.isArray(checkpoint.options) || checkpoint.options.length !== 4) {
-    return null
-  }
-
   const {
     selectedOption,
     submitted,
@@ -32,6 +27,11 @@ export default function CheckpointQuiz({
     language,
     onReplaceNextScene
   })
+
+  const checkpoint = scene?.checkpoint
+  if (!checkpoint || !Array.isArray(checkpoint.options) || checkpoint.options.length !== 4) {
+    return null
+  }
 
   return (
     <div className="checkpoint-quiz-card">

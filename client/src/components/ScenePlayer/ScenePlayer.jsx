@@ -103,6 +103,13 @@ export default function ScenePlayer({
 
         {/* Real-time Fact Audit Badge */}
         <div className="meta-right">
+          <a
+            href="/studio.html?autoload=1"
+            className="scene-open-studio-btn"
+            title="Open in full Video Creator Studio with canvas preview and scene alteration"
+          >
+            🎨 Video Studio ↗
+          </a>
           <AuditBadge
             auditEntry={auditEntry}
             auditing={auditing}

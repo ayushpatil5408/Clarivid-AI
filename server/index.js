@@ -1,5 +1,5 @@
 import 'dotenv/config'
-
+import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
@@ -14,6 +14,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: join(__dirname, '.env') })
 const ROOT_DIR = join(__dirname, '..')
 
 const app = express()
