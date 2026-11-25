@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import LessonForm from './components/LessonForm/LessonForm'
 import ScenePlayer from './components/ScenePlayer/ScenePlayer'
 import PromptInspector from './components/PromptInspector/PromptInspector'
@@ -27,6 +27,18 @@ export default function App() {
   } = useLesson()
   const [currentParams, setCurrentParams] = useState(null)
 
+  // Calm Mode support via ?calm=1 URL parameter
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('calm') === '1') {
+        document.body.classList.add('calm')
+      } else {
+        document.body.classList.remove('calm')
+      }
+    }
+  }, [])
+
   const handleGenerate = (params) => {
     setCurrentParams(params)
     generate(params)
@@ -34,6 +46,13 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {/* Decorative Gen Z Chaos emoji stickers */}
+      <span className="chaos-sticker sticker-1" aria-hidden="true">🎓</span>
+      <span className="chaos-sticker sticker-2" aria-hidden="true">✨</span>
+      <span className="chaos-sticker sticker-3" aria-hidden="true">🔥</span>
+      <span className="chaos-sticker sticker-4" aria-hidden="true">📚</span>
+      <span className="chaos-sticker sticker-5" aria-hidden="true">🧠</span>
+
       <header className="app-header">
         <div className="header-badges-row">
           <span className="header-badge">AI Tools &amp; Prompt Engineering</span>
@@ -76,6 +95,18 @@ export default function App() {
           </a>
         </div>
       </header>
+
+      {/* Gen Z Chaos Marquee strip */}
+      <div className="chaos-marquee-strip" role="region" aria-label="Announcement marquee">
+        <div className="chaos-marquee-track">
+          <span className="chaos-marquee-content">
+            FACT-CHECKED • HINGLISH • EXAM TAGS • PROMPT INSPECTOR • FACT-CHECKED • HINGLISH • EXAM TAGS • PROMPT INSPECTOR •&nbsp;
+          </span>
+          <span className="chaos-marquee-content" aria-hidden="true">
+            FACT-CHECKED • HINGLISH • EXAM TAGS • PROMPT INSPECTOR • FACT-CHECKED • HINGLISH • EXAM TAGS • PROMPT INSPECTOR •&nbsp;
+          </span>
+        </div>
+      </div>
 
       <main className="main-content">
         {activeTab === 'inspector' ? (
