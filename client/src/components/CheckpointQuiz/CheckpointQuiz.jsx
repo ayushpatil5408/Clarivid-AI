@@ -88,10 +88,18 @@ export default function CheckpointQuiz({
               </p>
             )}
           </div>
-          {onNext && currentIndex < totalScenes - 1 && (
+          {onNext && currentIndex < totalScenes - 1 ? (
             <button type="button" className="quiz-continue-btn" onClick={onNext}>
               Continue to Next Scene ➔
             </button>
+          ) : (
+            <a
+              href="/studio.html?autoload=1"
+              className="quiz-continue-btn studio-quiz-btn"
+              title="Proceed to full Video Creator Studio"
+            >
+              🎬 Continue to Video Generation ➔
+            </a>
           )}
         </div>
       )}

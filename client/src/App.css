@@ -1967,3 +1967,30 @@ body.dark-theme .studio-redirect-banner {
   background: var(--lime) !important;
   animation: jitter 0.18s infinite linear;
 }
+
+/* Studio Navigation Footer & Quiz Navigation */
+.studio-navigation-footer {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 3px dashed var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.studio-footer-btn {
+  font-size: 1.05rem !important;
+  padding: 0.85rem 1.75rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem;
+  text-align: center;
+  box-shadow: 5px 5px 0 var(--shadow-color) !important;
+}
+
+.studio-quiz-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}

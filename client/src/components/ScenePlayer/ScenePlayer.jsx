@@ -160,6 +160,17 @@ export default function ScenePlayer({
           Next ➡️
         </button>
       </div>
+
+      {/* Navigation button to continue to Video Generator Studio */}
+      <div className="studio-navigation-footer">
+        <a
+          href="/studio.html?autoload=1"
+          className="studio-redirect-btn-primary studio-footer-btn"
+          title="Proceed to scene-by-scene alteration, visual generation, voiceover, and video preview"
+        >
+          🎬 Continue to Video Generation &amp; Preview Studio ➔
+        </a>
+      </div>
     </div>
   )
 }

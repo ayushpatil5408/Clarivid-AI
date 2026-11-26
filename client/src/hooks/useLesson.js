@@ -73,8 +73,8 @@ export function useLesson() {
           cached: data.cached
         })
 
-        // Persist storyboard and redirect to Video Creator Studio unless running ?demo=flawed*
-        if (generatedStoryboard && !isFlawedTcp && !isFlawedBio && typeof window !== 'undefined') {
+        // Persist storyboard payload for Video Creator Studio (ready when user clicks continue)
+        if (generatedStoryboard && typeof window !== 'undefined') {
           try {
             localStorage.setItem(
               'clarivid_studio_payload',
@@ -91,11 +91,9 @@ export function useLesson() {
                 promptMode: data.promptMode || params.promptMode
               })
             )
-            const isCalm = new URLSearchParams(window.location.search).get('calm') === '1'
-            window.location.href = isCalm ? '/studio.html?loaded=1&calm=1' : '/studio.html?loaded=1'
-            return
+            localStorage.setItem('clarivid_active_storyboard', JSON.stringify(generatedStoryboard))
           } catch (storageErr) {
-            console.warn('Could not redirect to studio:', storageErr)
+            console.warn('Could not persist storyboard to storage:', storageErr)
           }
         }
       } catch (err) {
