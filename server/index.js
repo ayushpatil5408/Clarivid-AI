@@ -18,6 +18,7 @@ dotenv.config({ path: join(__dirname, '.env') })
 const ROOT_DIR = join(__dirname, '..')
 
 const app = express()
+app.set('trust proxy', 1)
 app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
@@ -57,6 +58,10 @@ app.use('/api/ask', askRoute)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log(`Clarivid server running on port ${PORT} (MOCK_AI=${process.env.MOCK_AI === 'true'})`)
-})
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Clarivid server running on port ${PORT} (MOCK_AI=${process.env.MOCK_AI === 'true'})`)
+  })
+}
+
+export default app
