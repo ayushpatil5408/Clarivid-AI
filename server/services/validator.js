@@ -12,6 +12,12 @@ export function validateScene(scene) {
   if (typeof scene.id !== 'number' && typeof scene.id !== 'string') {
     return { valid: false, error: 'Missing or invalid scene id' }
   }
+  // Normalize common alternate heading keys from zero-shot responses
+  if (!scene.heading && typeof scene.scene_title === 'string' && scene.scene_title.trim()) {
+    scene.heading = scene.scene_title.trim()
+  } else if (!scene.heading && typeof scene.title === 'string' && scene.title.trim()) {
+    scene.heading = scene.title.trim()
+  }
   if (!scene.heading || typeof scene.heading !== 'string') {
     return { valid: false, error: 'Missing or invalid heading' }
   }
@@ -24,6 +30,12 @@ export function validateScene(scene) {
   if (!scene.visual_hint || typeof scene.visual_hint !== 'string') {
     return { valid: false, error: 'Missing or invalid visual_hint' }
   }
+  if (typeof scene.exam_tag === 'string') {
+    const normalizedTag = scene.exam_tag.trim().toLowerCase()
+    if (ALLOWED_EXAM_TAGS.has(normalizedTag)) {
+      scene.exam_tag = normalizedTag
+    }
+  }
   if (!ALLOWED_EXAM_TAGS.has(scene.exam_tag)) {
     return { valid: false, error: `Invalid exam_tag: ${scene.exam_tag}` }
   }
@@ -33,6 +45,9 @@ export function validateScene(scene) {
     scene.checkpoint.options.length !== 4
   ) {
     return { valid: false, error: 'Checkpoint must have exactly 4 options' }
+  }
+  if (typeof scene.checkpoint.answer === 'string' && /^\d+$/.test(scene.checkpoint.answer.trim())) {
+    scene.checkpoint.answer = Number(scene.checkpoint.answer.trim())
   }
   if (typeof scene.checkpoint.answer !== 'number') {
     return { valid: false, error: 'Checkpoint answer must be numeric' }

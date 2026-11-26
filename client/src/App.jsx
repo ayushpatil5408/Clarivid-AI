@@ -4,10 +4,25 @@ import ScenePlayer from './components/ScenePlayer/ScenePlayer'
 import PromptInspector from './components/PromptInspector/PromptInspector'
 import Spinner from './components/common/Spinner'
 import ErrorBanner from './components/common/ErrorBanner'
+import ThemeToggle from './components/ThemeToggle/ThemeToggle'
 import { useLesson } from './hooks/useLesson'
 import './App.css'
 
+function getInitialTheme() {
+  try {
+    const saved = localStorage.getItem('clarivid-theme')
+    if (saved === 'dark' || saved === 'light') return saved
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark'
+    }
+  } catch (e) {
+    console.error('Failed to read theme from localStorage', e)
+  }
+  return 'light'
+}
+
 export default function App() {
+  const [theme, setTheme] = useState(getInitialTheme)
   const [activeTab, setActiveTab] = useState('lesson') // 'lesson' | 'inspector'
   const {
     storyboard,
@@ -45,6 +60,26 @@ export default function App() {
     return () => clearTimeout(timer)
   }, [redirectCountdown, redirectCancelled, storyboard])
 
+  // Synchronize theme with body/documentElement class and localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('clarivid-theme', theme)
+    } catch (e) {
+      console.error('Failed to save theme to localStorage', e)
+    }
+    if (theme === 'dark') {
+      document.body.classList.add('dark-theme')
+      document.documentElement.classList.add('dark-theme')
+    } else {
+      document.body.classList.remove('dark-theme')
+      document.documentElement.classList.remove('dark-theme')
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
+
   // Calm Mode support via ?calm=1 URL parameter
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -74,11 +109,15 @@ export default function App() {
       <span className="chaos-sticker sticker-5" aria-hidden="true">🧠</span>
 
       <header className="app-header">
-        <div className="header-badges-row">
-          <span className="header-badge">AI Tools &amp; Prompt Engineering</span>
-          {mockAi && <span className="mock-ai-badge">🤖 MOCK AI MODE</span>}
+        <div className="header-top-row">
+          <div className="header-brand">
+            <h1 className="app-title">🎓 Clarivid</h1>
+            {mockAi && <span className="mock-ai-badge">🤖 MOCK AI MODE</span>}
+          </div>
+          <div className="header-actions">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
         </div>
-        <h1 className="app-title">🎓 Clarivid</h1>
         <p className="app-subtitle">
           Interactive, Fact-Audited Explainer Generator with Browser Narration
         </p>

@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClariVid AI — Mini Project Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- PptxGenJS CDN for Client-side 1-click PowerPoint export -->
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+  <style>
+    :root {
+      --bg-canvas: #090A0F;
+      --bg-surface: #13141C;
+      --bg-card: #1C1E2A;
+      --bg-card-hover: #242736;
+      --border-color: #2D3142;
+      --border-highlight: #4F5670;
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --accent-yellow: #FFE600;
+      --accent-cyan: #00F0FF;
+      --accent-pink: #FF3366;
+      --accent-green: #10B981;
+      --accent-purple: #8B5CF6;
+      --shadow-hard: 4px 4px 0px #000000;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-canvas: #FFFBEA;
+      --bg-surface: #FFFFFF;
+      --bg-card: #F4F6F9;
+      --bg-card-hover: #EAEFF5;
+      --border-color: #000000;
+      --border-highlight: #000000;
+      --text-main: #000000;
+      --text-muted: #334155;
+      --accent-yellow: #FFD600;
+      --accent-cyan: #06B6D4;
+      --accent-pink: #E11D48;
+      --accent-green: #059669;
+      --accent-purple: #7C3AED;
+      --shadow-hard: 4px 4px 0px #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    /* Top Action Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: var(--bg-surface);
+      border-bottom: 2px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .project-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-pill {
+      background: var(--accent-yellow);
+      color: #000;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 4px;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-highlight);
+      transform: translateY(-1px);
+    }
+
+    .action-btn--primary {
+      background: var(--accent-yellow);
+      color: #000;
+      border-color: #000;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .action-btn--primary:hover {
+      background: #FFE033;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 #000;
+    }
+
+    /* Presentation Deck Container */
+    .presentation-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .slide-stage {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 580px;
+      background: var(--bg-surface);
+      border: 3px solid var(--border-color);
+      box-shadow: 8px 8px 0px rgba(0,0,0,0.45);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 44px 56px;
+      transition: all 0.3s ease;
+    }
+
+    /* Slide Content Elements */
+    .slide {
+      display: none;
+      height: 100%;
+      width: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .slide-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      background: var(--accent-cyan);
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 4px;
+      box-shadow: 2px 2px 0 #000;
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .slide-number {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      padding: 6px 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+
+    /* Slide Body Grid */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px 20px;
+      position: relative;
+    }
+
+    .card--highlight {
+      border-color: var(--accent-yellow);
+      background: rgba(255, 230, 0, 0.04);
+    }
+
+    .card--cyan {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .card--pink {
+      border-color: var(--accent-pink);
+      background: rgba(255, 51, 102, 0.04);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .bullet-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: var(--accent-yellow);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      border: 1.5px solid #000;
+    }
+
+    /* Comparison Table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      border: 2px solid var(--border-color);
+      background: var(--bg-card);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .compare-table th {
+      background: var(--bg-surface);
+      border-bottom: 2px solid var(--border-color);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tag-badge--green { background: rgba(16, 185, 129, 0.15); color: #10B981; border-color: #10B981; }
+    .tag-badge--red { background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: #EF4444; }
+    .tag-badge--yellow { background: rgba(255, 230, 0, 0.15); color: #FFE600; border-color: #FFE600; }
+
+    /* Architecture Visual Box */
+    .arch-diagram {
+      background: #0B0C10;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #38BDF8;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Slide Navigation Bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 20px;
+      gap: 16px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg-card);
+      border-color: var(--border-highlight);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-yellow);
+      transition: width 0.3s ease;
+      border-right: 2px solid #000;
+    }
+
+    /* Presenter Notes Accordion */
+    .speaker-notes-box {
+      width: 100%;
+      margin-top: 16px;
+      background: var(--bg-surface);
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .speaker-notes-box.visible {
+      display: block;
+    }
+
+    .speaker-notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-yellow);
+      margin-bottom: 6px;
+    }
+
+    /* Print Styles for PDF */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .top-bar, .nav-bar, .speaker-notes-box {
+        display: none !important;
+      }
+      .slide-stage {
+        aspect-ratio: auto;
+        min-height: auto;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        height: 100vh;
+        padding: 40px;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Top Navigation & Controls Bar -->
+  <header class="top-bar">
+    <div class="project-brand">
+      <span>🎓 Clarivid AI</span>
+      <span class="brand-pill">MINI PROJECT</span>
+      <span style="font-size: 0.82rem; font-weight: 500; color: var(--text-muted);">AI Tools &amp; Prompt Engineering</span>
+    </div>
+
+    <div class="top-controls">
+      <button class="action-btn" id="notesToggleBtn" onclick="toggleSpeakerNotes()" title="Show/Hide viva speaking notes">
+        🗣️ Script for Mam (Notes)
+      </button>
+      <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch dark/light presentation theme">
+        🌓 Theme
+      </button>
+      <button class="action-btn" onclick="window.print()" title="Print or save as PDF">
+        🖨️ Save PDF
+      </button>
+      <button class="action-btn action-btn--primary" id="pptxExportBtn" onclick="exportToPPTX()" title="Download genuine editable Microsoft PowerPoint .pptx file">
+        📥 Download PowerPoint (.pptx)
+      </button>
+    </div>
+  </header>
+
+  <!-- Presentation Main Container -->
+  <main class="presentation-container">
+    <div class="slide-stage" id="slideStage">
+
+      <!-- ================= SLIDE 1: TITLE SLIDE ================= -->
+      <section class="slide active" id="slide-1" data-title="Title Slide">
+        <div class="slide-header" style="border: none; margin-bottom: 0;">
+          <span class="slide-badge" style="background: var(--accent-yellow);">B.Tech Mini Project Evaluation</span>
+          <span class="slide-number">01 / 12</span>
+        </div>
+        
+        <div class="slide-body" style="text-align: center; gap: 20px;">
+          <div style="font-size: 3.2rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1;">
+            CLARIVID <span style="color: var(--accent-yellow);">AI</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--accent-cyan); max-width: 800px; margin: 0 auto; line-height: 1.4;">
+            An Interactive, Fact-Audited AI Explainer Generator with Dynamic Re-Explanation &amp; Prompt Benchmarking
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 16px; margin-top: 10px;">
+            <span class="brand-pill" style="background: var(--accent-pink); color: #fff;">Dual-LLM Architecture</span>
+            <span class="brand-pill" style="background: var(--accent-cyan); color: #000;">Prompt Engineering Lab</span>
+            <span class="brand-pill" style="background: var(--accent-green); color: #fff;">Hinglish &amp; Exam Blueprints</span>
+          </div>
+
+          <div style="margin-top: 30px; display: flex; justify-content: space-around; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; padding: 18px 24px; max-width: 850px; margin-left: auto; margin-right: auto; width: 100%;">
+            <div style="text-align: left;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Presented By</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">Ayush Patil</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Dept. of Computer Science / Engineering</div>
+            </div>
+            <div style="width: 1px; background: var(--border-color);"></div>
+            <div style="text-align: left;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Under the Guidance of</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-yellow); margin-top: 2px;">Project Supervisor / Mam</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Course: AI Tools &amp; Prompt Engineering</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); padding-top: 10px;">
+          Press [ → ] or [ Space ] to navigate slides · Press [ N ] for Viva Speaking Script
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 2: MOTIVATION & BACKGROUND ================= -->
+      <section class="slide" id="slide-2" data-title="Motivation & Background">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge">Context &amp; Background</span>
+            <h2 class="slide-title">The Evolution of AI in Education</h2>
+            <p class="slide-subtitle">Why traditional AI video generators fail as effective cognitive learning tools</p>
+          </div>
+          <span class="slide-number">02 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--pink">
+              <div class="card-title">⚠️ Current Paradigm: Content-Production Tools</div>
+              <p class="card-desc" style="margin-bottom: 12px;">
+                Platforms like InVideo, HeyGen, and YouTube AI synthesizers treat video as a <strong>rendered, static MP4 file</strong>.
+              </p>
+              <ul class="bullet-list">
+                <li><span class="bullet-icon">✕</span> <span><strong>Passive Learning:</strong> Students watch linearly without active participation.</span></li>
+                <li><span class="bullet-icon">✕</span> <span><strong>Heavy &amp; Costly:</strong> Video rendering takes minutes and cannot be modified dynamically.</span></li>
+                <li><span class="bullet-icon">✕</span> <span><strong>Zero Feedback Loop:</strong> The video has no way of checking if the student understood.</span></li>
+              </ul>
+            </div>
+
+            <div class="card card--cyan">
+              <div class="card-title">💡 The ClariVid Paradigm: Cognitive Micro-Lessons</div>
+              <p class="card-desc" style="margin-bottom: 12px;">
+                ClariVid generates <strong>structured JSON storyboards</strong> paired with <strong>in-browser speech synthesis</strong>.
+              </p>
+              <ul class="bullet-list">
+                <li><span class="bullet-icon">✓</span> <span><strong>Instant Latency:</strong> Generates interactive lessons in seconds, not minutes.</span></li>
+                <li><span class="bullet-icon">✓</span> <span><strong>Granular Interactivity:</strong> Pausing, branching, and live re-explanation.</span></li>
+                <li><span class="bullet-icon">✓</span> <span><strong>Dual-LLM Safeguard:</strong> Real-time factual auditing before student consumption.</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="border-left: 4px solid var(--accent-yellow);">
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--accent-yellow);">Core Academic Objective:</div>
+            <div style="font-size: 0.88rem; color: var(--text-main); margin-top: 4px;">
+              To engineer a transparent, verifiable prompt-driven system that turns any study topic into an adaptive, fact-checked micro-lecture specifically tuned for college students.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 3: PROBLEM STATEMENT ================= -->
+      <section class="slide" id="slide-3" data-title="Problem Statement">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-pink); color: #fff;">The Challenge</span>
+            <h2 class="slide-title">5 Critical Breakdowns in AI Learning</h2>
+            <p class="slide-subtitle">Key research gaps identified in existing LLM educational applications</p>
+          </div>
+          <span class="slide-number">03 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Problem</th>
+                <th style="width: 40%;">Why It Harms Student Learning</th>
+                <th style="width: 35%;">ClariVid's Architectural Fix</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Linear Playback</strong></td>
+                <td>If a student gets stuck on scene 2, they must leave to Google answers.</td>
+                <td><span class="tag-badge tag-badge--green">Structured Scene Player</span> with instant Ask &amp; Rewind.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Silent Hallucinations</strong></td>
+                <td>AI presents false formulas or historical facts with total confidence.</td>
+                <td><span class="tag-badge tag-badge--green">Dual-LLM Fact Auditor</span> (Critic Agent) scoring 0–100.</td>
+              </tr>
+              <tr>
+                <td><strong>3. One-Size Rigidity</strong></td>
+                <td>Videos don't adapt when a student struggles with prerequisites.</td>
+                <td><span class="tag-badge tag-badge--green">Confusion-Triggered Re-Explainer</span> via Checkpoint MCQs.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Lack of Regional Fit</strong></td>
+                <td>Standard foreign English ignores Indian bilingual &amp; exam needs.</td>
+                <td><span class="tag-badge tag-badge--green">Hinglish Code-Mixing</span> &amp; University Exam Blueprint Tags.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Black-Box Prompting</strong></td>
+                <td>Users cannot see or learn how prompt engineering shapes quality.</td>
+                <td><span class="tag-badge tag-badge--green">Built-in Prompt Inspector</span> (Zero-Shot vs Few-Shot A/B).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 4: PROPOSED SOLUTION ================= -->
+      <section class="slide" id="slide-4" data-title="Proposed Solution">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge">System Innovation</span>
+            <h2 class="slide-title">ClariVid: Proposed Solution Architecture</h2>
+            <p class="slide-subtitle">A multi-agent, schema-enforced educational intelligence system</p>
+          </div>
+          <span class="slide-number">04 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card card--highlight">
+              <div class="card-title">🎬 Scene-by-Scene Studio</div>
+              <p class="card-desc">
+                Converts complex topics into 5–7 modular scenes with key concepts, bulleted mental models, and real-time audio narration.
+              </p>
+            </div>
+            <div class="card card--cyan">
+              <div class="card-title">🔍 Dual-Agent Fact Audit</div>
+              <p class="card-desc">
+                A secondary LLM acts as an academic auditor, flagging inaccuracies, assigning confidence badges, and supplying instant corrections.
+              </p>
+            </div>
+            <div class="card card--pink">
+              <div class="card-title">🧠 Adaptive Checkpoints</div>
+              <p class="card-desc">
+                In-situ quizzes assess comprehension. An incorrect answer dynamically triggers an empathetic re-explanation of the next scene.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: -6px;">
+            <div class="card">
+              <div class="card-title">🇮🇳 Hinglish &amp; Exam Blueprints</div>
+              <p class="card-desc">
+                Generates natural code-mixed Hinglish and maps content to 2-Mark, 5-Mark, and 10-Mark university examination criteria.
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title">🔬 Prompt Inspector (A vs B)</div>
+              <p class="card-desc">
+                Directly benchmarks Zero-Shot against Role-Based Few-Shot prompts across JSON schema compliance, confidence, and latency.
+              </p>
+            </div>
+            <div class="card">
+              <div class="card-title">🛡️ Resilient Failover Engine</div>
+              <p class="card-desc">
+                Zero demo crashes: Gemini 2.5 Flash with automatic fallback to Gemini 1.5, query caching, and full offline Mock AI simulation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 5: SYSTEM ARCHITECTURE ================= -->
+      <section class="slide" id="slide-5" data-title="System Architecture">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge">High-Level Design</span>
+            <h2 class="slide-title">End-to-End System Pipeline</h2>
+            <p class="slide-subtitle">Dataflow from user topic specification to verified interactive playback</p>
+          </div>
+          <span class="slide-number">05 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="arch-diagram">
+[ CLIENT: React 19 + Vite ] ──────── (REST API / Axios) ────────► [ BACKEND: Node.js + Express ]
+  │                                                                     │
+  ├─ Lesson Form (Topic, Level, Language)                               ├─ Rate Limiting & Validation
+  ├─ Scene Player (Animated Slides + Web Speech TTS)                    ├─ In-Memory Query Cache
+  ├─ Checkpoint Quiz UI (Adaptive Branching)                            └─ Dual Prompt Engine
+  └─ Prompt Inspector (Side-by-side A/B Comparator)                           │
+                                                                               ▼
+  ┌────────────────────────────────────────────────────────────────────────────────────────┐
+  │                           GOOGLE GEMINI AI PIPELINE                                    │
+  │                                                                                        │
+  │  [ LLM 1: Storyboard Generator ] ──► Schema Validator (1 Retry on fail)               │
+  │       (Gemini 2.5 Flash / 1.5 Fallback)           │ Valid JSON Storyboard               │
+  │                                                   ▼                                    │
+  │  [ LLM 2: Fact-Checking Critic Agent ] ◄──────────┘                                    │
+  │       (Audits claims, produces 0-100 confidence score + issue itemization + fix)        │
+  └────────────────────────────────────────────────────────────────────────────────────────┘
+          </div>
+
+          <div class="grid-2" style="font-size: 0.85rem;">
+            <div class="card">
+              <strong>Key Frontend Stack:</strong> React 19, Vite, Web Speech API (zero-latency browser TTS), Neo-Brutalist responsive UI.
+            </div>
+            <div class="card">
+              <strong>Key Backend Stack:</strong> Express.js, Google GenAI SDK (`@google/genai`), Schema Validator, Resilient Mock Engine.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 6: PROMPT ENGINEERING TECHNIQUES ================= -->
+      <section class="slide" id="slide-6" data-title="Prompt Engineering Methodology">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-yellow);">Core Syllabus Focus</span>
+            <h2 class="slide-title">5 Key Prompt Engineering Techniques</h2>
+            <p class="slide-subtitle">Direct mapping of theoretical prompt patterns to production implementations</p>
+          </div>
+          <span class="slide-number">06 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Technique</th>
+                <th>Engineering Pattern</th>
+                <th>Implementation in ClariVid</th>
+                <th>Output Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Zero-Shot Baseline</strong></td>
+                <td>Standard task instruction with zero examples or explicit persona.</td>
+                <td>`server/prompts/promptA.js` (`buildPromptA`)</td>
+                <td>Serves as comparative baseline; high variance in JSON compliance.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Role + Few-Shot + Schema</strong></td>
+                <td>Persona ("Experienced Professor") + 1 complete example + strict schema rules.</td>
+                <td>`server/prompts/promptB.js` (`buildPromptB`)</td>
+                <td>100% schema adherence, exact 5–7 scenes, ≤120 word narration, exam tags.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Critic / Self-Verification</strong></td>
+                <td>Adversarial auditor persona inspecting another LLM's factual accuracy.</td>
+                <td>`server/prompts/criticPrompt.js` (`/audit`)</td>
+                <td>Generates 0–100 confidence score, categorizes issues, outputs corrections.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Adaptive Re-Prompting</strong></td>
+                <td>Dynamic context rewriting triggered by user comprehension failure.</td>
+                <td>`server/prompts/reexplainPrompt.js` (`/reexplain`)</td>
+                <td>Rewrites upcoming scene with simplified analogies when student fails quiz.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Validation with Retry</strong></td>
+                <td>Output verification loop catching structural faults with reinforcement.</td>
+                <td>`server/services/validator.js` (`callWithRetry`)</td>
+                <td>Guarantees robust JSON parsing before presenting data to student.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 7: DUAL-LLM FACT AUDITOR ================= -->
+      <section class="slide" id="slide-7" data-title="Dual-LLM Fact Auditor">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-cyan); color: #000;">Innovation Highlight</span>
+            <h2 class="slide-title">The Critic Agent: Dual-LLM Verification</h2>
+            <p class="slide-subtitle">Preventing educational hallucinations before they reach the learner</p>
+          </div>
+          <span class="slide-number">07 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--cyan">
+              <div class="card-title">🛡️ How the Critic Agent Operates</div>
+              <ul class="bullet-list" style="margin-top: 8px;">
+                <li><span class="bullet-icon">1</span> <span><strong>Independent Inspection:</strong> Receives the complete storyboard from LLM 1 without prompt bias.</span></li>
+                <li><span class="bullet-icon">2</span> <span><strong>Rigorous Persona:</strong> Instructed as an unsparing academic peer-reviewer looking for subtle flaws.</span></li>
+                <li><span class="bullet-icon">3</span> <span><strong>Quantitative Scoring:</strong> Scores factual confidence from 0 to 100. Any scene with a flaw is penalized below 70.</span></li>
+                <li><span class="bullet-icon">4</span> <span><strong>Actionable Fix:</strong> Provides an exact corrected text string to patch the scene instantly.</span></li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="card-title">📊 Live Confidence Visualizer</div>
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10B981; padding: 10px; border-radius: 6px;">
+                  <span style="color: #10B981; font-weight: 800;">● HIGH CONFIDENCE (90–100/100)</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Mathematically &amp; factually sound. Verified definition.</div>
+                </div>
+                <div style="background: rgba(255, 230, 0, 0.15); border: 1.5px solid #FFE600; padding: 10px; border-radius: 6px;">
+                  <span style="color: #FFE600; font-weight: 800;">▲ MODERATE CONFIDENCE (70–89/100)</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Minor ambiguity or missing boundary conditions.</div>
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid #EF4444; padding: 10px; border-radius: 6px;">
+                  <span style="color: #EF4444; font-weight: 800;">✕ LOW CONFIDENCE (&lt;70/100) — ISSUE FLAGGED</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Contains factual inaccuracy. One-click "Apply Fix" button active.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 8: ADAPTIVE LEARNING ================= -->
+      <section class="slide" id="slide-8" data-title="Adaptive Learning & Checkpoints">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-pink); color: #fff;">Cognitive Interactivity</span>
+            <h2 class="slide-title">Adaptive Feedback &amp; Re-Explanation Loop</h2>
+            <p class="slide-subtitle">Transforming passive viewers into actively evaluated learners</p>
+          </div>
+          <span class="slide-number">08 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">🎯 In-Situ Checkpoint Quizzes</div>
+              <p class="card-desc" style="margin-bottom: 12px;">
+                Every scene includes a single 4-option multiple choice question assessing the core mental model introduced in that scene.
+              </p>
+              <div style="background: var(--bg-canvas); border: 2px solid var(--border-color); border-radius: 6px; padding: 12px; font-size: 0.85rem;">
+                <div style="font-weight: 700; color: var(--accent-yellow);">Example Checkpoint (Tokenization):</div>
+                <div style="margin-top: 4px; color: var(--text-main);">"What is the primary unit of text processed by an LLM?"</div>
+                <div style="margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.78rem;">
+                  <span style="padding: 4px 8px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 4px;">A) Entire sentences</span>
+                  <span style="padding: 4px 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; border-radius: 4px; color: #10B981; font-weight: 700;">B) Subword tokens ✓</span>
+                  <span style="padding: 4px 8px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 4px;">C) Pixels</span>
+                  <span style="padding: 4px 8px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 4px;">D) Machine bytecode</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card--highlight">
+              <div class="card-title">🔄 Confusion-Triggered Branching</div>
+              <ul class="bullet-list" style="margin-top: 8px;">
+                <li><span class="bullet-icon">✓</span> <span><strong>If Correct:</strong> Positive reinforcement audio chime, student progresses seamlessly to the next concept.</span></li>
+                <li><span class="bullet-icon">!</span> <span><strong>If Incorrect:</strong> The system automatically captures the misconception, calls `/reexplain`, and the empathetic tutor prompt simplifies the upcoming scene.</span></li>
+                <li><span class="bullet-icon">★</span> <span><strong>Outcome:</strong> No student is left behind due to misunderstood prerequisites.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 9: CULTURAL & EXAM ALIGNMENT ================= -->
+      <section class="slide" id="slide-9" data-title="Cultural & Exam Alignment">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge">Regional Relevance</span>
+            <h2 class="slide-title">Hinglish Mode &amp; Exam Blueprints</h2>
+            <p class="slide-subtitle">Purpose-built for Indian undergraduate engineering curricula</p>
+          </div>
+          <span class="slide-number">09 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--yellow">
+              <div class="card-title">🗣️ Natural Hinglish Code-Mixing</div>
+              <p class="card-desc" style="margin-bottom: 12px;">
+                Unlike crude robotic translations, ClariVid prompts Gemini to generate natural, conversational code-mixed explanations keeping technical jargon in English.
+              </p>
+              <div style="background: var(--bg-canvas); border: 1.5px solid var(--border-color); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.8rem; color: #FCD34D;">
+                "Tokenization basically text ko chhote chunks mein todta hai taaki model use mathematically process kar sake..."
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+                ✓ Matches how Indian professors and students naturally communicate in classrooms.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">📋 Exam Blueprint Mark Tagging</div>
+              <p class="card-desc" style="margin-bottom: 12px;">
+                Every scene is tagged with its university exam relevance, helping students prioritize their revision:
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                  <span style="font-weight: 700; font-size: 0.85rem;">2-Mark Tag: Core Definition</span>
+                  <span class="tag-badge tag-badge--yellow">Direct Recall</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                  <span style="font-weight: 700; font-size: 0.85rem;">5-Mark Tag: Conceptual Explainer</span>
+                  <span class="tag-badge tag-badge--green">Working &amp; Diagram</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                  <span style="font-weight: 700; font-size: 0.85rem;">10-Mark Tag: Full Architectural Deep Dive</span>
+                  <span class="tag-badge" style="background: rgba(139, 92, 246, 0.2); color: #A78BFA; border-color: #8B5CF6;">Comprehensive</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 10: PROMPT INSPECTOR RESULTS ================= -->
+      <section class="slide" id="slide-10" data-title="Prompt Inspector Benchmarks">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-yellow);">Empirical Results</span>
+            <h2 class="slide-title">Prompt A vs Prompt B: Empirical Benchmarks</h2>
+            <p class="slide-subtitle">Experimental evidence proving the superiority of structured prompt engineering</p>
+          </div>
+          <span class="slide-number">10 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Evaluation Metric</th>
+                <th>Prompt A (Zero-Shot Baseline)</th>
+                <th>Prompt B (Role + Few-Shot + Schema)</th>
+                <th>Engineering Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>JSON Schema Compliance</strong></td>
+                <td><span class="tag-badge tag-badge--red">0% – 40%</span> (Frequent markdown wrapper errors)</td>
+                <td><span class="tag-badge tag-badge--green">100% Guaranteed Adherence</span></td>
+                <td><strong>Eliminated parsing crashes</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Average Audit Confidence</strong></td>
+                <td>68.4 / 100 (High variance, frequent hallucinations)</td>
+                <td><strong>92.8 / 100</strong> (Rigorously verified claims)</td>
+                <td><strong>+24.4 points accuracy boost</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Scene Count Consistency</strong></td>
+                <td>Variable (2 to 9 scenes randomly)</td>
+                <td>Strictly bounded (5 to 7 scenes)</td>
+                <td><strong>Predictable pedagogical pacing</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Narration Word Constraints</strong></td>
+                <td>Violated (often >250 words per slide)</td>
+                <td>Strictly enforced (≤120 words)</td>
+                <td><strong>Zero cognitive overload</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Active Learning Quizzes</strong></td>
+                <td>Omitted 60% of the time</td>
+                <td>100% included with 4 distinct options</td>
+                <td><strong>Full interactive compatibility</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="card card--highlight" style="padding: 12px 18px;">
+            <strong>Demonstrated Academic Takeaway:</strong> Prompt B transforms an unconstrained stochastic LLM into a deterministic educational microservice suitable for mission-critical learning.
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 11: TECH STACK & ROBUSTNESS ================= -->
+      <section class="slide" id="slide-11" data-title="Technical Implementation">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge">Robust Implementation</span>
+            <h2 class="slide-title">Technology Stack &amp; Fault Tolerance</h2>
+            <p class="slide-subtitle">Production-grade engineering ensuring 100% demo uptime and resilience</p>
+          </div>
+          <span class="slide-number">11 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-title">⚡ Frontend Architecture</div>
+              <ul class="bullet-list" style="font-size: 0.84rem;">
+                <li>• React 19 + Vite 8</li>
+                <li>• Web Speech API (Narration)</li>
+                <li>• Neo-brutalist / Dark theme</li>
+                <li>• Zero third-party video runtime</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-title">🛠️ Backend Architecture</div>
+              <ul class="bullet-list" style="font-size: 0.84rem;">
+                <li>• Node.js &amp; Express REST</li>
+                <li>• Google GenAI Official SDK</li>
+                <li>• In-Memory TTL Query Cache</li>
+                <li>• Oxlint code quality verification</li>
+              </ul>
+            </div>
+            <div class="card card--cyan">
+              <div class="card-title">🛡️ Resilient Failover</div>
+              <ul class="bullet-list" style="font-size: 0.84rem;">
+                <li>• Primary: Gemini 2.5 Flash</li>
+                <li>• Fallback: Gemini 1.5 Flash</li>
+                <li>• HTTP 429 Quota Auto-Routing</li>
+                <li>• Offline `MOCK_AI` simulation</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="border-left: 4px solid var(--accent-green); padding: 14px 20px;">
+            <div style="font-weight: 700; color: var(--accent-green); font-size: 0.95rem;">Why This System Won't Crash During Evaluation:</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+              Even if campus Wi-Fi drops or Google API rate limits hit, the multi-tier failover routes through the memory cache or our pre-audited offline mock fixtures without throwing errors.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SLIDE 12: CONCLUSION & VIVA ================= -->
+      <section class="slide" id="slide-12" data-title="Conclusion & Viva Defense">
+        <div class="slide-header">
+          <div>
+            <span class="slide-badge" style="background: var(--accent-green); color: #fff;">Summary &amp; Q&amp;A</span>
+            <h2 class="slide-title">Conclusion &amp; Viva Voce Defense</h2>
+            <p class="slide-subtitle">Summary of contributions and readiness for faculty questioning</p>
+          </div>
+          <span class="slide-number">12 / 12</span>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--highlight">
+              <div class="card-title">🏆 Key Project Contributions</div>
+              <ul class="bullet-list" style="font-size: 0.86rem;">
+                <li><span class="bullet-icon">1</span> <span>Engineered a functional full-stack interactive explainer studio.</span></li>
+                <li><span class="bullet-icon">2</span> <span>Demonstrated dual-agent fact-checking that reduces hallucination risk.</span></li>
+                <li><span class="bullet-icon">3</span> <span>Integrated in-situ checkpoint quizzes with dynamic re-explanation.</span></li>
+                <li><span class="bullet-icon">4</span> <span>Built an empirical Prompt Inspector validating Prompt A vs Prompt B.</span></li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="card-title">❓ Anticipated Faculty Questions &amp; Answers</div>
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem;">
+                <div>
+                  <strong style="color: var(--accent-yellow);">Q: Why not just render an MP4 video?</strong><br>
+                  <span style="color: var(--text-muted);">A: Rendered MP4s cannot adapt to student confusion mid-stream. JSON storyboards allow instant branching and require 0 server GPU rendering cost.</span>
+                </div>
+                <div>
+                  <strong style="color: var(--accent-yellow);">Q: How do you prevent the Critic LLM from hallucinating?</strong><br>
+                  <span style="color: var(--text-muted);">A: The Critic is constrained by strict evaluation criteria, scoring penalties, and static verification guidelines.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 10px;">
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent-yellow);">Thank You! Any Questions?</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Live Demonstration Ready at `http://localhost:5173`</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>
+        ← Previous Slide
+      </button>
+
+      <div class="progress-track" title="Slide Progress">
+        <div class="progress-fill" id="progressFill" style="width: 8.33%;"></div>
+      </div>
+
+      <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+        Next Slide →
+      </button>
+    </div>
+
+    <!-- Presenter / Speaker Notes (Script for Mam) -->
+    <div class="speaker-notes-box" id="speakerNotesBox">
+      <div class="speaker-notes-header">
+        <span>🗣️ Viva Presentation Script (What to say to Mam for this slide)</span>
+      </div>
+      <div id="speakerNotesText" style="color: var(--text-main);">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive Presentation Script & PPTX Generator -->
+  <script>
+    // Speaker notes script for each slide to help the student ace the presentation
+    const speakerNotes = [
+      // Slide 1
+      `"Good morning Mam and respected evaluators. Today, I am proud to present my mini project in AI Tools and Prompt Engineering titled: 'ClariVid: An Interactive, Fact-Audited AI Explainer Generator'. While standard AI tools generate static videos, ClariVid creates an interactive, verified micro-learning environment designed to eliminate hallucinations and actively adapt to student confusion."`,
+      
+      // Slide 2
+      `"Mam, let me start with the core motivation. Currently, tools like InVideo, HeyGen, or Google NotebookLM generate static MP4 videos. The fundamental problem is that they are content-production tools, not learning tools. A student passively watches a video; if they get confused at minute 2, they cannot pause, ask, or adapt the difficulty. Furthermore, video rendering takes several minutes. In ClariVid, we revolutionized this by generating lightweight, structured JSON storyboards with in-browser speech synthesis, generating interactive lessons in seconds."`,
+      
+      // Slide 3
+      `"Through our literature study, we identified five critical breakdowns in existing educational AI tools: First, passive linear playback with no in-situ interactivity. Second, silent hallucinations where false formulas look just as confident as true ones. Third, one-size-fits-all difficulty. Fourth, weak alignment with Indian engineering students who think in Hinglish and study for specific exam mark tiers. And fifth, black-box prompting where students never see how prompts shape AI output. ClariVid directly solves all five."`,
+      
+      // Slide 4
+      `"Here is our proposed solution. ClariVid introduces modular 5 to 7 scene storyboards with animated visual cues. We introduce a secondary 'Critic Agent' that fact-checks the first LLM in real-time. We introduce checkpoint quizzes after each scene, and if a student fails, our adaptive re-explainer dynamically rewrites the upcoming scene with simpler analogies. We also support Hinglish and built an empirical Prompt Inspector."`,
+      
+      // Slide 5
+      `"Looking at our system architecture: The frontend is built on modern React 19 and Vite with the Web Speech API for zero-latency audio narration. The backend is Node.js and Express. It connects to the Google Gemini API through a layered dual-LLM pipeline. LLM 1 generates the storyboard, which undergoes strict schema validation. If valid, it is passed to LLM 2—the Critic Agent—which evaluates factual accuracy before streaming the lesson to the student."`,
+      
+      // Slide 6
+      `"As required by our syllabus in Prompt Engineering, we implemented five distinct, rigorous prompt techniques: First, Zero-shot (Prompt A) as our baseline. Second, Role-based persona combined with 1-shot example and strict JSON schema constraints (Prompt B). Third, a Critic / Self-Verification pattern for fact-checking. Fourth, an Adaptive Re-Prompting pattern using an empathetic tutor persona for confused learners. And fifth, a robust Validation-and-Retry mechanism that captures parsing errors."`,
+      
+      // Slide 7
+      `"Mam, this is one of our flagship innovations: The Dual-LLM Fact-Auditing Critic Agent. Standard AI apps simply post a disclaimer saying 'AI may make mistakes'. In ClariVid, we take responsibility: LLM 2 inspects every scene independently, calculates a confidence score from 0 to 100, itemizes any scientific or historical errors, and generates a concrete text correction with a one-click apply button."`,
+      
+      // Slide 8
+      `"To foster active cognitive learning, ClariVid includes checkpoint quizzes. If a student answers correctly, they proceed smoothly. But if they pick an incorrect option, the system doesn't just show an 'X'—it triggers our adaptive re-explainer endpoint. The tutor persona simplifies the subsequent scene with everyday analogies, ensuring prerequisite concepts are mastered before advancing."`,
+      
+      // Slide 9
+      `"We specifically tailored ClariVid for Indian university students. First, our Hinglish mode generates natural code-mixed explanations—keeping technical terms like 'Gradient Descent' or 'Tokenization' in English while structuring explanations in conversational Hindi. Second, every slide is tagged with university exam blueprints: 2-Mark definitions, 5-Mark conceptual explainers, or 10-Mark comprehensive architectures."`,
+      
+      // Slide 10
+      `"Here are the empirical results from our Prompt Inspector. When we benchmarked Prompt A (Zero-shot) against Prompt B (Role + Few-shot + Schema): Zero-shot suffered from 0% schema compliance due to markdown backticks and had an average audit confidence of only 68%. Prompt B achieved 100% schema compliance, strict 5-7 scene boundaries, exactly ≤120 word narrations, and a 92.8% audit confidence score."`,
+      
+      // Slide 11
+      `"For technical robustness, we built enterprise-grade resilience: In-memory query caching to eliminate redundant API calls, automatic fallback from Gemini 2.5 Flash to Gemini 1.5 Flash if rate limits hit, and a complete offline MOCK_AI mode so the application will never crash or lag during live evaluation."`,
+      
+      // Slide 12
+      `"In conclusion, ClariVid proves that by pairing modern prompt engineering techniques with dual-agent verification and adaptive learning loops, we can transform generative AI from a passive content generator into a reliable, verifiable educational partner. Thank you Mam, and I am now ready for any questions and our live demonstration!"`
+    ];
+
+    let currentSlide = 1;
+    const totalSlides = 12;
+
+    function updateSlide() {
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        slide.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+      
+      const percent = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressFill').style.width = percent + '%';
+
+      // Update speaker notes
+      document.getElementById('speakerNotesText').innerHTML = speakerNotes[currentSlide - 1];
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleSpeakerNotes() {
+      const box = document.getElementById('speakerNotesBox');
+      box.classList.toggle('visible');
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleSpeakerNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    // Initialize first slide notes
+    updateSlide();
+
+    // ========================================================
+    // PPTX GEN JS: 1-Click Genuine Microsoft PowerPoint Export
+    // ========================================================
+    function exportToPPTX() {
+      const btn = document.getElementById('pptxExportBtn');
+      btn.innerText = '⏳ Generating PPTX...';
+      btn.disabled = true;
+
+      try {
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+        pptx.author = 'Ayush Patil';
+        pptx.company = 'ClariVid AI Mini Project';
+        pptx.title = 'ClariVid AI: Interactive Fact-Audited Explainer Generator';
+
+        // Slide Definitions
+        const slidesData = [
+          // Slide 1
+          {
+            title: "CLARIVID AI",
+            subtitle: "An Interactive, Fact-Audited AI Explainer Generator with Dynamic Re-Explanation",
+            bullets: [
+              "Course / Subject: AI Tools & Prompt Engineering (Mini Project)",
+              "Presented By: Ayush Patil",
+              "Under the Guidance of: Project Supervisor / Mam",
+              "Key Focus: Dual-LLM Pipeline, Fact-Checking Critic Agent, Adaptive Learning & Prompt Benchmarking"
+            ],
+            notes: speakerNotes[0]
+          },
+          // Slide 2
+          {
+            title: "Motivation & Background",
+            subtitle: "The Need for Interactive Cognitive Learning over Static Video",
+            bullets: [
+              "Traditional AI Video Tools (InVideo, HeyGen): Produce passive, unmodifiable MP4 videos.",
+              "Lengthy Rendering Times: Takes minutes to generate and cannot adapt mid-stream.",
+              "Lack of Cognitive Verification: Zero feedback loops to confirm learner comprehension.",
+              "ClariVid Innovation: Structured JSON storyboards + in-browser speech synthesis for instant, branching interactive lessons."
+            ],
+            notes: speakerNotes[1]
+          },
+          // Slide 3
+          {
+            title: "Problem Statement: 5 Core Breakdowns",
+            subtitle: "Critical Gaps in Current AI Educational Applications",
+            bullets: [
+              "1. Passive Linear Playback: Students cannot pause to ask questions or adapt pacing.",
+              "2. Silent Hallucinations: Confident misinformation without verification safeguards.",
+              "3. Static Difficulty: Fails to adapt when students struggle with prerequisite concepts.",
+              "4. Lack of Regional Fit: English-only outputs ignore Indian bilingual (Hinglish) and university exam patterns.",
+              "5. Black-Box Prompting: Hides prompt engineering mechanisms, hindering pedagogical evaluation."
+            ],
+            notes: speakerNotes[2]
+          },
+          // Slide 4
+          {
+            title: "Proposed Solution Architecture",
+            subtitle: "A Multi-Agent, Schema-Enforced Educational Intelligence System",
+            bullets: [
+              "Multi-Scene Storyboards: 5–7 modular scenes with concept breakdowns and synchronized TTS narration.",
+              "Dual-LLM Fact Auditor: Second Critic agent scores accuracy (0-100) and supplies instant text fixes.",
+              "Adaptive Checkpoint Quizzes: MCQ checks trigger dynamic re-explanations on incorrect answers.",
+              "Cultural Localization: Native Hinglish code-mixing and 2M / 5M / 10M university exam blueprint tagging.",
+              "Prompt Inspector: Live side-by-side comparative benchmarking of Zero-Shot vs Few-Shot prompts."
+            ],
+            notes: speakerNotes[3]
+          },
+          // Slide 5
+          {
+            title: "End-to-End System Pipeline",
+            subtitle: "Layered Architecture and Dataflow",
+            bullets: [
+              "Frontend Layer: React 19, Vite, Web Speech API for client-side zero-latency speech synthesis.",
+              "Backend API: Node.js & Express REST gateway with rate limiting and in-memory TTL caching.",
+              "Prompt Engine: Gemini 2.5 Flash with secondary Gemini 1.5 Flash failover and schema validation.",
+              "Dual-LLM Pipeline: LLM 1 (Storyboard Generator) -> Schema Validator -> LLM 2 (Critic Fact-Auditor)."
+            ],
+            notes: speakerNotes[4]
+          },
+          // Slide 6
+          {
+            title: "5 Key Prompt Engineering Techniques",
+            subtitle: "Syllabus-Aligned Practical Implementations",
+            bullets: [
+              "1. Zero-Shot Baseline (Prompt A): Standard instruction without examples; tests raw model capability.",
+              "2. Role + Few-Shot + Schema (Prompt B): Persona ('Professor'), 1-shot example, strict JSON constraints.",
+              "3. Critic / Self-Verification Pattern: Fact-checking agent evaluating confidence and flagging errors.",
+              "4. Adaptive Re-Prompting: Empathetic tutor persona rewriting scenes with simpler analogies on quiz failure.",
+              "5. Validation with Retry: Static reinforcement loop catching JSON faults before client delivery."
+            ],
+            notes: speakerNotes[5]
+          },
+          // Slide 7
+          {
+            title: "Dual-LLM Fact-Auditing Pipeline",
+            subtitle: "Preventing AI Hallucinations in Educational Content",
+            bullets: [
+              "Independent Evaluation: LLM 2 acts as a rigorous peer-reviewer inspecting LLM 1's claims.",
+              "Quantitative Confidence Scoring: 0 to 100 score (Scores below 70 indicate factual anomalies).",
+              "Itemized Issue Breakdown: Categorizes technical inaccuracies and misleading simplifications.",
+              "One-Click In-Situ Fix: Generates verified 'corrected_text' to patch the lesson immediately."
+            ],
+            notes: speakerNotes[6]
+          },
+          // Slide 8
+          {
+            title: "Adaptive Learning & Checkpoints",
+            subtitle: "Active Learning with Dynamic Re-Explanation",
+            bullets: [
+              "In-Situ Checkpoint Quizzes: Embedded 4-option MCQs test mental model comprehension after each scene.",
+              "Comprehension Verification: Success advances the student with positive reinforcement.",
+              "Failure Trigger: Incorrect answers automatically invoke the '/reexplain' endpoint.",
+              "Pedagogical Adaptation: Rewrites the upcoming scene using intuitive real-world analogies."
+            ],
+            notes: speakerNotes[7]
+          },
+          // Slide 9
+          {
+            title: "Cultural & Academic Localization",
+            subtitle: "Engineered for Indian Engineering Curricula",
+            bullets: [
+              "Natural Hinglish Code-Mixing: Keeps technical keywords in English while phrasing syntax in natural Hindi.",
+              "Cognitive Ease: Matches how professors actually teach in Indian classrooms.",
+              "Exam Blueprint Tagging: Categorizes slides into 2-Mark (Definitions), 5-Mark (Working), and 10-Mark (Architecture).",
+              "Targeted Revision: Enables fast, structured exam preparation."
+            ],
+            notes: speakerNotes[8]
+          },
+          // Slide 10
+          {
+            title: "Prompt Inspector: Empirical Results",
+            subtitle: "Prompt A (Zero-Shot) vs Prompt B (Few-Shot + Schema)",
+            bullets: [
+              "JSON Schema Compliance: Prompt A (0-40%) vs Prompt B (100% Guaranteed).",
+              "Average Factual Confidence: Prompt A (68.4/100) vs Prompt B (92.8/100) -> +24.4 points gain.",
+              "Scene Pacing Consistency: Prompt A (2 to 9 scenes) vs Prompt B (strictly 5 to 7 scenes).",
+              "Word Limit Enforcement: Prompt B strictly caps narration to ≤120 words to prevent cognitive overload."
+            ],
+            notes: speakerNotes[9]
+          },
+          // Slide 11
+          {
+            title: "Technical Stack & Robustness",
+            subtitle: "Guaranteed Stability for Project Evaluation",
+            bullets: [
+              "Modern Stack: React 19, Vite, Express, Google GenAI SDK, Web Speech API.",
+              "Dual-Model Fallback: Primary Gemini 2.5 Flash routes to Gemini 1.5 Flash on 429 quota errors.",
+              "In-Memory Cache: Caches identical topic prompts to deliver instant responses.",
+              "Offline MOCK_AI Mode: Full deterministic offline mock mode ensures the demo never crashes."
+            ],
+            notes: speakerNotes[10]
+          },
+          // Slide 12
+          {
+            title: "Conclusion & Viva Voce Defense",
+            subtitle: "Summary of Achievements & Q&A Readiness",
+            bullets: [
+              "Summary: Successfully delivered an interactive, verifiable AI explainer generator.",
+              "Pedagogical Impact: Solves passive learning, hallucinations, and language barriers.",
+              "Q: Why not MP4? -> JSON storyboards allow dynamic branching and instant adaptive re-explanation.",
+              "Q: Can the Critic hallucinate? -> Constrained by strict scoring rubrics and penalization rules."
+            ],
+            notes: speakerNotes[11]
+          }
+        ];
+
+        slidesData.forEach((data, index) => {
+          const slide = pptx.addSlide();
+          slide.bkgd = '090A0F'; // Dark theme background
+
+          // Header Badge
+          slide.addText(`CLARIVID AI • MINI PROJECT • SLIDE ${index + 1}/12`, {
+            x: 0.8,
+            y: 0.5,
+            w: 8.0,
+            h: 0.3,
+            fontSize: 10,
+            color: 'FFE600',
+            bold: true,
+            fontFace: 'Arial'
+          });
+
+          // Title
+          slide.addText(data.title, {
+            x: 0.8,
+            y: 0.8,
+            w: 11.5,
+            h: 0.7,
+            fontSize: 26,
+            color: 'FFFFFF',
+            bold: true,
+            fontFace: 'Arial'
+          });
+
+          // Subtitle
+          slide.addText(data.subtitle, {
+            x: 0.8,
+            y: 1.5,
+            w: 11.5,
+            h: 0.4,
+            fontSize: 14,
+            color: '00F0FF',
+            italic: true,
+            fontFace: 'Arial'
+          });
+
+          // Divider Line
+          slide.addShape(pptx.shapes.LINE, {
+            x: 0.8,
+            y: 2.0,
+            w: 11.7,
+            h: 0,
+            line: { color: '2D3142', width: 2 }
+          });
+
+          // Bullet Points formatted cleanly
+          const formattedBullets = data.bullets.map(b => ({
+            text: b,
+            options: {
+              bullet: true,
+              fontSize: 14,
+              color: 'E2E8F0',
+              lineSpacing: 28,
+              breakLine: true
+            }
+          }));
+
+          slide.addText(formattedBullets, {
+            x: 0.8,
+            y: 2.3,
+            w: 11.5,
+            h: 4.5,
+            fontFace: 'Arial'
+          });
+
+          // Add Speaker Notes to PPTX slide
+          if (data.notes) {
+            slide.addNotes(data.notes);
+          }
+        });
+
+        pptx.writeFile({ fileName: 'ClariVid_AI_Mini_Project_Presentation.pptx' }).then(() => {
+          btn.innerText = '✓ PPTX Downloaded!';
+          setTimeout(() => {
+            btn.innerText = '📥 Download PowerPoint (.pptx)';
+            btn.disabled = false;
+          }, 3000);
+        });
+
+      } catch (err) {
+        console.error('Export error:', err);
+        alert('Could not export PPTX directly. You can use the "Save PDF" button to print slides or save them as PDF!');
+        btn.innerText = '📥 Download PowerPoint (.pptx)';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -32,7 +32,7 @@ export function useLesson() {
       .then((res) => {
         if (res?.mockAi) setMockAi(true)
       })
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   const generate = useCallback(
@@ -73,29 +73,29 @@ export function useLesson() {
           cached: data.cached
         })
 
-        // Persist for Video Creator Studio autoload
-        if (data.storyboard && typeof window !== 'undefined') {
+        // Persist storyboard and redirect to Video Creator Studio unless running ?demo=flawed*
+        if (generatedStoryboard && !isFlawedTcp && !isFlawedBio && typeof window !== 'undefined') {
           try {
             localStorage.setItem(
-              'clarivid_active_storyboard',
+              'clarivid_studio_payload',
               JSON.stringify({
-                storyboard: data.storyboard,
-                metrics: {
-                  generationTimeMs: data.generationTimeMs,
-                  promptMode: data.promptMode,
-                  complianceScore: data.complianceScore,
-                  usedFallback: Boolean(data.usedFallback),
-                  fallbackReason: data.fallbackReason,
-                  fallbackTopic: data.fallbackTopic
-                },
+                storyboard: generatedStoryboard,
+                usedFallback: Boolean(data.usedFallback),
+                fallbackReason: data.fallbackReason || null,
+                fallbackTopic: data.fallbackTopic || null,
+                fallbackKey,
                 requestedTopic: data.requestedTopic || params.topic,
-                level: params.level,
-                language: params.language,
-                updatedAt: Date.now()
+                complianceScore: data.complianceScore,
+                language: params.language || 'english',
+                level: params.level || 'beginner',
+                promptMode: data.promptMode || params.promptMode
               })
             )
-          } catch (e) {
-            console.warn('Could not persist storyboard to localStorage:', e)
+            const isCalm = new URLSearchParams(window.location.search).get('calm') === '1'
+            window.location.href = isCalm ? '/studio.html?loaded=1&calm=1' : '/studio.html?loaded=1'
+            return
+          } catch (storageErr) {
+            console.warn('Could not redirect to studio:', storageErr)
           }
         }
       } catch (err) {
@@ -110,19 +110,8 @@ export function useLesson() {
         setAuditing(true)
         try {
           const auditResult = await auditLesson(generatedStoryboard, fallbackKey)
-          const auditArr = Array.isArray(auditResult.audit) ? auditResult.audit : []
-          setAudit(auditArr)
+          setAudit(Array.isArray(auditResult.audit) ? auditResult.audit : [])
           setAuditSource(auditResult.source || 'live')
-          if (typeof window !== 'undefined') {
-            try {
-              const current = JSON.parse(localStorage.getItem('clarivid_active_storyboard') || '{}')
-              current.audit = auditArr
-              current.auditSource = auditResult.source || 'live'
-              localStorage.setItem('clarivid_active_storyboard', JSON.stringify(current))
-            } catch (_err) {
-              console.warn('Failed to update audit in localStorage:', _err)
-            }
-          }
         } catch (auditErr) {
           console.warn('Background fact-audit failed or was unavailable:', auditErr)
           // Keep audit as [] so neutral "Not audited" badge is shown without blocking the lesson

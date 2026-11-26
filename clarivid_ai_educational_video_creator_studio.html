@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +9,9 @@
   <!-- Google Fonts: Plus Jakarta Sans (400, 500, 600, 700) & JetBrains Mono (400, 500) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -145,6 +148,7 @@
       border-radius: 9999px;
       outline: none;
     }
+
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -161,13 +165,16 @@
       width: 5px;
       height: 5px;
     }
+
     ::-webkit-scrollbar-track {
       background: transparent;
     }
+
     ::-webkit-scrollbar-thumb {
       background: #23252C;
       border-radius: 9999px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: #3B3F4C;
     }
@@ -175,14 +182,15 @@
     /* Aspect Ratio Frame Transitions */
     .preview-frame-shell {
       border-radius: 8px;
-      border: 1px solid #23252C;
+      border: 4px solid #000000;
       background: #09090B;
+      box-shadow: 6px 6px 0 #000000;
       transition: width 0.25s ease, height 0.25s ease, aspect-ratio 0.25s ease;
     }
-  </style>
 
-  <!-- Gen Z Chaos / Neo-Brutalist Visual Theme Override -->
-  <style id="genZChaosStyle">
+    /* =====================================================================
+       GEN Z CHAOS / MAXIMALISM THEME (Matches Main Clarivid Client UI)
+       ===================================================================== */
     :root {
       --magenta: #FF00FF;
       --lime: #00FF00;
@@ -191,28 +199,9 @@
       --coral: #FF6B6B;
       --teal: #4ECDC4;
       --black: #000000;
-      --white: #FFFFFF;
-
-      --bg-canvas: #FFFF00;
-      --bg-surface-1: #FFFFFF;
-      --bg-surface-2: #F1F5F9;
-      --border-subtle: #000000;
-      --border-focus: #000000;
-      --accent-primary: #000000;
-      --accent-edu: #059669;
-      --text-primary: #000000;
-      --text-muted: #1e293b;
     }
 
-    body {
-      background-color: var(--yellow) !important;
-      color: var(--black) !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      font-weight: 500;
-    }
-
-    /* Gen Z Jitter Animation */
-    @keyframes jitter {
+    @keyframes studio-jitter {
       0% { transform: translate(0, 0) rotate(0deg); }
       25% { transform: translate(-2px, 2px) rotate(-1.5deg); }
       50% { transform: translate(2px, -1px) rotate(1.5deg); }
@@ -220,348 +209,282 @@
       100% { transform: translate(1px, 1px) rotate(1deg); }
     }
 
-    @keyframes marquee-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    body:not(.calm) {
+      background-color: var(--yellow) !important;
+      color: var(--black) !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    /* Decorative Stickers */
-    .chaos-sticker {
-      position: absolute;
-      font-size: 2.5rem;
-      pointer-events: none;
-      user-select: none;
-      filter: drop-shadow(4px 4px 0 #000);
-      z-index: 50;
-    }
-    .sticker-1 { top: 10px; left: 16px; transform: rotate(-15deg); }
-    .sticker-2 { top: 12px; right: 24px; transform: rotate(18deg); }
-    .sticker-3 { bottom: 18px; left: 18px; transform: rotate(14deg); }
-    .sticker-4 { bottom: 18px; right: 18px; transform: rotate(-12deg); }
-
-    /* Marquee Strip */
-    .chaos-marquee-strip {
-      width: 100%;
-      overflow: hidden;
-      background: var(--black);
-      border-top: 3px solid var(--black);
-      border-bottom: 3px solid var(--black);
-      box-shadow: 0 4px 0 var(--black);
-      padding: 0.4rem 0;
-      white-space: nowrap;
-      z-index: 25;
-    }
-    .chaos-marquee-track {
-      display: inline-flex;
-      width: max-content;
-      animation: marquee-scroll 20s linear infinite;
-    }
-    .chaos-marquee-content {
-      color: var(--lime);
-      font-family: "Arial Black", Impact, sans-serif;
-      font-size: 1.15rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* Screen 1 Setup Styling */
-    #screenSetup {
+    body:not(.calm) .studio-radial-glow {
       background: var(--yellow) !important;
-      position: relative;
     }
-    #screenSetup header {
-      background: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 4px 4px 0 #000000 !important;
-      border-radius: 8px;
-    }
-    #screenSetup h1 {
+
+    /* Headings & Titles */
+    body:not(.calm) #screenSetup h1 {
       font-family: "Arial Black", Impact, sans-serif !important;
-      text-transform: uppercase !important;
+      text-transform: uppercase;
       color: var(--black) !important;
-      text-shadow: 4px 4px 0 var(--magenta) !important;
       transform: rotate(-1.5deg);
-      letter-spacing: -0.02em;
+      text-shadow: 4px 4px 0 var(--magenta);
+      display: inline-block;
     }
-    .glass-bar {
-      background: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 4px 4px 0 #000000 !important;
-      color: var(--black) !important;
-    }
-    .glass-bar.rounded-\[12px\] {
+
+    /* Loud Section Frames */
+    body:not(.calm) #screenSetup .glass-bar {
       background: var(--teal) !important;
-      border: 4px solid #000000 !important;
-      box-shadow: 8px 8px 0 #000000 !important;
-      border-radius: 8px !important;
-      transform: rotate(0.5deg);
+      border: 3px solid var(--black) !important;
+      box-shadow: 6px 6px 0 var(--black) !important;
+      border-radius: 12px !important;
+      backdrop-filter: none !important;
     }
-    #setupPromptInput {
-      background: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 3px 3px 0 #000000 !important;
-      color: #000000 !important;
+
+    body:not(.calm) #screenSetup .surface-1 {
+      background: var(--coral) !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 6px 6px 0 var(--black) !important;
+      border-radius: 12px !important;
+    }
+
+    /* Calm Inputs & Textareas */
+    body:not(.calm) #setupPromptInput {
+      background: #ffffff !important;
+      color: var(--black) !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 3px 3px 0 var(--black) !important;
       border-radius: 6px !important;
+      padding: 0.75rem !important;
       font-weight: 600;
     }
 
-    /* Screen 2 Top Studio Header */
-    #screenStudio {
-      background: var(--yellow) !important;
-      position: relative;
-    }
-    #screenStudio > header {
-      background: #FFFFFF !important;
-      border-bottom: 3px solid #000000 !important;
-      box-shadow: 0 4px 0 #000000 !important;
-      position: relative;
-      z-index: 20;
+    body:not(.calm) #dropzoneStrip {
+      background: #ffffff !important;
+      color: var(--black) !important;
+      border-top: 3px solid var(--black) !important;
     }
 
-    #studioLessonTitle {
-      font-family: "Arial Black", Impact, sans-serif !important;
+    body:not(.calm) .text-textPrimary,
+    body:not(.calm) .text-textMuted {
       color: var(--black) !important;
-      border: 2px solid #000000 !important;
-      background: #FFFFFF !important;
-      box-shadow: 2px 2px 0 #000000 !important;
-      border-radius: 4px !important;
     }
 
-    #studioAuditBadge {
-      background: var(--lime) !important;
-      color: var(--black) !important;
-      border: 2px solid var(--black) !important;
-      box-shadow: 2px 2px 0 var(--black) !important;
+    /* Screen 2: 3-Pane Studio */
+    body:not(.calm) #screenStudio {
+      background-color: var(--yellow) !important;
+    }
+
+    body:not(.calm) #screenStudio > header {
+      background-color: #ffffff !important;
+      border-bottom: 3px solid var(--black) !important;
+      box-shadow: 0 4px 0 var(--black) !important;
+      height: auto !important;
+      min-height: 54px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    body:not(.calm) #studioLessonTitle {
       font-family: "Arial Black", Impact, sans-serif !important;
       text-transform: uppercase;
+      color: var(--black) !important;
+      background: #ffffff !important;
+      border: 2px solid transparent;
     }
 
-    /* Buttons & Controls */
-    #btnBackToSetup,
-    #btnUndo,
-    #btnRedo,
-    #btnTogglePromptLab,
-    #btnOpenExport,
-    #btnGenerateOutline,
-    #btnAddSceneCard,
-    .sample-chip,
-    .ratio-btn,
-    .theme-chip,
-    #btnViewStoryboard,
-    #btnViewFullScript,
-    #btnOpenApiSetup {
-      border: 3px solid #000000 !important;
-      box-shadow: 3px 3px 0 #000000 !important;
-      border-radius: 6px !important;
-      font-family: "Arial Black", Impact, sans-serif !important;
-      text-transform: uppercase !important;
-      transition: all 0.15s ease !important;
+    body:not(.calm) #studioLessonTitle:focus {
+      border-color: var(--black) !important;
     }
 
-    #btnOpenExport {
-      background: var(--magenta) !important;
-      color: #000000 !important;
-    }
-    #btnOpenExport:hover {
-      background: var(--blue) !important;
-      color: #FFFFFF !important;
-      animation: jitter 0.18s infinite linear;
+    /* Left Pane (Modular Scenes) -> Teal Frame, Calm White Scene Cards */
+    body:not(.calm) #threePaneWorkbench > aside:first-of-type {
+      background-color: var(--teal) !important;
+      border-right: 3px solid var(--black) !important;
     }
 
-    #btnGenerateOutline {
-      background: var(--black) !important;
-      color: #FFFFFF !important;
-      box-shadow: 6px 6px 0 var(--black) !important;
-      font-size: 1.15rem !important;
-    }
-    #btnGenerateOutline:hover {
-      background: var(--blue) !important;
-      animation: jitter 0.18s infinite linear;
+    body:not(.calm) #threePaneWorkbench > aside:first-of-type > div:first-child,
+    body:not(.calm) #threePaneWorkbench > aside:first-of-type > div:last-child {
+      background-color: var(--teal) !important;
+      border-color: var(--black) !important;
     }
 
-    /* Left Sidebar: Modular Scenes */
-    #threePaneWorkbench > aside:first-child {
-      background: var(--teal) !important;
-      border-right: 3px solid #000000 !important;
-      border-bottom: 3px solid #000000 !important;
-    }
-    #threePaneWorkbench > aside:first-child > div:first-child {
-      background: var(--black) !important;
-      color: #FFFFFF !important;
-      border-bottom: 3px solid #000000 !important;
-      font-family: "Arial Black", Impact, sans-serif !important;
-    }
-    #totalDurationBadge {
-      color: var(--yellow) !important;
-      font-weight: 700;
-    }
-
-    /* Modular Scene Cards */
-    .scene-card {
-      background-color: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 4px 4px 0 #000000 !important;
-      border-radius: 6px !important;
-      color: #000000 !important;
-      padding: 14px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .scene-card:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 6px 6px 0 #000000 !important;
-    }
-    .scene-card.active {
-      background-color: #FFFFFF !important;
-      border: 4px solid #000000 !important;
-      box-shadow: 6px 6px 0 #000000 !important;
-      outline: 3px solid var(--blue);
-    }
-    .scene-card textarea,
-    .scene-card input {
-      border: 2px solid #000000 !important;
-      background: #FFFFFF !important;
-      color: #000000 !important;
-      border-radius: 4px !important;
-    }
-
-    /* Center Stage: Video Monitor & Canvas */
-    #threePaneWorkbench > main {
-      background: var(--yellow) !important;
-    }
-    .preview-frame-shell {
-      border: 4px solid #000000 !important;
-      box-shadow: 8px 8px 0 #000000 !important;
-      background: #000000 !important;
+    body:not(.calm) #sceneCardsContainer > div {
+      background-color: #ffffff !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 4px 4px 0 var(--black) !important;
+      color: var(--black) !important;
       border-radius: 8px !important;
     }
-    #karaokeSubtitleBar {
-      background: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 4px 4px 0 #000000 !important;
-      color: #000000 !important;
-      font-weight: 700 !important;
+
+    body:not(.calm) #sceneCardsContainer > div.ring-1,
+    body:not(.calm) #sceneCardsContainer > div[data-active="true"] {
+      background-color: #f0fdf4 !important;
+      border-color: var(--blue) !important;
+      box-shadow: 5px 5px 0 var(--black) !important;
     }
-    #btnPauseSimplify {
-      background: var(--black) !important;
-      color: var(--lime) !important;
+
+    body:not(.calm) #sceneCardsContainer textarea,
+    body:not(.calm) #sceneCardsContainer input {
+      background: #f8fafc !important;
+      color: var(--black) !important;
       border: 2px solid var(--black) !important;
+      border-radius: 4px !important;
+      font-weight: 500;
+    }
+
+    /* Center Stage -> Yellow Canvas Background + White Transport Pill */
+    body:not(.calm) #threePaneWorkbench > main {
+      background-color: var(--yellow) !important;
+    }
+
+    body:not(.calm) #threePaneWorkbench > main .glass-bar {
+      background: #ffffff !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 4px 4px 0 var(--black) !important;
+      color: var(--black) !important;
+      backdrop-filter: none !important;
+    }
+
+    /* Right Inspector Pane -> Coral Frame, Calm White Cards */
+    body:not(.calm) #threePaneWorkbench > aside:last-of-type {
+      background-color: var(--coral) !important;
+      border-left: 3px solid var(--black) !important;
+    }
+
+    body:not(.calm) #threePaneWorkbench > aside:last-of-type .bg-bgSurface1,
+    body:not(.calm) #threePaneWorkbench > aside:last-of-type .bg-bgCanvas,
+    body:not(.calm) #threePaneWorkbench > aside:last-of-type select {
+      background-color: #ffffff !important;
+      color: var(--black) !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 3px 3px 0 var(--black) !important;
+    }
+
+    /* Loud Brutalist Buttons */
+    body:not(.calm) #btnGenerateOutline,
+    body:not(.calm) #btnOpenExport,
+    body:not(.calm) #btnTogglePromptLab,
+    body:not(.calm) #btnAddSceneCard,
+    body:not(.calm) #btnPlayPause,
+    body:not(.calm) #btnViewStoryboard,
+    body:not(.calm) #btnViewFullScript,
+    body:not(.calm) #btnBackToSetup,
+    body:not(.calm) #btnUndo,
+    body:not(.calm) #btnRedo,
+    body:not(.calm) #btnOpenApiSetup,
+    body:not(.calm) a[href="/"] {
+      background-color: var(--black) !important;
+      color: #ffffff !important;
+      border: 3px solid var(--black) !important;
       box-shadow: 3px 3px 0 var(--black) !important;
       font-family: "Arial Black", Impact, sans-serif !important;
-    }
-    #btnPauseSimplify:hover {
-      background: var(--blue) !important;
-      animation: jitter 0.18s infinite linear;
-    }
-    #btnPlayPause {
-      background: var(--black) !important;
-      color: #FFFFFF !important;
-      border: 2px solid var(--black) !important;
-      box-shadow: 2px 2px 0 var(--black) !important;
-    }
-    #btnPlayPause:hover {
-      background: var(--blue) !important;
-      animation: jitter 0.18s infinite linear;
-    }
-
-    /* Right Sidebar: Inspector */
-    #rightInspector {
-      background: var(--coral) !important;
-      border-left: 3px solid #000000 !important;
-      color: #000000 !important;
-    }
-    #rightInspector > div > div {
-      background: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 4px 4px 0 #000000 !important;
-      margin: 12px !important;
+      text-transform: uppercase !important;
       border-radius: 6px !important;
     }
-    #rightInspector select,
-    #rightInspector input[type="range"] {
-      border: 2px solid #000000 !important;
-      background: #FFFFFF !important;
-      color: #000000 !important;
-      border-radius: 4px !important;
+
+    body:not(.calm) #btnGenerateOutline:hover,
+    body:not(.calm) #btnOpenExport:hover,
+    body:not(.calm) #btnTogglePromptLab:hover,
+    body:not(.calm) #btnAddSceneCard:hover,
+    body:not(.calm) #btnPlayPause:hover,
+    body:not(.calm) #btnViewStoryboard:hover,
+    body:not(.calm) #btnViewFullScript:hover,
+    body:not(.calm) #btnOpenApiSetup:hover,
+    body:not(.calm) a[href="/"]:hover {
+      background-color: var(--blue) !important;
+      color: #ffffff !important;
+      animation: studio-jitter 0.18s infinite linear;
     }
 
-    /* Full Script View */
-    #fullScriptContainer {
-      background: var(--yellow) !important;
-      color: #000000 !important;
-    }
-    .surface-1 {
-      background-color: #FFFFFF !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 6px 6px 0 #000000 !important;
-      border-radius: 8px !important;
+    /* Active Config Pills */
+    body:not(.calm) .config-pill,
+    body:not(.calm) .sample-chip {
+      background-color: #ffffff !important;
+      color: var(--black) !important;
+      border: 2px solid var(--black) !important;
+      box-shadow: 2px 2px 0 var(--black) !important;
+      font-weight: 700 !important;
     }
 
-    /* Minimal Studio Scrollbars */
-    ::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #FFFFFF;
-      border-left: 1px solid #000000;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #000000;
-      border-radius: 0;
+    body:not(.calm) .config-pill.active {
+      background-color: var(--blue) !important;
+      color: #ffffff !important;
     }
 
-    /* Calm Mode */
-    body.calm {
-      background: #f8fafc !important;
+    /* Full Script View & Modals -> Calm White Panels */
+    body:not(.calm) #fullScriptContainer {
+      background-color: var(--yellow) !important;
     }
-    body.calm .chaos-sticker,
-    body.calm .chaos-marquee-strip {
-      display: none !important;
+
+    body:not(.calm) #fullScriptContainer .surface-1,
+    body:not(.calm) #fullScriptScenesList > div,
+    body:not(.calm) #modalExport > div:last-child,
+    body:not(.calm) #modalPromptLab > div:last-child,
+    body:not(.calm) #modalQuiz > div:last-child,
+    body:not(.calm) #modalApiConfig > div:last-child {
+      background-color: #ffffff !important;
+      color: var(--black) !important;
+      border: 3px solid var(--black) !important;
+      box-shadow: 6px 6px 0 var(--black) !important;
     }
-    body.calm #screenSetup h1 {
-      transform: none !important;
-      text-shadow: none !important;
+
+    body:not(.calm) #fullScriptZeroShot,
+    body:not(.calm) #fullScriptFewShot {
+      background-color: #f8fafc !important;
+      color: var(--black) !important;
+      border: 2px solid var(--black) !important;
+      padding: 0.75rem !important;
     }
-    body.calm .scene-card,
-    body.calm .preview-frame-shell,
-    body.calm .glass-bar {
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-      border-width: 2px !important;
+
+    /* Semantic Audit Badge */
+    body:not(.calm) #studioAuditBadge {
+      border: 3px solid var(--black) !important;
+      box-shadow: 3px 3px 0 var(--black) !important;
+      font-family: "Arial Black", Impact, sans-serif !important;
+      text-transform: uppercase !important;
+      color: var(--black) !important;
+      background-color: #4ade80 !important;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      body:not(.calm) button:hover,
+      body:not(.calm) a:hover {
+        animation: none !important;
+      }
     }
   </style>
 </head>
+
 <body class="min-h-screen flex flex-col">
 
   <!-- ===================================================================== -->
   <!-- SCREEN 1: PROMPT & LESSON SETUP (GAMMA-INSPIRED)                      -->
   <!-- ===================================================================== -->
-  <section id="screenSetup" class="min-h-screen w-full studio-radial-glow flex flex-col justify-between px-4 sm:px-6 py-5 relative">
-    <span class="chaos-sticker sticker-1" aria-hidden="true">🎓</span>
-    <span class="chaos-sticker sticker-2" aria-hidden="true">✨</span>
-    <span class="chaos-sticker sticker-3" aria-hidden="true">🔥</span>
-    <span class="chaos-sticker sticker-4" aria-hidden="true">🧠</span>
-
+  <section id="screenSetup"
+    class="min-h-screen w-full studio-radial-glow flex flex-col justify-between px-4 sm:px-6 py-5">
     <!-- Minimal Top Brand Bar -->
     <header class="max-w-6xl w-full mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-[8px] bg-bgSurface1 border border-borderSubtle flex items-center justify-center">
-          <svg class="w-4 h-4 text-accentPrimary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <svg class="w-4 h-4 text-accentPrimary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2">
             <polygon points="12 3 21 19 3 19" stroke-linejoin="round"></polygon>
             <polygon points="10.5 10.5 15.5 13.5 10.5 16.5" fill="currentColor" stroke="none"></polygon>
           </svg>
         </div>
         <span class="font-semibold text-[15px] tracking-[-0.01em] text-textPrimary">ClariVid</span>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-[#10B981]/10 text-accentEdu border border-[#10B981]/25">
+        <span
+          class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-[#10B981]/10 text-accentEdu border border-[#10B981]/25">
           AI Educational Studio
         </span>
       </div>
 
       <div class="flex items-center gap-2">
-        <a href="http://localhost:5173" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-1.5">
+        <a href="/"
+          class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-1.5">
           🎓 Classic View ↗
         </a>
-        <button id="btnOpenApiSetup" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-2">
+        <button id="btnOpenApiSetup" type="button"
+          class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary transition flex items-center gap-2">
           <span id="setupApiDot" class="w-1.5 h-1.5 rounded-full bg-accentEdu"></span>
           <span id="setupApiLabel">Connecting to Clarivid Backend...</span>
         </button>
@@ -571,7 +494,8 @@
     <!-- Centered Distraction-Free Prompt Studio (max-width: 720px) -->
     <main class="max-w-[720px] w-full mx-auto my-auto py-8 space-y-6">
       <div class="text-center space-y-2">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bgSurface1 border border-borderSubtle text-[11px] font-mono text-textMuted">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bgSurface1 border border-borderSubtle text-[11px] font-mono text-textMuted">
           <span class="w-1.5 h-1.5 rounded-full bg-accentPrimary"></span>
           <span>PROMPT → MODULAR STORYBOARD → INTERACTIVE VIDEO</span>
         </div>
@@ -579,23 +503,28 @@
           Turn any concept into a structured video lesson
         </h1>
         <p class="text-sm text-textMuted max-w-xl mx-auto leading-relaxed">
-          Start with a topic prompt or paste lecture notes. ClariVid generates an editable scene-by-scene storyboard before rendering synchronized visuals and voiceover.
+          Start with a topic prompt or paste lecture notes. ClariVid generates an editable scene-by-scene storyboard
+          before rendering synchronized visuals and voiceover.
         </p>
       </div>
 
       <!-- Quick Sample Topic Chips -->
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="text-[11px] font-mono uppercase tracking-[0.06em] text-textMuted mr-1">Try:</span>
-        <button type="button" data-sample="TCP 3-Way Handshake" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+        <button type="button" data-sample="TCP 3-Way Handshake"
+          class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
           TCP 3-Way Handshake
         </button>
-        <button type="button" data-sample="Binary Search Trees" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+        <button type="button" data-sample="Binary Search Trees"
+          class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
           Binary Search Trees
         </button>
-        <button type="button" data-sample="Photosynthesis Electron Transport" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+        <button type="button" data-sample="Photosynthesis Electron Transport"
+          class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
           Photosynthesis Electron Transport
         </button>
-        <button type="button" data-sample="Indian Knowledge Systems: Sulba Sutras" class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
+        <button type="button" data-sample="Indian Knowledge Systems: Sulba Sutras"
+          class="sample-chip px-3 py-1 rounded-full bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle hover:border-borderFocus text-xs text-textMuted hover:text-textPrimary transition">
           Indian Knowledge Systems: Sulba Sutras
         </button>
       </div>
@@ -605,38 +534,45 @@
         <!-- Top Tab Switcher -->
         <div class="flex items-center justify-between px-4 py-2.5 border-b border-borderSubtle bg-bgSurface1/60">
           <div class="flex items-center gap-1.5">
-            <button id="tabTopicPrompt" type="button" class="px-3 py-1 rounded-[8px] text-xs font-semibold bg-bgSurface2 text-textPrimary border border-borderFocus transition">
+            <button id="tabTopicPrompt" type="button"
+              class="px-3 py-1 rounded-[8px] text-xs font-semibold bg-bgSurface2 text-textPrimary border border-borderFocus transition">
               From Topic Prompt
             </button>
-            <button id="tabLectureNotes" type="button" class="px-3 py-1 rounded-[8px] text-xs font-medium text-textMuted hover:text-textPrimary border border-transparent transition">
+            <button id="tabLectureNotes" type="button"
+              class="px-3 py-1 rounded-[8px] text-xs font-medium text-textMuted hover:text-textPrimary border border-transparent transition">
               Paste Lecture Notes / PDF
             </button>
           </div>
-          <span id="tokenCounterPill" class="px-2.5 py-0.5 rounded-full bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-accentEdu">
+          <span id="tokenCounterPill"
+            class="px-2.5 py-0.5 rounded-full bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-accentEdu">
             14 tokens • Ready
           </span>
         </div>
 
         <!-- Expandable Textarea -->
         <div class="p-4">
-          <textarea
-            id="setupPromptInput"
-            rows="4"
+          <textarea id="setupPromptInput" rows="4"
             class="w-full min-h-[112px] bg-transparent text-sm sm:text-[15px] text-textPrimary placeholder-textMuted leading-relaxed resize-y focus:outline-none"
-            placeholder="Describe a concept to teach (e.g., How TCP 3-Way Handshake establishes reliable connections)..."
-          >TCP 3-Way Handshake</textarea>
+            placeholder="Describe a concept to teach (e.g., How TCP 3-Way Handshake establishes reliable connections)...">TCP 3-Way Handshake</textarea>
         </div>
 
         <!-- Inline Knowledge Ingestion Dropzone Strip -->
-        <div id="dropzoneStrip" class="px-4 py-2.5 border-t border-borderSubtle bg-bgCanvas/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-          <label for="fileIngestInput" class="flex items-center gap-2 text-textMuted hover:text-textPrimary cursor-pointer transition">
-            <svg class="w-4 h-4 text-accentPrimary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        <div id="dropzoneStrip"
+          class="px-4 py-2.5 border-t border-borderSubtle bg-bgCanvas/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <label for="fileIngestInput"
+            class="flex items-center gap-2 text-textMuted hover:text-textPrimary cursor-pointer transition">
+            <svg class="w-4 h-4 text-accentPrimary shrink-0" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <span id="dropzoneLabel">Drop <span class="font-mono text-textPrimary">.pdf</span>, <span class="font-mono text-textPrimary">.md</span>, or <span class="font-mono text-textPrimary">.txt</span> syllabus notes here, or click to attach</span>
+            <span id="dropzoneLabel">Drop <span class="font-mono text-textPrimary">.pdf</span>, <span
+                class="font-mono text-textPrimary">.md</span>, or <span class="font-mono text-textPrimary">.txt</span>
+              syllabus notes here, or click to attach</span>
             <input id="fileIngestInput" type="file" accept=".txt,.md,.pdf,.csv,.json" class="hidden" />
           </label>
-          <span id="attachedFileBadge" class="hidden px-2 py-0.5 rounded bg-accentPrimary/15 text-accentPrimary font-mono text-[11px] border border-accentPrimary/30">
+          <span id="attachedFileBadge"
+            class="hidden px-2 py-0.5 rounded bg-accentPrimary/15 text-accentPrimary font-mono text-[11px] border border-accentPrimary/30">
             notes.md loaded
           </span>
         </div>
@@ -646,12 +582,16 @@
       <div class="surface-1 rounded-[12px] p-4 space-y-4">
         <!-- Row 1: Target Audience / Grade Level -->
         <div class="space-y-2">
-          <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Target Audience / Grade Level</div>
+          <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Target Audience / Grade
+            Level</div>
           <div class="flex flex-wrap gap-2" data-pill-group="audience">
-            <button type="button" data-val="Middle School" class="config-pill px-3.5 py-1.5 text-xs">Middle School</button>
+            <button type="button" data-val="Middle School" class="config-pill px-3.5 py-1.5 text-xs">Middle
+              School</button>
             <button type="button" data-val="High School" class="config-pill px-3.5 py-1.5 text-xs">High School</button>
-            <button type="button" data-val="Undergraduate / B.Tech" class="config-pill active px-3.5 py-1.5 text-xs">Undergraduate / B.Tech</button>
-            <button type="button" data-val="Professional" class="config-pill px-3.5 py-1.5 text-xs">Professional</button>
+            <button type="button" data-val="Undergraduate / B.Tech"
+              class="config-pill active px-3.5 py-1.5 text-xs">Undergraduate / B.Tech</button>
+            <button type="button" data-val="Professional"
+              class="config-pill px-3.5 py-1.5 text-xs">Professional</button>
           </div>
         </div>
 
@@ -660,9 +600,12 @@
           <div class="space-y-2">
             <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Video Duration</div>
             <div class="flex flex-wrap gap-2" data-pill-group="duration">
-              <button type="button" data-val="60s Quick Bite" class="config-pill px-3 py-1.5 text-xs">60s Quick Bite</button>
-              <button type="button" data-val="2 min Concept" class="config-pill active px-3 py-1.5 text-xs">2 min Concept</button>
-              <button type="button" data-val="5 min Deep Dive" class="config-pill px-3 py-1.5 text-xs">5 min Deep Dive</button>
+              <button type="button" data-val="60s Quick Bite" class="config-pill px-3 py-1.5 text-xs">60s Quick
+                Bite</button>
+              <button type="button" data-val="2 min Concept" class="config-pill active px-3 py-1.5 text-xs">2 min
+                Concept</button>
+              <button type="button" data-val="5 min Deep Dive" class="config-pill px-3 py-1.5 text-xs">5 min Deep
+                Dive</button>
             </div>
           </div>
 
@@ -670,9 +613,11 @@
           <div class="space-y-2">
             <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Visual Style</div>
             <div class="flex flex-wrap gap-2" data-pill-group="style">
-              <button type="button" data-val="Motion Graphics" class="config-pill active px-3 py-1.5 text-xs">Motion Graphics</button>
+              <button type="button" data-val="Motion Graphics" class="config-pill active px-3 py-1.5 text-xs">Motion
+                Graphics</button>
               <button type="button" data-val="Whiteboard" class="config-pill px-3 py-1.5 text-xs">Whiteboard</button>
-              <button type="button" data-val="Diagram Explainer" class="config-pill px-3 py-1.5 text-xs">Diagram Explainer</button>
+              <button type="button" data-val="Diagram Explainer" class="config-pill px-3 py-1.5 text-xs">Diagram
+                Explainer</button>
             </div>
           </div>
         </div>
@@ -683,14 +628,16 @@
         <span class="text-xs text-textMuted font-mono">
           4-Scene Gamma Outline • Fact-Audited
         </span>
-        <button id="btnGenerateOutline" type="button" class="w-full sm:w-auto px-6 py-3 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-sm flex items-center justify-center gap-2 transition cursor-pointer">
+        <button id="btnGenerateOutline" type="button"
+          class="w-full sm:w-auto px-6 py-3 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-sm flex items-center justify-center gap-2 transition cursor-pointer">
           <span id="btnGenerateText">Generate Lesson Outline →</span>
         </button>
       </div>
     </main>
 
     <!-- Minimal Footer -->
-    <footer class="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-textMuted pt-4 border-t border-borderSubtle/60">
+    <footer
+      class="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-textMuted pt-4 border-t border-borderSubtle/60">
       <span>ClariVid Studio • Modular Educational Video Engine</span>
       <span>Ayush Patil (Roll No: 150096726128) • Generative AI & Prompt Engineering</span>
     </footer>
@@ -699,77 +646,70 @@
   <!-- ===================================================================== -->
   <!-- SCREEN 2: MODULAR STORYBOARD & SCRIPT EDITOR (GAMMA + RUNWAY HYBRID)  -->
   <!-- ===================================================================== -->
-  <section id="screenStudio" class="hidden min-h-screen h-screen flex flex-col bg-bgCanvas overflow-hidden relative">
-    <span class="chaos-sticker sticker-1" aria-hidden="true">🎓</span>
-    <span class="chaos-sticker sticker-2" aria-hidden="true">✨</span>
+  <section id="screenStudio" class="hidden min-h-screen h-screen flex flex-col bg-bgCanvas overflow-hidden">
 
     <!-- TOP STUDIO HEADER (48px height, 1px solid #23252C bottom border) -->
-    <header class="h-[48px] shrink-0 px-3 sm:px-4 bg-bgSurface1 border-b border-borderSubtle flex items-center justify-between gap-2">
+    <header
+      class="h-[48px] shrink-0 px-3 sm:px-4 bg-bgSurface1 border-b border-borderSubtle flex items-center justify-between gap-2">
       <!-- Left: Back + Inline-Editable Lesson Title + Syllabus Verified Badge -->
       <div class="flex items-center gap-2.5 min-w-0">
-        <button id="btnBackToSetup" type="button" title="Back to Prompt Setup" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle flex items-center justify-center text-textMuted hover:text-textPrimary transition shrink-0">
+        <button id="btnBackToSetup" type="button" title="Back to Prompt Setup"
+          class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle flex items-center justify-center text-textMuted hover:text-textPrimary transition shrink-0">
           ←
         </button>
-        <input
-          id="studioLessonTitle"
-          type="text"
-          value="TCP 3-Way Handshake"
-          aria-label="Lesson Title"
-          class="bg-transparent hover:bg-bgSurface2 focus:bg-bgSurface2 px-2 py-1 rounded-[6px] border border-transparent focus:border-borderFocus font-semibold text-[14px] sm:text-[15px] tracking-[-0.01em] text-textPrimary truncate max-w-[160px] sm:max-w-[260px] focus:outline-none"
-        />
-        <span id="studioAuditBadge" class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 shrink-0">
+        <input id="studioLessonTitle" type="text" value="TCP 3-Way Handshake" aria-label="Lesson Title"
+          class="bg-transparent hover:bg-bgSurface2 focus:bg-bgSurface2 px-2 py-1 rounded-[6px] border border-transparent focus:border-borderFocus font-semibold text-[14px] sm:text-[15px] tracking-[-0.01em] text-textPrimary truncate max-w-[160px] sm:max-w-[260px] focus:outline-none" />
+        <span id="studioAuditBadge"
+          class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 shrink-0">
           ✓ Syllabus Verified
         </span>
       </div>
 
       <!-- Center: Segmented View Toggle (Storyboard Studio | Full Script View) -->
       <div class="hidden sm:flex items-center p-0.5 rounded-[8px] bg-bgCanvas border border-borderSubtle">
-        <button id="btnViewStoryboard" type="button" class="px-3 py-1 rounded-[6px] text-xs font-semibold bg-bgSurface2 text-textPrimary transition">
+        <button id="btnViewStoryboard" type="button"
+          class="px-3 py-1 rounded-[6px] text-xs font-semibold bg-bgSurface2 text-textPrimary transition">
           Storyboard Studio
         </button>
-        <button id="btnViewFullScript" type="button" class="px-3 py-1 rounded-[6px] text-xs font-medium text-textMuted hover:text-textPrimary transition">
+        <button id="btnViewFullScript" type="button"
+          class="px-3 py-1 rounded-[6px] text-xs font-medium text-textMuted hover:text-textPrimary transition">
           Full Script View
         </button>
       </div>
 
       <!-- Right: Undo/Redo, Prompt Lab Toggle, and Primary Export Button -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button id="btnUndo" type="button" title="Undo Edit" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
+        <button id="btnUndo" type="button" title="Undo Edit"
+          class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
           ↺
         </button>
-        <button id="btnRedo" type="button" title="Redo Edit" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
+        <button id="btnRedo" type="button" title="Redo Edit"
+          class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center disabled:opacity-35 transition">
           ↻
         </button>
-        <button id="btnTogglePromptLab" type="button" class="px-2.5 py-1 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs font-mono text-textMuted hover:text-textPrimary transition">
+        <button id="btnTogglePromptLab" type="button"
+          class="px-2.5 py-1 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs font-mono text-textMuted hover:text-textPrimary transition">
           Prompt Lab
         </button>
-        <button id="btnOpenExport" type="button" class="px-3.5 py-1 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs transition">
+        <button id="btnOpenExport" type="button"
+          class="px-3.5 py-1 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs transition">
           Export
         </button>
       </div>
     </header>
-
-    <!-- Gen Z Chaos Marquee strip -->
-    <div class="chaos-marquee-strip" role="region" aria-label="Announcement marquee">
-      <div class="chaos-marquee-track">
-        <span class="chaos-marquee-content">
-          FACT-CHECKED • HINGLISH • EXAM TAGS • VIDEO CREATOR STUDIO • RUNWAY + GAMMA CANVAS •&nbsp;
-        </span>
-        <span class="chaos-marquee-content" aria-hidden="true">
-          FACT-CHECKED • HINGLISH • EXAM TAGS • VIDEO CREATOR STUDIO • RUNWAY + GAMMA CANVAS •&nbsp;
-        </span>
-      </div>
-    </div>
 
     <!-- FULL SCRIPT & PROMPT LAB VIEW (Shown when 'Full Script View' is active) -->
     <div id="fullScriptContainer" class="hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-bgCanvas">
       <div class="max-w-4xl mx-auto space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-borderSubtle">
           <div>
-            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-accentEdu">Full Lesson Document & Prompt Architecture</span>
-            <h2 id="fullScriptHeading" class="text-xl font-bold text-textPrimary mt-0.5">TCP 3-Way Handshake — Complete Script</h2>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-accentEdu">Full Lesson Document &
+              Prompt Architecture</span>
+            <h2 id="fullScriptHeading" class="text-xl font-bold text-textPrimary mt-0.5">TCP 3-Way Handshake — Complete
+              Script</h2>
           </div>
-          <button id="btnReturnToWorkbench" type="button" class="px-3.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
+          <button id="btnReturnToWorkbench" type="button"
+            class="px-3.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
             ← Back to 3-Pane Canvas
           </button>
         </div>
@@ -777,8 +717,10 @@
         <!-- Prompt Engineering Comparison Card (Zero-Shot vs Few-Shot JSON) -->
         <div class="surface-1 rounded-[12px] p-5 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Prompt Engineering Architecture (Evaluation X-Ray)</span>
-            <span class="px-2 py-0.5 rounded bg-[#10B981]/12 text-accentEdu font-mono text-[11px]">Dual-Agent Audited</span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Prompt Engineering
+              Architecture (Evaluation X-Ray)</span>
+            <span class="px-2 py-0.5 rounded bg-[#10B981]/12 text-accentEdu font-mono text-[11px]">Dual-Agent
+              Audited</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle space-y-1.5">
@@ -801,7 +743,8 @@
     <div id="threePaneWorkbench" class="flex-1 flex flex-col lg:flex-row overflow-hidden">
 
       <!-- PANE 1: LEFT SIDEBAR — MODULAR GAMMA SCENE CARDS (340px fixed width on desktop) -->
-      <aside class="w-full lg:w-[340px] shrink-0 h-[44vh] lg:h-full bg-bgCanvas border-b lg:border-b-0 lg:border-r border-borderSubtle flex flex-col order-2 lg:order-1">
+      <aside
+        class="w-full lg:w-[340px] shrink-0 h-[44vh] lg:h-full bg-bgCanvas border-b lg:border-b-0 lg:border-r border-borderSubtle flex flex-col order-2 lg:order-1">
         <div class="px-4 py-2.5 border-b border-borderSubtle flex items-center justify-between bg-bgSurface1/40">
           <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Modular Scenes</span>
           <span id="totalDurationBadge" class="font-mono text-[11px] text-textMuted">4 Scenes • 01:12</span>
@@ -814,56 +757,63 @@
 
         <!-- Bottom '+ Add Scene Card' Dashed Button -->
         <div class="p-3 border-t border-borderSubtle bg-bgCanvas">
-          <button id="btnAddSceneCard" type="button" class="w-full py-2.5 rounded-[8px] border border-dashed border-borderFocus hover:border-accentPrimary bg-bgSurface1/40 hover:bg-bgSurface1 text-xs font-medium text-textMuted hover:text-textPrimary transition">
+          <button id="btnAddSceneCard" type="button"
+            class="w-full py-2.5 rounded-[8px] border border-dashed border-borderFocus hover:border-accentPrimary bg-bgSurface1/40 hover:bg-bgSurface1 text-xs font-medium text-textMuted hover:text-textPrimary transition">
             + Add Scene Card
           </button>
         </div>
       </aside>
 
       <!-- PANE 2: CENTER STAGE — RUNWAY-STYLE LIVE PREVIEW CANVAS (flex-1, 32px padding) -->
-      <main class="flex-1 h-[56vh] lg:h-full bg-bgCanvas p-4 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden order-1 lg:order-2">
+      <main
+        class="flex-1 h-[56vh] lg:h-full bg-bgCanvas p-4 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden order-1 lg:order-2">
 
         <!-- Centered Interactive Video Preview Frame -->
-        <div id="previewFrameWrapper" class="preview-frame-shell relative w-full max-w-[820px] aspect-video overflow-hidden flex items-center justify-center">
+        <div id="previewFrameWrapper"
+          class="preview-frame-shell relative w-full max-w-[820px] aspect-video overflow-hidden flex items-center justify-center">
           <canvas id="studioCanvas" class="w-full h-full block"></canvas>
 
           <!-- Top-Left Canvas Scene Pill -->
           <div class="absolute top-3 left-3 z-10 flex items-center gap-2 pointer-events-none">
-            <span id="canvasScenePill" class="px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textPrimary">
+            <span id="canvasScenePill"
+              class="px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textPrimary">
               Scene 01 / 04
             </span>
-            <span id="canvasStylePill" class="hidden sm:inline-block px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textMuted">
+            <span id="canvasStylePill"
+              class="hidden sm:inline-block px-2.5 py-1 rounded-full glass-bar font-mono text-[11px] text-textMuted">
               Motion Graphics
             </span>
           </div>
 
           <!-- Top-Right 'Pause & Simplify' Floating Pill -->
-          <button
-            id="btnPauseSimplify"
-            type="button"
-            class="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full glass-bar hover:border-accentEdu text-xs font-medium text-textPrimary flex items-center gap-1.5 transition cursor-pointer"
-          >
+          <button id="btnPauseSimplify" type="button"
+            class="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full glass-bar hover:border-accentEdu text-xs font-medium text-textPrimary flex items-center gap-1.5 transition cursor-pointer">
             <span class="w-1.5 h-1.5 rounded-full bg-accentEdu"></span>
             <span>Pause & Simplify</span>
           </button>
 
           <!-- Bottom-Third Synced Karaoke Subtitles -->
-          <div id="subtitleContainer" class="absolute bottom-3 inset-x-4 sm:inset-x-10 z-10 pointer-events-none flex justify-center">
-            <div id="karaokeSubtitleBar" class="px-3.5 py-1.5 rounded-[8px] bg-[#09090B]/85 border border-borderSubtle text-xs sm:text-sm text-center text-textPrimary max-w-2xl leading-snug">
+          <div id="subtitleContainer"
+            class="absolute bottom-3 inset-x-4 sm:inset-x-10 z-10 pointer-events-none flex justify-center">
+            <div id="karaokeSubtitleBar"
+              class="px-3.5 py-1.5 rounded-[8px] bg-[#09090B]/85 border border-borderSubtle text-xs sm:text-sm text-center text-textPrimary max-w-2xl leading-snug">
               Subtitles appear here during playback...
             </div>
           </div>
 
           <!-- Mid-Video Student Doubt Clarification Glass Overlay ('Pause & Simplify') -->
-          <div id="simplifyOverlay" class="hidden absolute inset-0 z-30 bg-[#09090B]/85 backdrop-blur-md p-5 sm:p-8 flex flex-col justify-between">
+          <div id="simplifyOverlay"
+            class="hidden absolute inset-0 z-30 bg-[#09090B]/85 backdrop-blur-md p-5 sm:p-8 flex flex-col justify-between">
             <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
               <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/30 font-mono text-[11px]">
+                <span
+                  class="px-2.5 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/30 font-mono text-[11px]">
                   Simplified Analogy Branch
                 </span>
                 <span id="simplifySceneTag" class="font-mono text-xs text-textMuted">Paused at Scene 01</span>
               </div>
-              <button id="btnCloseSimplify" type="button" class="text-xs text-textMuted hover:text-textPrimary px-2 py-1 rounded hover:bg-bgSurface2">
+              <button id="btnCloseSimplify" type="button"
+                class="text-xs text-textMuted hover:text-textPrimary px-2 py-1 rounded hover:bg-bgSurface2">
                 ✕
               </button>
             </div>
@@ -872,22 +822,27 @@
               <h3 id="simplifyTitle" class="text-lg sm:text-xl font-bold text-textPrimary">
                 Intuitive Everyday Analogy
               </h3>
-              <p id="simplifyBody" class="text-sm text-textPrimary/90 leading-relaxed p-4 rounded-[12px] bg-bgSurface1 border border-borderSubtle">
+              <p id="simplifyBody"
+                class="text-sm text-textPrimary/90 leading-relaxed p-4 rounded-[12px] bg-bgSurface1 border border-borderSubtle">
                 Analogy explanation loads here.
               </p>
-              <div id="simplifyCheckpointContainer" class="hidden text-left space-y-2 p-3 rounded-[8px] bg-bgSurface1 border border-borderSubtle"></div>
+              <div id="simplifyCheckpointContainer"
+                class="hidden text-left space-y-2 p-3 rounded-[8px] bg-bgSurface1 border border-borderSubtle"></div>
             </div>
 
             <div class="flex items-center justify-between pt-3 border-t border-borderSubtle">
               <div class="flex items-center gap-2">
-                <button id="btnReplaySimplifyVoice" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
+                <button id="btnReplaySimplifyVoice" type="button"
+                  class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textPrimary">
                   🔊 Replay Analogy
                 </button>
-                <button id="btnApplySimplifiedNarration" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-bgSurface1 border border-borderSubtle text-xs font-medium text-accentEdu hover:text-white transition">
+                <button id="btnApplySimplifiedNarration" type="button"
+                  class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-bgSurface1 border border-borderSubtle text-xs font-medium text-accentEdu hover:text-white transition">
                   ✏️ Apply to Scene Script
                 </button>
               </div>
-              <button id="btnResumeFromSimplify" type="button" class="px-4 py-1.5 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs">
+              <button id="btnResumeFromSimplify" type="button"
+                class="px-4 py-1.5 rounded-full bg-accentPrimary hover:bg-accentHover text-white font-semibold text-xs">
                 Got it, Resume Lesson →
               </button>
             </div>
@@ -895,19 +850,27 @@
         </div>
 
         <!-- Floating Glass Transport Control Bar (52px height, pill below canvas) -->
-        <div class="mt-4 sm:mt-5 h-[52px] w-full max-w-[760px] glass-bar rounded-full px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+        <div
+          class="mt-4 sm:mt-5 h-[52px] w-full max-w-[760px] glass-bar rounded-full px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3.5 shrink-0">
           <!-- Play / Pause -->
-          <button id="btnPlayPause" type="button" title="Play / Pause (Space)" class="w-8 h-8 rounded-full bg-accentPrimary hover:bg-accentHover text-white flex items-center justify-center shrink-0 transition">
-            <svg id="iconPlay" class="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg id="iconPause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <button id="btnPlayPause" type="button" title="Play / Pause (Space)"
+            class="w-8 h-8 rounded-full bg-accentPrimary hover:bg-accentHover text-white flex items-center justify-center shrink-0 transition">
+            <svg id="iconPlay" class="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="iconPause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
           </button>
 
           <!-- Step Previous / Next Scene -->
           <div class="flex items-center gap-1">
-            <button id="btnPrevScene" type="button" title="Previous Scene" class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
+            <button id="btnPrevScene" type="button" title="Previous Scene"
+              class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
               ⏮
             </button>
-            <button id="btnNextScene" type="button" title="Next Scene" class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
+            <button id="btnNextScene" type="button" title="Next Scene"
+              class="w-7 h-7 rounded-full hover:bg-bgSurface2 text-textMuted hover:text-textPrimary text-xs flex items-center justify-center transition">
               ⏭
             </button>
           </div>
@@ -918,35 +881,41 @@
           </span>
 
           <!-- Interactive Segmented Scene Scrubber Bar -->
-          <div id="segmentedScrubber" class="flex-1 h-2 flex items-center gap-1 cursor-pointer" title="Click to scrub across scenes">
+          <div id="segmentedScrubber" class="flex-1 h-2 flex items-center gap-1 cursor-pointer"
+            title="Click to scrub across scenes">
             <!-- Segments rendered dynamically proportional to scene duration -->
           </div>
 
           <!-- Playback Speed Cycle -->
-          <button id="btnSpeedCycle" type="button" class="px-2 py-1 rounded-full hover:bg-bgSurface2 font-mono text-[11px] text-textMuted hover:text-textPrimary shrink-0 transition">
+          <button id="btnSpeedCycle" type="button"
+            class="px-2 py-1 rounded-full hover:bg-bgSurface2 font-mono text-[11px] text-textMuted hover:text-textPrimary shrink-0 transition">
             1.0x
           </button>
 
           <!-- CC Toggle -->
-          <button id="btnToggleCC" type="button" class="px-2 py-1 rounded-full bg-bgSurface2 border border-borderFocus font-mono text-[11px] text-textPrimary shrink-0 transition">
+          <button id="btnToggleCC" type="button"
+            class="px-2 py-1 rounded-full bg-bgSurface2 border border-borderFocus font-mono text-[11px] text-textPrimary shrink-0 transition">
             CC
           </button>
         </div>
 
         <!-- Expand Inspector Floating Button (Visible when Right Inspector is Collapsed) -->
-        <button id="btnExpandInspector" type="button" class="hidden absolute top-4 right-4 px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary">
+        <button id="btnExpandInspector" type="button"
+          class="hidden absolute top-4 right-4 px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle text-xs font-medium text-textMuted hover:text-textPrimary">
           Inspector ▸
         </button>
       </main>
 
       <!-- PANE 3: RIGHT INSPECTOR PANEL (280px collapsible width, 1px solid #23252C left border) -->
-      <aside id="rightInspector" class="hidden lg:flex w-[280px] shrink-0 h-full bg-bgSurface1 border-l border-borderSubtle flex-col justify-between overflow-y-auto order-3">
+      <aside id="rightInspector"
+        class="hidden lg:flex w-[280px] shrink-0 h-full bg-bgSurface1 border-l border-borderSubtle flex-col justify-between overflow-y-auto order-3">
         <div class="divide-y divide-borderSubtle">
 
           <!-- Section 1: AI Voiceover & Pacing -->
           <div class="p-4 space-y-3.5">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">AI Voiceover & Pacing</span>
+              <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">AI Voiceover &
+                Pacing</span>
               <button id="btnMuteVoice" type="button" class="font-mono text-[11px] text-accentEdu hover:underline">
                 Audio ON
               </button>
@@ -954,10 +923,12 @@
 
             <!-- Voice Persona Selector + 5s Preview Play Button -->
             <div class="flex items-center gap-2">
-              <button id="btnVoiceSample" type="button" title="Preview 5s Voice Persona" class="w-8 h-8 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-accentPrimary text-xs flex items-center justify-center shrink-0 transition">
+              <button id="btnVoiceSample" type="button" title="Preview 5s Voice Persona"
+                class="w-8 h-8 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-accentPrimary text-xs flex items-center justify-center shrink-0 transition">
                 ▶
               </button>
-              <select id="selectVoicePersona" class="flex-1 h-8 px-2.5 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus text-xs text-textPrimary focus:outline-none">
+              <select id="selectVoicePersona"
+                class="flex-1 h-8 px-2.5 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus text-xs text-textPrimary focus:outline-none">
                 <option value="tutor">Aria (Clear Academic Tutor)</option>
                 <option value="professor">Prof. Dev (Deep Lecture)</option>
                 <option value="energetic">Kiran (Upbeat Explainer)</option>
@@ -976,7 +947,8 @@
             <!-- Pause Between Scenes Selector -->
             <div class="flex items-center justify-between text-xs">
               <span class="text-textMuted">Scene Gap</span>
-              <select id="selectSceneGap" class="px-2.5 py-1 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary focus:outline-none">
+              <select id="selectSceneGap"
+                class="px-2.5 py-1 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary focus:outline-none">
                 <option value="0.5">0.5s</option>
                 <option value="1.0">1.0s</option>
               </select>
@@ -985,27 +957,36 @@
 
           <!-- Section 2: Canvas & Aspect Ratio -->
           <div class="p-4 space-y-3">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Canvas & Aspect Ratio</div>
-            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-[8px] bg-bgCanvas border border-borderSubtle" id="aspectRatioGroup">
-              <button type="button" data-ratio="16:9" class="ratio-btn py-1.5 rounded-[6px] bg-bgSurface2 text-textPrimary font-mono text-xs font-medium transition">16:9</button>
-              <button type="button" data-ratio="9:16" class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">9:16</button>
-              <button type="button" data-ratio="1:1" class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">1:1</button>
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Canvas & Aspect Ratio
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 p-1 rounded-[8px] bg-bgCanvas border border-borderSubtle"
+              id="aspectRatioGroup">
+              <button type="button" data-ratio="16:9"
+                class="ratio-btn py-1.5 rounded-[6px] bg-bgSurface2 text-textPrimary font-mono text-xs font-medium transition">16:9</button>
+              <button type="button" data-ratio="9:16"
+                class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">9:16</button>
+              <button type="button" data-ratio="1:1"
+                class="ratio-btn py-1.5 rounded-[6px] text-textMuted hover:text-textPrimary font-mono text-xs transition">1:1</button>
             </div>
           </div>
 
           <!-- Section 3: Visual Theme & Accessibility -->
           <div class="p-4 space-y-3.5">
-            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Visual Theme & Accessibility</div>
+            <div class="text-[11px] font-semibold uppercase tracking-[0.06em] text-textMuted">Visual Theme &
+              Accessibility</div>
 
             <!-- Theme Switcher -->
             <div class="grid grid-cols-3 gap-1.5" id="canvasThemeGroup">
-              <button type="button" data-theme="dark" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgSurface2 border border-accentPrimary text-[11px] font-medium text-textPrimary transition">
+              <button type="button" data-theme="dark"
+                class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgSurface2 border border-accentPrimary text-[11px] font-medium text-textPrimary transition">
                 Dark Studio
               </button>
-              <button type="button" data-theme="light" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
+              <button type="button" data-theme="light"
+                class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
                 Clean Light
               </button>
-              <button type="button" data-theme="blueprint" class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
+              <button type="button" data-theme="blueprint"
+                class="theme-btn py-1.5 px-2 rounded-[8px] bg-bgCanvas border border-borderSubtle text-[11px] text-textMuted hover:text-textPrimary transition">
                 Blueprint
               </button>
             </div>
@@ -1014,10 +995,14 @@
             <div class="flex items-center justify-between text-xs">
               <span class="text-textMuted">Diagram Accent</span>
               <div class="flex items-center gap-2" id="accentSwatchGroup">
-                <button type="button" data-color="#6366F1" class="swatch-btn w-5 h-5 rounded-full bg-[#6366F1] ring-2 ring-white/80"></button>
-                <button type="button" data-color="#10B981" class="swatch-btn w-5 h-5 rounded-full bg-[#10B981] opacity-75 hover:opacity-100"></button>
-                <button type="button" data-color="#38BDF8" class="swatch-btn w-5 h-5 rounded-full bg-[#38BDF8] opacity-75 hover:opacity-100"></button>
-                <button type="button" data-color="#F59E0B" class="swatch-btn w-5 h-5 rounded-full bg-[#F59E0B] opacity-75 hover:opacity-100"></button>
+                <button type="button" data-color="#6366F1"
+                  class="swatch-btn w-5 h-5 rounded-full bg-[#6366F1] ring-2 ring-white/80"></button>
+                <button type="button" data-color="#10B981"
+                  class="swatch-btn w-5 h-5 rounded-full bg-[#10B981] opacity-75 hover:opacity-100"></button>
+                <button type="button" data-color="#38BDF8"
+                  class="swatch-btn w-5 h-5 rounded-full bg-[#38BDF8] opacity-75 hover:opacity-100"></button>
+                <button type="button" data-color="#F59E0B"
+                  class="swatch-btn w-5 h-5 rounded-full bg-[#F59E0B] opacity-75 hover:opacity-100"></button>
               </div>
             </div>
 
@@ -1037,7 +1022,8 @@
 
         <!-- Collapse Inspector Footer -->
         <div class="p-3 border-t border-borderSubtle">
-          <button id="btnCollapseInspector" type="button" class="w-full py-1.5 px-3 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs text-textMuted hover:text-textPrimary flex items-center justify-between transition">
+          <button id="btnCollapseInspector" type="button"
+            class="w-full py-1.5 px-3 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-xs text-textMuted hover:text-textPrimary flex items-center justify-between transition">
             <span>Collapse Inspector</span>
             <span>▸</span>
           </button>
@@ -1049,7 +1035,8 @@
   <!-- ===================================================================== -->
   <!-- SCREEN 3: EXPORT & SHARE MODAL (480px CENTERED MODAL)                 -->
   <!-- ===================================================================== -->
-  <div id="modalExport" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[8px] flex items-center justify-center p-4">
+  <div id="modalExport"
+    class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[8px] flex items-center justify-center p-4">
     <div class="w-full max-w-[480px] bg-bgSurface1 border border-borderSubtle rounded-[12px] overflow-hidden">
       <!-- Modal Header -->
       <div class="px-5 py-4 border-b border-borderSubtle flex items-center justify-between">
@@ -1057,7 +1044,8 @@
           <h2 class="text-base font-bold text-textPrimary">Export & Share Lesson</h2>
           <p id="exportLessonSubtitle" class="text-xs text-textMuted mt-0.5">TCP 3-Way Handshake • 4 Scenes</p>
         </div>
-        <button id="btnCloseExport" type="button" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center">
+        <button id="btnCloseExport" type="button"
+          class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs flex items-center justify-center">
           ✕
         </button>
       </div>
@@ -1066,66 +1054,82 @@
       <div class="p-5 space-y-3" id="exportOptionsGroup">
 
         <!-- Option 1: 1080p HD Video (MP4 / WebM) -->
-        <div data-export-type="video" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgSurface2 border border-accentPrimary space-y-2.5 transition">
+        <div data-export-type="video"
+          class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgSurface2 border border-accentPrimary space-y-2.5 transition">
           <div class="flex items-start justify-between gap-3">
             <div class="flex items-start gap-2.5">
               <div class="mt-0.5 w-4 h-4 rounded-full border-4 border-accentPrimary bg-white shrink-0"></div>
               <div>
                 <div class="text-sm font-semibold text-textPrimary">1080p HD Video (MP4 / WebM)</div>
-                <p class="text-xs text-textMuted mt-0.5">Renders live HTML5 Canvas animation frames into a downloadable video file.</p>
+                <p class="text-xs text-textMuted mt-0.5">Renders live HTML5 Canvas animation frames into a downloadable
+                  video file.</p>
               </div>
             </div>
             <div class="flex items-center gap-1 bg-bgCanvas p-0.5 rounded-[6px] border border-borderSubtle shrink-0">
-              <button type="button" data-fps="60" class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono bg-bgSurface2 text-textPrimary">60fps</button>
-              <button type="button" data-fps="30" class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono text-textMuted">30fps</button>
+              <button type="button" data-fps="60"
+                class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono bg-bgSurface2 text-textPrimary">60fps</button>
+              <button type="button" data-fps="30"
+                class="fps-btn px-2 py-0.5 rounded text-[10px] font-mono text-textMuted">30fps</button>
             </div>
           </div>
           <div class="pt-1 flex justify-end">
-            <button id="btnDownloadVideoFile" type="button" class="px-3.5 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold transition">
+            <button id="btnDownloadVideoFile" type="button"
+              class="px-3.5 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold transition">
               Render & Download Video
             </button>
           </div>
         </div>
 
         <!-- Option 2: Interactive Web Lesson Link (Recommended EdTech Mode) -->
-        <div data-export-type="link" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
+        <div data-export-type="link"
+          class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
           <div class="flex items-start gap-2.5">
             <div class="mt-0.5 w-4 h-4 rounded-full border border-borderFocus shrink-0"></div>
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-sm font-semibold text-textPrimary">Interactive Web Lesson Link</span>
-                <span class="px-2 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 text-[10px] font-medium">
+                <span
+                  class="px-2 py-0.5 rounded-full bg-[#10B981]/12 text-accentEdu border border-[#10B981]/25 text-[10px] font-medium">
                   Recommended EdTech Mode
                 </span>
               </div>
-              <p class="text-xs text-textMuted mt-0.5">Allows students to click scene chapters and trigger mid-lesson AI simplifications.</p>
+              <p class="text-xs text-textMuted mt-0.5">Allows students to click scene chapters and trigger mid-lesson AI
+                simplifications.</p>
             </div>
           </div>
           <div class="flex items-center gap-2 pt-1">
-            <input id="shareableUrlInput" type="text" readonly value="https://clarivid.edu/lesson/tcp-3-way-handshake" class="flex-1 px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 border border-borderSubtle font-mono text-[11px] text-textMuted focus:outline-none" />
-            <button id="btnCopyShareLink" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-accentPrimary text-textPrimary hover:text-white border border-borderSubtle text-xs font-medium transition shrink-0">
+            <input id="shareableUrlInput" type="text" readonly value="https://clarivid.edu/lesson/tcp-3-way-handshake"
+              class="flex-1 px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 border border-borderSubtle font-mono text-[11px] text-textMuted focus:outline-none" />
+            <button id="btnCopyShareLink" type="button"
+              class="px-3 py-1.5 rounded-[8px] bg-bgSurface2 hover:bg-accentPrimary text-textPrimary hover:text-white border border-borderSubtle text-xs font-medium transition shrink-0">
               Copy Link
             </button>
-            <button id="btnCopyEmbed" type="button" class="px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-[11px] text-textMuted hover:text-textPrimary transition shrink-0">
+            <button id="btnCopyEmbed" type="button"
+              class="px-2.5 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-[11px] text-textMuted hover:text-textPrimary transition shrink-0">
               &lt;iframe&gt;
             </button>
           </div>
         </div>
 
         <!-- Option 3: Captions & Transcript Pack (SRT + Markdown) -->
-        <div data-export-type="captions" class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
+        <div data-export-type="captions"
+          class="export-card cursor-pointer p-3.5 rounded-[12px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle space-y-2.5 transition">
           <div class="flex items-start gap-2.5">
             <div class="mt-0.5 w-4 h-4 rounded-full border border-borderFocus shrink-0"></div>
             <div>
               <div class="text-sm font-semibold text-textPrimary">Captions & Transcript Pack (SRT + Markdown)</div>
-              <p class="text-xs text-textMuted mt-0.5">Download timecoded <span class="font-mono text-textPrimary">.srt</span> subtitles and a structured <span class="font-mono text-textPrimary">.md</span> study guide.</p>
+              <p class="text-xs text-textMuted mt-0.5">Download timecoded <span
+                  class="font-mono text-textPrimary">.srt</span> subtitles and a structured <span
+                  class="font-mono text-textPrimary">.md</span> study guide.</p>
             </div>
           </div>
           <div class="flex items-center justify-end gap-2 pt-1">
-            <button id="btnDownloadSrt" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
+            <button id="btnDownloadSrt" type="button"
+              class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
               Download .SRT
             </button>
-            <button id="btnDownloadMd" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
+            <button id="btnDownloadMd" type="button"
+              class="px-3 py-1.5 rounded-[8px] bg-bgSurface1 hover:bg-bgSurface2 border border-borderSubtle font-mono text-xs text-textPrimary transition">
               Download .MD Guide
             </button>
           </div>
@@ -1138,14 +1142,16 @@
   <!-- ===================================================================== -->
   <!-- PROMPT LAB DRAWER (ZERO-SHOT VS FEW-SHOT JSON INSPECTOR)              -->
   <!-- ===================================================================== -->
-  <div id="modalPromptLab" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-end">
+  <div id="modalPromptLab"
+    class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-end">
     <div class="w-full max-w-xl h-full bg-bgSurface1 border-l border-borderSubtle flex flex-col">
       <div class="px-5 py-4 border-b border-borderSubtle flex items-center justify-between">
         <div>
           <span class="font-mono text-[11px] text-accentEdu">PROMPT ENGINEERING LAB</span>
           <h3 class="text-base font-bold text-textPrimary">Zero-Shot vs. Role-Based Few-Shot JSON</h3>
         </div>
-        <button id="btnClosePromptLab" type="button" class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs">
+        <button id="btnClosePromptLab" type="button"
+          class="w-7 h-7 rounded-[8px] bg-bgCanvas hover:bg-bgSurface2 border border-borderSubtle text-textMuted hover:text-textPrimary text-xs">
           ✕
         </button>
       </div>
@@ -1153,15 +1159,18 @@
         <div id="labMetricsComparisonContainer" class="space-y-2"></div>
         <div class="space-y-2">
           <div class="text-xs font-semibold text-textMuted">1. Unconstrained Zero-Shot Prompt (Baseline)</div>
-          <pre id="labZeroShotPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-xs text-textMuted whitespace-pre-wrap"></pre>
+          <pre id="labZeroShotPre"
+            class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-xs text-textMuted whitespace-pre-wrap"></pre>
         </div>
         <div class="space-y-2">
           <div class="text-xs font-semibold text-accentPrimary">2. ClariVid Role-Based + Few-Shot JSON Schema</div>
-          <pre id="labFewShotPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-accentPrimary/40 font-mono text-xs text-textPrimary whitespace-pre-wrap"></pre>
+          <pre id="labFewShotPre"
+            class="p-3.5 rounded-[8px] bg-bgCanvas border border-accentPrimary/40 font-mono text-xs text-textPrimary whitespace-pre-wrap"></pre>
         </div>
         <div class="space-y-2">
           <div class="text-xs font-semibold text-accentEdu">3. Live Generated Storyboard JSON Payload</div>
-          <pre id="labJsonOutputPre" class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary/90 overflow-x-auto max-h-64"></pre>
+          <pre id="labJsonOutputPre"
+            class="p-3.5 rounded-[8px] bg-bgCanvas border border-borderSubtle font-mono text-[11px] text-textPrimary/90 overflow-x-auto max-h-64"></pre>
         </div>
       </div>
     </div>
@@ -1170,25 +1179,34 @@
   <!-- ===================================================================== -->
   <!-- OPTIONAL GEMINI API KEY MODAL                                         -->
   <!-- ===================================================================== -->
-  <div id="modalApiConfig" class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-center p-4">
+  <div id="modalApiConfig"
+    class="hidden fixed inset-0 z-50 bg-[#09090B]/80 backdrop-blur-[6px] flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-bgSurface1 border border-borderSubtle rounded-[12px] p-5 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-bold text-textPrimary">Google Gemini API Connection (Optional)</h3>
         <button id="btnCloseApiConfig" type="button" class="text-xs text-textMuted hover:text-textPrimary">✕</button>
       </div>
       <p class="text-xs text-textMuted leading-relaxed">
-        Enter a Google AI Studio API key to generate live custom lesson outlines via <span class="font-mono text-textPrimary">gemini-2.5-flash</span>. Leave blank to use ClariVid's instant offline academic generator.
+        Enter a Google AI Studio API key to generate live custom lesson outlines via <span
+          class="font-mono text-textPrimary">gemini-2.5-flash</span>. Leave blank to use ClariVid's instant offline
+        academic generator.
       </p>
-      <input id="inputApiKey" type="password" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus font-mono text-xs text-textPrimary focus:outline-none" />
+      <input id="inputApiKey" type="password" placeholder="AIzaSy..."
+        class="w-full px-3 py-2 rounded-[8px] bg-bgCanvas border border-borderSubtle focus:border-borderFocus font-mono text-xs text-textPrimary focus:outline-none" />
       <div class="flex justify-end gap-2">
-        <button id="btnClearApiKey" type="button" class="px-3 py-1.5 rounded-[8px] bg-bgCanvas border border-borderSubtle text-xs text-textMuted hover:text-textPrimary">Use Built-In</button>
-        <button id="btnSaveApiKey" type="button" class="px-4 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold">Save Key</button>
+        <button id="btnClearApiKey" type="button"
+          class="px-3 py-1.5 rounded-[8px] bg-bgCanvas border border-borderSubtle text-xs text-textMuted hover:text-textPrimary">Use
+          Built-In</button>
+        <button id="btnSaveApiKey" type="button"
+          class="px-4 py-1.5 rounded-[8px] bg-accentPrimary hover:bg-accentHover text-white text-xs font-semibold">Save
+          Key</button>
       </div>
     </div>
   </div>
 
   <!-- NON-INTRUSIVE TOAST NOTIFICATION -->
-  <div id="studioToast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-bgSurface2 border border-borderFocus text-xs font-medium text-textPrimary">
+  <div id="studioToast"
+    class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-bgSurface2 border border-borderFocus text-xs font-medium text-textPrimary">
     Notification
   </div>
 
@@ -1684,15 +1702,15 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
     function getExamTagBadge(tag) {
       const t = (tag || "conceptual").toLowerCase();
       if (t.includes("definition") || t.includes("2-mark")) {
-        return { label: "2-Mark Definition", class: "bg-[#dcfce7] text-[#14532d] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
+        return { label: "2-Mark Definition", class: "bg-emerald-950/40 text-emerald-300 border-emerald-500/30" };
       }
       if (t.includes("diagram") || t.includes("5-mark")) {
-        return { label: "5-Mark Diagram", class: "bg-[#e0e7ff] text-[#312e81] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
+        return { label: "5-Mark Diagram", class: "bg-sky-950/40 text-sky-300 border-sky-500/30" };
       }
       if (t.includes("numerical")) {
-        return { label: "Numerical Problem", class: "bg-[#ffedd5] text-[#7c2d12] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
+        return { label: "Numerical Problem", class: "bg-orange-950/40 text-orange-300 border-orange-500/30" };
       }
-      return { label: "Conceptual Question", class: "bg-[#f3e8ff] text-[#581c87] border-2 border-[#000000] shadow-[2px_2px_0_#000]" };
+      return { label: "Conceptual Question", class: "bg-purple-950/40 text-purple-300 border-purple-500/30" };
     }
 
     function inferDiagramType(title, scene, idx) {
@@ -3169,70 +3187,70 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
       if (state.screen === "studio") resizePreviewCanvas();
     });
 
+    function loadPendingStoryboard() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("calm") === "1") {
+        document.body.classList.add("calm");
+      }
+      if (urlParams.get("loaded") !== "1") return;
+
+      try {
+        const raw = localStorage.getItem("clarivid_studio_payload");
+        if (!raw) return;
+        const payload = JSON.parse(raw);
+        const sb = payload && payload.storyboard;
+        if (!sb || !Array.isArray(sb.scenes) || sb.scenes.length === 0) return;
+
+        state.backendStoryboard = sb;
+        state.backendCompliance = payload.complianceScore;
+        state.usedFallback = Boolean(payload.usedFallback);
+        state.fallbackReason = payload.fallbackReason || null;
+        state.lessonTitle = sb.title || payload.requestedTopic || "Interactive Lesson";
+        state.scenes = sb.scenes.map((s, idx) => ({
+          id: `s${s.id || idx + 1}_${Date.now()}`,
+          numericId: s.id || idx + 1,
+          heading: s.heading || s.scene_title || `Scene ${idx + 1}`,
+          diagramType: inferDiagramType(sb.title, s, idx),
+          narration: s.narration || "Scene narration script.",
+          visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || s.scene_title || state.lessonTitle}`,
+          keyTerm: s.heading || s.scene_title || s.exam_tag || `Concept ${idx + 1}`,
+          analogy: (s.bullets && s.bullets[0]) ? s.bullets[0] : "Think of this as a step-by-step verified transition.",
+          duration: estimateDurationFromText(s.narration || ""),
+          exam_tag: s.exam_tag || "conceptual",
+          checkpoint: s.checkpoint || null,
+          bullets: s.bullets || [],
+          audit: null,
+          visualSeed: idx % 2
+        }));
+        state.activeSceneIdx = 0;
+        state.sceneElapsed = 0;
+        state.undoStack = [];
+        state.redoStack = [];
+        updateUndoRedoButtons();
+
+        switchScreen("studio");
+        renderAllStudioViews();
+
+        if (payload.usedFallback) {
+          showToast(`Notice: Loaded pre-validated lesson (${payload.fallbackReason || "fallback"}) for "${state.lessonTitle}".`);
+        } else {
+          showToast(`Loaded ${state.scenes.length} generated scenes for "${state.lessonTitle}".`);
+        }
+
+        runBackgroundFactAudit(sb);
+      } catch (err) {
+        console.warn("Failed to load pending storyboard:", err);
+      }
+    }
+
     // Initial Boot
     window.onload = () => {
       syncApiBadge();
       initBackendHealth();
       updateTokenCounter();
-
-      // Calm mode support via ?calm=1
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("calm") === "1") {
-        document.body.classList.add("calm");
-      }
-
-      // Check for autoloaded storyboard from Clarivid generator
-      const isAutoload = urlParams.get("autoload") === "1" || urlParams.get("storyboard") === "1" || urlParams.has("autoload");
-      const storedBundleStr = localStorage.getItem("clarivid_active_storyboard");
-      if (storedBundleStr && isAutoload) {
-        try {
-          const bundle = JSON.parse(storedBundleStr);
-          if (bundle && bundle.storyboard && Array.isArray(bundle.storyboard.scenes) && bundle.storyboard.scenes.length > 0) {
-            const sb = bundle.storyboard;
-            state.backendStoryboard = sb;
-            state.lessonTitle = sb.title || bundle.requestedTopic || "Clarivid Lesson";
-            state.auditResults = bundle.audit || [];
-            if (bundle.metrics) {
-              state.backendCompliance = bundle.metrics.complianceScore;
-              state.usedFallback = bundle.metrics.usedFallback;
-              state.fallbackReason = bundle.metrics.fallbackReason;
-            }
-            if (bundle.requestedTopic && el.setupPromptInput) {
-              el.setupPromptInput.value = bundle.requestedTopic;
-            }
-
-            state.scenes = sb.scenes.map((s, idx) => ({
-              id: `s${s.id || idx + 1}_${Date.now()}`,
-              numericId: s.id || idx + 1,
-              heading: s.heading || s.scene_title || `Scene ${idx + 1}`,
-              diagramType: inferDiagramType(sb.title, s, idx),
-              narration: s.narration || "Scene narration script.",
-              visualPrompt: s.visual_hint || `${state.visualStyle} illustration for ${s.heading || s.scene_title || sb.title}`,
-              keyTerm: s.heading || s.scene_title || s.exam_tag || `Concept ${idx + 1}`,
-              analogy: (s.bullets && s.bullets[0]) ? s.bullets[0] : "Step-by-step verified transition.",
-              duration: estimateDurationFromText(s.narration || ""),
-              exam_tag: s.exam_tag || "conceptual",
-              checkpoint: s.checkpoint || null,
-              bullets: s.bullets || [],
-              audit: (state.auditResults && (state.auditResults.find(a => a.scene_id === s.id) || state.auditResults[idx])) || null,
-              visualSeed: idx % 2
-            }));
-
-            state.activeSceneIdx = 0;
-            state.sceneElapsed = 0;
-            state.undoStack = [];
-            state.redoStack = [];
-
-            if (el.studioLessonTitle) el.studioLessonTitle.value = state.lessonTitle;
-            switchScreen("studio");
-            renderAllStudioViews();
-            showToast(`🚀 Loaded "${state.lessonTitle}" (${state.scenes.length} scenes) into Video Creator Studio!`);
-          }
-        } catch (e) {
-          console.warn("Autoload parse failed:", e);
-        }
-      }
+      loadPendingStoryboard();
     };
   </script>
 </body>
+
 </html>

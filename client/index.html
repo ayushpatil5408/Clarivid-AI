@@ -5,6 +5,24 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clarivid — AI Explainer Studio</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('clarivid-theme');
+          var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            if (document.body) {
+              document.body.classList.add('dark-theme');
+            } else {
+              document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('dark-theme');
+              });
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
