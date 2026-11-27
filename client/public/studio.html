@@ -1912,6 +1912,8 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
       state.undoStack = [];
       state.redoStack = [];
       updateUndoRedoButtons();
+      startAmbientCanvasLoop();
+      enrichScenesWithVisuals(state.lessonTitle, state.scenes);
 
       el.btnGenerateOutline.disabled = false;
       el.btnGenerateText.textContent = "Generate Lesson Outline →";
@@ -2100,11 +2102,14 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
         pushUndoSnapshot();
         const target = state.scenes[idx];
         target.visualSeed = (target.visualSeed || 0) + 1;
-        const angles = ["Isometric node layout", "Clean flow schematic", "Layered architecture view", "Highlighted callout diagram"];
-        target.visualPrompt = `${angles[target.visualSeed % angles.length]} for ${target.keyTerm} (${state.visualStyle})`;
+        const archetypes = ["concept_spotlight", "cycle_loop", "network_flow", "neural_net", "wave_mechanics", "physics_orbit", "timeline_story", "comparison_split", "equation_math", "bar_chart", "tree_graph"];
+        const currentSpec = target.visualSpec || buildLocalVisualSpec(state.lessonTitle, target, idx);
+        const nextArch = archetypes[(archetypes.indexOf(currentSpec.archetype) + 1) % archetypes.length];
+        target.visualSpec = { ...currentSpec, archetype: nextArch };
+        target.visualPrompt = `${nextArch.replace(/_/g, " ")} motion graphic for ${target.keyTerm} (${state.visualStyle})`;
         renderSceneCards();
         drawStudioCanvas();
-        showToast(`Scene ${String(idx + 1).padStart(2, "0")} visual refreshed.`);
+        showToast(`Scene ${String(idx + 1).padStart(2, "0")} visual switched to ${nextArch.replace(/_/g, " ")}.`);
       }
     }
 
@@ -2215,143 +2220,819 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
       c.restore();
     }
 
+    // -------------------------------------------------------------------------
+    // TOPIC-AWARE ANIMATED MOTION GRAPHICS ENGINE (11 ARCHETYPES + AI SYNC)
+    // -------------------------------------------------------------------------
+    function buildLocalVisualSpec(title, scene, idx) {
+      const heading = scene.heading || scene.keyTerm || `Scene ${idx + 1}`;
+      const bullets = Array.isArray(scene.bullets) ? scene.bullets : [];
+      const text = `${title || ""} ${heading} ${scene.visualPrompt || ""} ${bullets.join(" ")} ${scene.narration || ""}`.toLowerCase();
+
+      if (text.includes("photo") || text.includes("chloroplast") || text.includes("plant") || text.includes("calvin") || text.includes("atp")) {
+        const isCalvin = text.includes("calvin") || text.includes("glucose") || text.includes("cycle");
+        return {
+          archetype: isCalvin ? "cycle_loop" : "concept_spotlight",
+          mood_color: "#10B981",
+          secondary_color: "#F59E0B",
+          bg_particles: "photons",
+          center_icon: isCalvin ? "🍬" : "🌿",
+          center_label: isCalvin ? "Calvin Cycle" : "Chloroplast",
+          entities: [
+            { id: "sun", icon: "☀️", label: "Sunlight", sub: "Light Photons", color: "#F59E0B" },
+            { id: "h2o", icon: "💧", label: "H₂O + CO₂", sub: "Raw Inputs", color: "#38BDF8" },
+            { id: "atp", icon: "⚡", label: "ATP & NADPH", sub: "Energy Carriers", color: "#A855F7" },
+            { id: "o2", icon: "🫧", label: "Glucose & O₂", sub: "Synthesized Output", color: "#10B981" }
+          ],
+          flows: [
+            { from: "sun", to: "h2o", label: "Excites e⁻", particle: "✨" },
+            { from: "h2o", to: "atp", label: "Splits H₂O", particle: "💧" },
+            { from: "atp", to: "o2", label: "Builds Sugar", particle: "⚡" }
+          ],
+          callouts: bullets.slice(0, 3),
+          equation: "6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂"
+        };
+      }
+
+      if (text.includes("neural") || text.includes("deep learning") || text.includes("perceptron") || text.includes("transformer") || text.includes("machine learning")) {
+        return {
+          archetype: "neural_net",
+          mood_color: "#8B5CF6",
+          secondary_color: "#06B6D4",
+          bg_particles: "data_bits",
+          center_icon: "🧠",
+          center_label: heading.slice(0, 22),
+          entities: [
+            { id: "in", icon: "📥", label: "Input Layer", sub: "Feature Vectors", color: "#38BDF8" },
+            { id: "h1", icon: "⚙️", label: "Hidden Layer 1", sub: "Weights & Bias", color: "#8B5CF6" },
+            { id: "h2", icon: "⚡", label: "Activation", sub: "ReLU / Softmax", color: "#EC4899" },
+            { id: "out", icon: "🎯", label: "Prediction", sub: "Probabilities", color: "#10B981" }
+          ],
+          flows: [],
+          callouts: bullets.slice(0, 3),
+          equation: "y = σ(W · x + b)"
+        };
+      }
+
+      if (text.includes("tcp") || text.includes("http") || text.includes("api") || text.includes("network") || text.includes("server") || text.includes("socket") || text.includes("dns") || text.includes("syn")) {
+        return {
+          archetype: "network_flow",
+          mood_color: "#6366F1",
+          secondary_color: "#10B981",
+          bg_particles: "data_bits",
+          center_icon: "🌐",
+          center_label: heading.slice(0, 22),
+          entities: [
+            { id: "client", icon: "💻", label: "Client Node", sub: "Initiator (seq=X)", color: "#6366F1" },
+            { id: "router", icon: "🛡️", label: "Protocol Layer", sub: "Handshake State", color: "#F59E0B" },
+            { id: "server", icon: "🖥️", label: "Server Node", sub: "Responder (seq=Y)", color: "#10B981" }
+          ],
+          flows: [
+            { from: "client", to: "server", label: "1. SYN (seq=X)", particle: "📦" },
+            { from: "server", to: "client", label: "2. SYN-ACK (ack=X+1)", particle: "✅" },
+            { from: "client", to: "server", label: "3. ACK → CONNECTED", particle: "🔒" }
+          ],
+          callouts: bullets.slice(0, 3)
+        };
+      }
+
+      if (text.includes("binary search") || text.includes("tree") || text.includes("bst") || text.includes("avl") || text.includes("heap")) {
+        return {
+          archetype: "tree_graph",
+          mood_color: "#06B6D4",
+          secondary_color: "#10B981",
+          bg_particles: "geometric",
+          center_icon: "🌳",
+          center_label: heading.slice(0, 22),
+          entities: [],
+          flows: [],
+          callouts: bullets.slice(0, 3),
+          equation: "Search Complexity: O(log n)"
+        };
+      }
+
+      if (text.includes("gravity") || text.includes("orbit") || text.includes("solar") || text.includes("planet") || text.includes("atom") || text.includes("electron")) {
+        const isAtom = text.includes("atom") || text.includes("electron");
+        return {
+          archetype: "physics_orbit",
+          mood_color: "#F59E0B",
+          secondary_color: "#38BDF8",
+          bg_particles: isAtom ? "atoms" : "stars",
+          center_icon: isAtom ? "⚛️" : "☀️",
+          center_label: isAtom ? "Nucleus" : "Central Mass",
+          entities: [
+            { id: "o1", icon: isAtom ? "⚡" : "🌍", label: isAtom ? "Inner Shell" : "Inner Orbit", sub: "Fast Velocity", color: "#38BDF8" },
+            { id: "o2", icon: isAtom ? "🔵" : "🪐", label: isAtom ? "Valence" : "Outer Orbit", sub: "Equilibrium", color: "#A855F7" },
+            { id: "o3", icon: "✨", label: "Field Force", sub: "Centripetal Pull", color: "#10B981" }
+          ],
+          flows: [],
+          callouts: bullets.slice(0, 3),
+          equation: isAtom ? "E = hf" : "F = G(m₁m₂)/r²"
+        };
+      }
+
+      if (text.includes("wave") || text.includes("sound") || text.includes("frequency") || text.includes("signal") || text.includes("quantum") || text.includes("electromagnetic")) {
+        return {
+          archetype: "wave_mechanics",
+          mood_color: "#06B6D4",
+          secondary_color: "#EC4899",
+          bg_particles: "waves",
+          center_icon: "〰️",
+          center_label: heading.slice(0, 22),
+          entities: [
+            { id: "a", icon: "📶", label: "Amplitude", sub: "Wave Energy", color: "#06B6D4" },
+            { id: "f", icon: "⏱️", label: "Frequency", sub: "Cycles / Sec", color: "#EC4899" },
+            { id: "l", icon: "📏", label: "Wavelength", sub: "Crest Distance", color: "#10B981" }
+          ],
+          flows: [],
+          callouts: bullets.slice(0, 3),
+          equation: "v = f · λ"
+        };
+      }
+
+      if (text.includes("history") || text.includes("timeline") || text.includes("evolution") || text.includes("ancient") || text.includes("century") || text.includes("era")) {
+        return {
+          archetype: "timeline_story",
+          mood_color: "#F59E0B",
+          secondary_color: "#10B981",
+          bg_particles: "stars",
+          center_icon: "📜",
+          center_label: heading.slice(0, 22),
+          entities: (bullets.length ? bullets : [heading, "Key Turning Point", "Modern Impact"]).slice(0, 3).map((b, i) => ({
+            id: `t${i}`,
+            icon: ["🏛️", "⚙️", "🚀"][i] || "📌",
+            label: `Stage ${i + 1}`,
+            sub: String(b).slice(0, 34),
+            color: ["#F59E0B", "#38BDF8", "#10B981"][i % 3]
+          })),
+          flows: [],
+          callouts: bullets.slice(0, 3)
+        };
+      }
+
+      if (text.includes("vs") || text.includes("compare") || text.includes("difference") || text.includes("tradeoff")) {
+        return {
+          archetype: "comparison_split",
+          mood_color: "#EC4899",
+          secondary_color: "#38BDF8",
+          bg_particles: "geometric",
+          center_icon: "⚖️",
+          center_label: heading.slice(0, 22),
+          entities: [
+            { id: "a", icon: "⚡", label: "Mechanism A", sub: bullets[0] ? bullets[0].slice(0, 38) : "Primary Approach", color: "#38BDF8" },
+            { id: "b", icon: "🛡️", label: "Mechanism B", sub: bullets[1] ? bullets[1].slice(0, 38) : "Alternative Approach", color: "#EC4899" }
+          ],
+          flows: [],
+          callouts: bullets.slice(0, 3)
+        };
+      }
+
+      if (text.includes("sulba") || text.includes("pythagor") || text.includes("geometry") || text.includes("calculus") || text.includes("equation") || text.includes("theorem")) {
+        return {
+          archetype: "equation_math",
+          mood_color: "#6366F1",
+          secondary_color: "#10B981",
+          bg_particles: "geometric",
+          center_icon: "📐",
+          center_label: heading.slice(0, 22),
+          entities: bullets.slice(0, 3).map((b, i) => ({
+            id: `m${i}`,
+            icon: ["📏", "🔺", "✨"][i] || "📌",
+            label: `Step ${i + 1}`,
+            sub: String(b).slice(0, 32),
+            color: ["#6366F1", "#10B981", "#F59E0B"][i % 3]
+          })),
+          flows: [],
+          callouts: bullets.slice(0, 3),
+          equation: text.includes("pythagor") || text.includes("sulba") ? "a² + b² = c²" : "f(x) → Δy / Δx"
+        };
+      }
+
+      const archetypes = ["concept_spotlight", "cycle_loop", "timeline_story", "wave_mechanics", "bar_chart"];
+      const icons = ["💡", "🔬", "⚡", "🎯", "🧩", "🚀"];
+      const colors = ["#38BDF8", "#10B981", "#F59E0B", "#A855F7"];
+      const entities = (bullets.length ? bullets : [heading, "Core Principle", "Active Mechanism", "Real-World Effect"]).slice(0, 4).map((b, i) => ({
+        id: `e${i}`,
+        icon: icons[(idx + i) % icons.length],
+        label: String(b).split(/[:—-]/)[0].trim().slice(0, 22) || `Concept ${i + 1}`,
+        sub: String(b).slice(0, 36),
+        color: colors[i % colors.length]
+      }));
+
+      return {
+        archetype: archetypes[idx % archetypes.length],
+        mood_color: colors[idx % colors.length],
+        secondary_color: colors[(idx + 1) % colors.length],
+        bg_particles: ["photons", "geometric", "stars", "waves"][idx % 4],
+        center_icon: icons[idx % icons.length],
+        center_label: heading.slice(0, 24),
+        entities,
+        flows: entities.slice(0, -1).map((e, i) => ({ from: e.id, to: entities[i + 1].id, label: "Drives", particle: "✨" })),
+        callouts: bullets.slice(0, 3),
+        bars: entities.map((e, i) => ({ label: e.label.slice(0, 12), value: [58, 76, 94, 70][i % 4], color: e.color }))
+      };
+    }
+
+    async function enrichScenesWithVisuals(title, scenes) {
+      if (!Array.isArray(scenes) || !scenes.length) return;
+      // Assign instant semantic visuals first so canvas is immediately rich
+      scenes.forEach((s, idx) => {
+        if (!s.visualSpec) s.visualSpec = buildLocalVisualSpec(title, s, idx);
+      });
+      drawStudioCanvas();
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/visuals`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, scenes })
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (data && Array.isArray(data.visualSpecs)) {
+          state.scenes.forEach((s, idx) => {
+            const match = data.visualSpecs.find((v) => Number(v.scene_id) === Number(s.numericId || idx + 1)) || data.visualSpecs[idx];
+            if (match) {
+              s.visualSpec = match;
+              s.visualPrompt = `${match.archetype.replace(/_/g, " ")} • ${(match.entities || []).map(e => `${e.icon} ${e.label}`).slice(0, 3).join(" → ")}`;
+            }
+          });
+          renderSceneCards();
+          drawStudioCanvas();
+        }
+      } catch (err) {
+        console.warn("Visual choreography enrichment skipped:", err.message);
+      }
+    }
+
+    let ambientRafId = null;
+    function startAmbientCanvasLoop() {
+      if (ambientRafId) return;
+      const tick = () => {
+        if (state.screen === "studio" && !state.isPlaying && !document.body.classList.contains("calm")) {
+          drawStudioCanvas();
+        }
+        ambientRafId = requestAnimationFrame(tick);
+      };
+      ambientRafId = requestAnimationFrame(tick);
+    }
+
+    function drawAmbientParticles(c, w, h, spec, t, theme, accent) {
+      const mode = spec.bg_particles || "photons";
+      c.save();
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        const seed = i * 137.5;
+        const px = ((seed * 19 + t * (14 + (i % 5) * 6)) % (w + 40)) - 20;
+        const py = ((seed * 31 + Math.sin(t * 0.9 + i) * 28) % (h + 40)) - 20;
+        const alpha = 0.14 + 0.12 * Math.sin(t * 2 + i);
+        c.globalAlpha = Math.max(0.05, alpha);
+
+        if (mode === "data_bits") {
+          c.fillStyle = i % 2 === 0 ? accent : spec.secondary_color || "#10B981";
+          c.font = `600 11px "JetBrains Mono", monospace`;
+          c.fillText(i % 2 === 0 ? "1" : "0", px, Math.abs(py));
+        } else if (mode === "geometric") {
+          c.strokeStyle = i % 2 === 0 ? accent : spec.secondary_color || "#38BDF8";
+          c.lineWidth = 1.2;
+          c.strokeRect(px, Math.abs(py), 7, 7);
+        } else {
+          c.fillStyle = i % 2 === 0 ? accent : spec.secondary_color || "#F59E0B";
+          c.beginPath();
+          c.arc(px, Math.abs(py), 2 + (i % 3), 0, Math.PI * 2);
+          c.fill();
+        }
+      }
+      c.restore();
+    }
+
+    function drawEntityCard(c, x, y, w, h, ent, theme, isActive, scale = 1) {
+      c.save();
+      c.translate(x + w / 2, y + h / 2);
+      c.scale(scale, scale);
+      c.translate(-w / 2, -h / 2);
+
+      const col = ent.color || "#6366F1";
+      if (isActive) {
+        c.shadowColor = col;
+        c.shadowBlur = 18;
+      }
+      c.fillStyle = theme.card;
+      c.strokeStyle = isActive ? col : theme.border;
+      c.lineWidth = isActive ? 2.6 : 1.5;
+      c.beginPath();
+      c.roundRect(0, 0, w, h, 12);
+      c.fill();
+      c.stroke();
+      c.shadowBlur = 0;
+
+      // Icon circle
+      c.fillStyle = `${col}22`;
+      c.beginPath();
+      c.arc(24, h / 2, 16, 0, Math.PI * 2);
+      c.fill();
+
+      c.font = `18px sans-serif`;
+      c.textAlign = "center";
+      c.textBaseline = "middle";
+      c.fillText(ent.icon || "✨", 24, h / 2 + 1);
+
+      // Text
+      c.textAlign = "left";
+      c.textBaseline = "alphabetic";
+      c.fillStyle = theme.text;
+      c.font = `700 ${Math.max(11, Math.min(14, Math.round(w * 0.085)))}px "Plus Jakarta Sans", sans-serif`;
+      c.fillText((ent.label || "").slice(0, 20), 48, h / 2 - (ent.sub ? 3 : -4));
+
+      if (ent.sub) {
+        c.fillStyle = theme.muted;
+        c.font = `500 10px "JetBrains Mono", monospace`;
+        c.fillText((ent.sub || "").slice(0, 26), 48, h / 2 + 13);
+      }
+      c.restore();
+    }
+
+    function drawAnimatedPacket(c, x1, y1, x2, y2, label, particle, tCycle, col, theme) {
+      c.save();
+      c.strokeStyle = `${col}66`;
+      c.lineWidth = 2;
+      c.setLineDash([5, 5]);
+      c.lineDashOffset = -tCycle * 40;
+      c.beginPath();
+      c.moveTo(x1, y1);
+      c.lineTo(x2, y2);
+      c.stroke();
+      c.setLineDash([]);
+
+      const frac = tCycle % 1;
+      const px = x1 + (x2 - x1) * frac;
+      const py = y1 + (y2 - y1) * frac;
+
+      c.fillStyle = col;
+      c.shadowColor = col;
+      c.shadowBlur = 10;
+      c.beginPath();
+      c.arc(px, py, 6, 0, Math.PI * 2);
+      c.fill();
+      c.shadowBlur = 0;
+
+      if (particle) {
+        c.font = `14px sans-serif`;
+        c.textAlign = "center";
+        c.fillText(particle, px, py - 11);
+      }
+      if (label) {
+        c.fillStyle = theme.text;
+        c.font = `600 10px "JetBrains Mono", monospace`;
+        c.textAlign = "center";
+        c.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 12);
+      }
+      c.restore();
+    }
+
     function drawStudioCanvas() {
       if (!state.scenes.length) return;
       const w = el.studioCanvas.width;
       const h = el.studioCanvas.height;
       const scene = state.scenes[state.activeSceneIdx];
       const theme = getThemeColors();
-      const accent = state.accentColor;
-      const eduGreen = "#10B981";
-      const isWhiteboard = state.visualStyle === "Whiteboard";
-      const progress = Math.min(1, Math.max(0.25, state.sceneElapsed / Math.max(1, scene.duration * 0.65)));
+      const spec = scene.visualSpec || buildLocalVisualSpec(state.lessonTitle, scene, state.activeSceneIdx);
+      const accent = spec.mood_color || state.accentColor;
+      const secColor = spec.secondary_color || "#10B981";
+      const t = performance.now() / 1000;
+      const progress = state.isPlaying
+        ? Math.min(1, state.sceneElapsed / Math.max(1, scene.duration))
+        : 0.35 + 0.65 * ((Math.sin(t * 0.7) + 1) / 2);
 
-      // 1. Background Fill
+      // 1. Background Fill + Radial Glow
       ctx.fillStyle = theme.bg;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Subtle Grid for Blueprint or Diagram Explainer
+      const grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 20, w * 0.5, h * 0.5, w * 0.6);
+      grad.addColorStop(0, `${accent}18`);
+      grad.addColorStop(1, "transparent");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Ambient Motion Particles
+      drawAmbientParticles(ctx, w, h, spec, t, theme, accent);
+
+      // 3. Subtle Grid for Blueprint or Diagram Explainer
       if (state.canvasTheme === "blueprint" || state.visualStyle === "Diagram Explainer") {
         ctx.strokeStyle = theme.grid;
         ctx.lineWidth = 1;
         const step = 32;
         for (let gx = 0; gx < w; gx += step) {
-          ctx.beginPath();
-          ctx.moveTo(gx, 0);
-          ctx.lineTo(gx, h);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
         }
         for (let gy = 0; gy < h; gy += step) {
-          ctx.beginPath();
-          ctx.moveTo(0, gy);
-          ctx.lineTo(w, gy);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
         }
       }
 
       const pad = Math.round(w * 0.055);
-      const topOffset = Math.round(h * 0.16);
+      const topOffset = Math.round(h * 0.14);
 
-      // 3. Key Term Header Badge (Auto-Highlight Toggle)
+      // 4. Key Term Header Badge
       if (state.highlightTerms) {
-        ctx.fillStyle = eduGreen;
+        ctx.fillStyle = secColor;
         ctx.font = `600 ${Math.max(11, Math.round(w * 0.015))}px "JetBrains Mono", monospace`;
         ctx.textAlign = "left";
-        ctx.fillText(`KEY CONCEPT • ${scene.keyTerm.toUpperCase()}`, pad, topOffset);
+        ctx.fillText(`${spec.center_icon || "✨"} ${spec.archetype.replace(/_/g, " ").toUpperCase()} • ${scene.keyTerm.toUpperCase().slice(0, 32)}`, pad, topOffset);
       }
 
-      // 4. Main Scene Headline
-      const headSize = Math.max(16, Math.round(w * 0.026));
+      // 5. Main Scene Headline
+      const headSize = Math.max(15, Math.round(w * 0.025));
       ctx.fillStyle = theme.text;
       ctx.font = `700 ${headSize}px "Plus Jakarta Sans", sans-serif`;
       ctx.textAlign = "left";
-      ctx.fillText(`${String(state.activeSceneIdx + 1).padStart(2, "0")}. ${scene.keyTerm}`, pad, topOffset + headSize + 10);
+      ctx.fillText(`${String(state.activeSceneIdx + 1).padStart(2, "0")}. ${scene.heading || scene.keyTerm}`, pad, topOffset + headSize + 8);
 
-      // 5. Interactive Diagram Stage Area
-      const boxY = topOffset + headSize + 28;
-      const boxH = Math.round(h * 0.50);
+      // 6. Stage Area
+      const boxY = topOffset + headSize + 22;
+      const boxH = Math.round(h * 0.56);
       const boxW = w - pad * 2;
       const cx = pad + boxW / 2;
-      const cy = boxY + boxH / 2;
+      const cy = boxY + boxH / 2 - 10;
 
       ctx.strokeStyle = theme.border;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.roundRect(pad, boxY, boxW, boxH, 10);
+      ctx.roundRect(pad, boxY, boxW, boxH, 14);
       ctx.stroke();
 
-      const dType = scene.diagramType || "generic_1";
-      const seedShift = (scene.visualSeed || 0) % 2;
+      const arch = spec.archetype || "concept_spotlight";
+      const entities = Array.isArray(spec.entities) && spec.entities.length ? spec.entities : [];
 
-      if (dType.startsWith("tcp")) {
-        const leftX = pad + boxW * 0.18;
-        const rightX = pad + boxW * 0.82;
-        const nw = Math.min(130, boxW * 0.24);
-        drawDiagramNode(ctx, leftX - nw / 2, boxY + 20, nw, 44, "CLIENT", "seq = X (100)", theme, accent, isWhiteboard);
-        drawDiagramNode(ctx, rightX - nw / 2, boxY + 20, nw, 44, "SERVER", "seq = Y (300)", theme, eduGreen, isWhiteboard);
-
-        ctx.strokeStyle = theme.border;
-        ctx.setLineDash([4, 4]);
+      if (arch === "cycle_loop") {
+        const radius = Math.min(boxW, boxH) * 0.30;
+        // Rotating dashed energy ring
+        ctx.save();
+        ctx.strokeStyle = `${accent}66`;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([10, 8]);
+        ctx.lineDashOffset = -t * 32;
         ctx.beginPath();
-        ctx.moveTo(leftX, boxY + 66); ctx.lineTo(leftX, boxY + boxH - 18);
-        ctx.moveTo(rightX, boxY + 66); ctx.lineTo(rightX, boxY + boxH - 18);
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.stroke();
         ctx.setLineDash([]);
+        ctx.restore();
 
-        drawFlowConnector(ctx, leftX + 8, boxY + 92, rightX - 8, boxY + 114, "1. SYN (seq=X)", accent, progress * 1.6, theme);
-        if (state.activeSceneIdx >= 1) {
-          drawFlowConnector(ctx, rightX - 8, boxY + 136, leftX + 8, boxY + 158, "2. SYN-ACK (ack=X+1)", eduGreen, (progress - 0.15) * 1.6, theme);
+        // Orbiting glowing energy token
+        const orbAngle = t * 1.1;
+        const ox = cx + Math.cos(orbAngle) * radius;
+        const oy = cy + Math.sin(orbAngle) * radius;
+        ctx.fillStyle = secColor;
+        ctx.shadowColor = secColor;
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(ox, oy, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Center Hero
+        ctx.font = `28px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(spec.center_icon || "🔄", cx, cy + 4);
+        ctx.fillStyle = theme.text;
+        ctx.font = `700 12px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillText((spec.center_label || "").slice(0, 20), cx, cy + 24);
+
+        const n = Math.min(4, entities.length);
+        const activeIdx = Math.floor(t * 0.8) % Math.max(1, n);
+        for (let i = 0; i < n; i++) {
+          const ang = -Math.PI / 2 + (i * Math.PI * 2) / n;
+          const cw = Math.min(165, boxW * 0.28);
+          const ch = 48;
+          const ex = cx + Math.cos(ang) * (radius + 26) - cw / 2;
+          const ey = cy + Math.sin(ang) * (radius + 14) - ch / 2;
+          drawEntityCard(ctx, ex, ey, cw, ch, entities[i], theme, i === activeIdx, i === activeIdx ? 1.04 : 1);
         }
-        if (state.activeSceneIdx >= 2) {
-          drawFlowConnector(ctx, leftX + 8, boxY + 180, rightX - 8, boxY + 202, "3. ACK (ack=Y+1) → ESTABLISHED", accent, (progress - 0.3) * 1.6, theme);
+      } else if (arch === "network_flow") {
+        const count = Math.min(3, Math.max(2, entities.length));
+        const cw = Math.min(175, boxW * 0.26);
+        const ch = 56;
+        const positions = [];
+        for (let i = 0; i < count; i++) {
+          const px = pad + (boxW / (count + 1)) * (i + 1) - cw / 2;
+          const py = boxY + 26;
+          positions.push({ x: px + cw / 2, y: py + ch });
+          drawEntityCard(ctx, px, py, cw, ch, entities[i] || { icon: "💻", label: `Node ${i + 1}`, color: accent }, theme, (Math.floor(t * 1.2) % count) === i);
         }
-      } else if (dType.startsWith("bst")) {
-        const nodes = [
-          { x: cx, y: boxY + 42, v: "50", col: accent },
-          { x: cx - boxW * 0.2, y: boxY + 108, v: "30", col: eduGreen },
-          { x: cx + boxW * 0.2, y: boxY + 108, v: "75", col: accent },
-          { x: cx - boxW * 0.3, y: boxY + 174, v: "15", col: theme.muted },
-          { x: cx - boxW * 0.1, y: boxY + 174, v: "40", col: theme.muted },
-          { x: cx + boxW * 0.1, y: boxY + 174, v: "60", col: eduGreen },
-          { x: cx + boxW * 0.3, y: boxY + 174, v: "90", col: theme.muted }
-        ];
-        const edges = [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]];
-        ctx.strokeStyle = theme.border;
-        ctx.lineWidth = 2;
-        edges.forEach(([a, b]) => {
+        // Vertical lifelines
+        positions.forEach((p) => {
+          ctx.strokeStyle = theme.border;
+          ctx.setLineDash([4, 4]);
           ctx.beginPath();
-          ctx.moveTo(nodes[a].x, nodes[a].y);
-          ctx.lineTo(nodes[b].x, nodes[b].y);
+          ctx.moveTo(p.x, p.y + 4);
+          ctx.lineTo(p.x, boxY + boxH - 36);
           ctx.stroke();
+          ctx.setLineDash([]);
         });
-        nodes.forEach((n) => {
+        // Animated packet arrows
+        const flows = Array.isArray(spec.flows) && spec.flows.length ? spec.flows : [
+          { label: "1. Request", particle: "📦" },
+          { label: "2. Process", particle: "⚡" },
+          { label: "3. Verified ACK", particle: "✅" }
+        ];
+        const leftX = positions[0].x;
+        const rightX = positions[positions.length - 1].x;
+        flows.slice(0, 3).forEach((f, i) => {
+          const fy = boxY + ch + 52 + i * 38;
+          const isReverse = i % 2 === 1;
+          drawAnimatedPacket(ctx, isReverse ? rightX : leftX, fy, isReverse ? leftX : rightX, fy, f.label, f.particle, t * 0.7 + i * 0.3, i % 2 === 0 ? accent : secColor, theme);
+        });
+      } else if (arch === "neural_net") {
+        const layers = [3, 4, 4, 2];
+        const layerX = layers.map((_, li) => pad + boxW * (0.16 + li * 0.22));
+        const nodes = [];
+        layers.forEach((cnt, li) => {
+          const arr = [];
+          for (let ni = 0; ni < cnt; ni++) {
+            const ny = cy - ((cnt - 1) * 42) / 2 + ni * 42;
+            arr.push({ x: layerX[li], y: ny });
+          }
+          nodes.push(arr);
+        });
+        // Draw synapses with animated signal wave
+        const waveLayer = (t * 1.8) % 3;
+        for (let l = 0; l < nodes.length - 1; l++) {
+          nodes[l].forEach((a, ai) => {
+            nodes[l + 1].forEach((b, bi) => {
+              const active = Math.abs(waveLayer - l) < 0.75;
+              ctx.strokeStyle = active ? `${accent}99` : `${theme.border}88`;
+              ctx.lineWidth = active ? 2 : 1;
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+              if (active && (ai + bi) % 2 === 0) {
+                const f = (t * 1.8) % 1;
+                ctx.fillStyle = secColor;
+                ctx.beginPath();
+                ctx.arc(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, 3.5, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            });
+          });
+        }
+        // Draw neurons
+        const layerLabels = ["Input", "Hidden 1", "Hidden 2", "Output"];
+        nodes.forEach((arr, li) => {
+          const isLit = Math.floor(t * 1.8) % 4 === li;
+          arr.forEach((n) => {
+            ctx.fillStyle = theme.card;
+            ctx.strokeStyle = isLit ? secColor : accent;
+            ctx.lineWidth = isLit ? 3 : 1.8;
+            ctx.beginPath(); ctx.arc(n.x, n.y, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          });
+          ctx.fillStyle = theme.muted;
+          ctx.font = `600 10px "JetBrains Mono", monospace`;
+          ctx.textAlign = "center";
+          ctx.fillText(layerLabels[li], layerX[li], boxY + boxH - 40);
+        });
+      } else if (arch === "tree_graph") {
+        const nodes = [
+          { x: cx, y: boxY + 46, v: "50", col: accent },
+          { x: cx - boxW * 0.2, y: boxY + 112, v: "30", col: secColor },
+          { x: cx + boxW * 0.2, y: boxY + 112, v: "75", col: accent },
+          { x: cx - boxW * 0.3, y: boxY + 178, v: "15", col: theme.muted },
+          { x: cx - boxW * 0.1, y: boxY + 178, v: "40", col: theme.muted },
+          { x: cx + boxW * 0.1, y: boxY + 178, v: "60", col: secColor },
+          { x: cx + boxW * 0.3, y: boxY + 178, v: "90", col: theme.muted }
+        ];
+        const pathOrder = [0, 1, 4, 0, 2, 5];
+        const activeNode = pathOrder[Math.floor(t * 1.4) % pathOrder.length];
+        const edges = [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]];
+        edges.forEach(([a, b]) => {
+          ctx.strokeStyle = (a === activeNode || b === activeNode) ? secColor : theme.border;
+          ctx.lineWidth = (a === activeNode || b === activeNode) ? 2.8 : 1.6;
+          ctx.beginPath(); ctx.moveTo(nodes[a].x, nodes[a].y); ctx.lineTo(nodes[b].x, nodes[b].y); ctx.stroke();
+        });
+        nodes.forEach((n, ni) => {
+          const active = ni === activeNode;
           ctx.fillStyle = theme.card;
-          ctx.strokeStyle = n.col;
-          ctx.lineWidth = 2.2;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 20, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-
+          ctx.strokeStyle = active ? "#F59E0B" : n.col;
+          ctx.lineWidth = active ? 3.5 : 2;
+          ctx.beginPath(); ctx.arc(n.x, n.y, active ? 22 : 19, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
           ctx.fillStyle = theme.text;
-          ctx.font = `600 12px "JetBrains Mono", monospace`;
+          ctx.font = `700 12px "JetBrains Mono", monospace`;
           ctx.textAlign = "center";
           ctx.fillText(n.v, n.x, n.y + 4);
         });
+      } else if (arch === "physics_orbit") {
+        // Central glowing star/nucleus
+        const pulse = 26 + Math.sin(t * 3) * 3;
+        ctx.fillStyle = `${accent}33`;
+        ctx.beginPath(); ctx.arc(cx, cy, pulse + 12, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = theme.card;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(cx, cy, pulse, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = `24px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(spec.center_icon || "⚛️", cx, cy + 8);
+
+        const orbits = [0.24, 0.36, 0.45];
+        orbits.forEach((rFrac, i) => {
+          const rx = boxW * rFrac;
+          const ry = boxH * (rFrac * 0.72);
+          ctx.strokeStyle = `${theme.border}aa`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();
+
+          const ent = entities[i % Math.max(1, entities.length)];
+          const ang = t * (1.2 - i * 0.3) + i * 2.1;
+          const px = cx + Math.cos(ang) * rx;
+          const py = cy + Math.sin(ang) * ry;
+
+          ctx.fillStyle = (ent && ent.color) || secColor;
+          ctx.beginPath(); ctx.arc(px, py, 9, 0, Math.PI * 2); ctx.fill();
+          if (ent) {
+            ctx.font = `14px sans-serif`;
+            ctx.fillText(ent.icon || "🌍", px, py - 14);
+            ctx.fillStyle = theme.text;
+            ctx.font = `600 10px "JetBrains Mono", monospace`;
+            ctx.fillText(ent.label.slice(0, 14), px, py + 20);
+          }
+        });
+      } else if (arch === "wave_mechanics") {
+        // Multi-layered animated sine waves
+        for (let waveIdx = 0; waveIdx < 2; waveIdx++) {
+          ctx.strokeStyle = waveIdx === 0 ? accent : secColor;
+          ctx.lineWidth = waveIdx === 0 ? 3 : 2;
+          ctx.beginPath();
+          const amp = boxH * (waveIdx === 0 ? 0.22 : 0.14);
+          const freq = waveIdx === 0 ? 0.025 : 0.04;
+          const phase = t * (waveIdx === 0 ? 3.2 : -2.2);
+          for (let x = pad + 24; x < pad + boxW - 24; x += 4) {
+            const y = cy + Math.sin(x * freq + phase) * amp;
+            if (x === pad + 24) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+        // Traveling crest marker
+        const mx = pad + 40 + ((t * 90) % (boxW - 80));
+        const my = cy + Math.sin(mx * 0.025 + t * 3.2) * (boxH * 0.22);
+        ctx.fillStyle = "#F59E0B";
+        ctx.beginPath(); ctx.arc(mx, my, 7, 0, Math.PI * 2); ctx.fill();
+        if (spec.equation) {
+          ctx.fillStyle = theme.text;
+          ctx.font = `700 14px "JetBrains Mono", monospace`;
+          ctx.textAlign = "center";
+          ctx.fillText(spec.equation, cx, boxY + 28);
+        }
+      } else if (arch === "timeline_story") {
+        const yLine = cy - 10;
+        const startX = pad + 48;
+        const endX = pad + boxW - 48;
+        ctx.strokeStyle = theme.border;
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(startX, yLine); ctx.lineTo(endX, yLine); ctx.stroke();
+
+        const ribbonEnd = startX + (endX - startX) * progress;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(startX, yLine); ctx.lineTo(ribbonEnd, yLine); ctx.stroke();
+
+        const n = Math.min(3, Math.max(2, entities.length));
+        const activeIdx = Math.floor(t * 0.8) % n;
+        for (let i = 0; i < n; i++) {
+          const mx = startX + ((endX - startX) / Math.max(1, n - 1)) * i;
+          ctx.fillStyle = i === activeIdx ? secColor : accent;
+          ctx.beginPath(); ctx.arc(mx, yLine, i === activeIdx ? 10 : 7, 0, Math.PI * 2); ctx.fill();
+
+          const cw = Math.min(185, boxW * 0.28);
+          const ch = 56;
+          const cardX = Math.max(pad + 12, Math.min(pad + boxW - cw - 12, mx - cw / 2));
+          const cardY = i % 2 === 0 ? yLine - ch - 22 : yLine + 22;
+          drawEntityCard(ctx, cardX, cardY, cw, ch, entities[i] || { icon: "📌", label: `Phase ${i + 1}`, color: accent }, theme, i === activeIdx);
+        }
+      } else if (arch === "comparison_split") {
+        const cw = Math.min(250, boxW * 0.38);
+        const ch = Math.min(130, boxH * 0.56);
+        const leftX = cx - cw - 26;
+        const rightX = cx + 26;
+        const cardY = cy - ch / 2;
+        const activeSide = Math.floor(t * 0.9) % 2;
+
+        drawEntityCard(ctx, leftX, cardY, cw, ch, entities[0] || { icon: "⚡", label: "Concept A", color: accent }, theme, activeSide === 0, activeSide === 0 ? 1.03 : 1);
+        drawEntityCard(ctx, rightX, cardY, cw, ch, entities[1] || { icon: "🛡️", label: "Concept B", color: secColor }, theme, activeSide === 1, activeSide === 1 ? 1.03 : 1);
+
+        // Pulsing VS badge
+        ctx.fillStyle = "#F59E0B";
+        ctx.beginPath(); ctx.arc(cx, cy, 18 + Math.sin(t * 4) * 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#09090B";
+        ctx.font = `800 12px "Plus Jakarta Sans", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText("VS", cx, cy + 4);
+      } else if (arch === "equation_math") {
+        // Animated right triangle + expanding formula
+        const tx = cx - 90;
+        const ty = cy + 45;
+        const s = 0.65 + 0.35 * Math.min(1, progress * 1.4);
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(tx + 110 * s, ty);
+        ctx.lineTo(tx + 110 * s, ty - 75 * s);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Equation spotlight box
+        if (spec.equation) {
+          ctx.fillStyle = theme.card;
+          ctx.strokeStyle = secColor;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(cx - 140, boxY + 20, 280, 42, 10);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = theme.text;
+          ctx.font = `700 16px "JetBrains Mono", monospace`;
+          ctx.textAlign = "center";
+          ctx.fillText(spec.equation, cx, boxY + 46);
+        }
+        // Step cards on right
+        entities.slice(0, 2).forEach((ent, i) => {
+          drawEntityCard(ctx, cx + 45, boxY + 80 + i * 64, Math.min(190, boxW * 0.35), 52, ent, theme, (Math.floor(t) % 2) === i);
+        });
+      } else if (arch === "bar_chart") {
+        const bars = Array.isArray(spec.bars) && spec.bars.length ? spec.bars : entities.map((e, i) => ({ label: e.label, value: 50 + i * 15, color: e.color }));
+        const barW = Math.min(64, (boxW * 0.6) / Math.max(1, bars.length));
+        const gap = 24;
+        const totalBW = bars.length * barW + (bars.length - 1) * gap;
+        const startBX = cx - totalBW / 2;
+        const baseBY = boxY + boxH - 52;
+        const maxH = boxH * 0.55;
+
+        bars.forEach((b, i) => {
+          const val = Math.max(15, Math.min(100, Number(b.value) || 60));
+          const bh = (val / 100) * maxH * (0.4 + 0.6 * progress);
+          const bx = startBX + i * (barW + gap);
+          const by = baseBY - bh;
+          ctx.fillStyle = b.color || accent;
+          ctx.beginPath();
+          ctx.roundRect(bx, by, barW, bh, [6, 6, 0, 0]);
+          ctx.fill();
+
+          ctx.fillStyle = theme.text;
+          ctx.font = `700 11px "JetBrains Mono", monospace`;
+          ctx.textAlign = "center";
+          ctx.fillText(`${Math.round(val)}%`, bx + barW / 2, by - 8);
+          ctx.fillStyle = theme.muted;
+          ctx.font = `500 10px "Plus Jakarta Sans", sans-serif`;
+          ctx.fillText((b.label || "").slice(0, 10), bx + barW / 2, baseBY + 16);
+        });
       } else {
-        // Modular 3-Stage Architectural Diagram for Photosynthesis, Sulba Sutras & Custom Topics
-        const nw = Math.min(148, boxW * 0.25);
-        const nh = 64;
-        const leftX = pad + 24;
-        const midX = cx - nw / 2;
-        const rightX = pad + boxW - nw - 24;
+        // concept_spotlight: Breathing central hero + radiating satellite concepts + animated particle beams
+        const pulse = 36 + Math.sin(t * 2.5) * 4;
+        ctx.fillStyle = `${accent}22`;
+        ctx.beginPath(); ctx.arc(cx, cy, pulse + 16, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = theme.card;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(cx, cy, pulse, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-        drawDiagramNode(ctx, leftX, cy - nh / 2, nw, nh, "01. INPUT", seedShift === 0 ? "Initial State" : "Axiom Base", theme, accent, isWhiteboard);
-        drawDiagramNode(ctx, midX, cy - nh / 2, nw, nh, `02. STAGE ${state.activeSceneIdx + 1}`, scene.keyTerm.slice(0, 16), theme, eduGreen, isWhiteboard);
-        drawDiagramNode(ctx, rightX, cy - nh / 2, nw, nh, "03. RESULT", "Verified Output", theme, accent, isWhiteboard);
+        ctx.font = `28px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(spec.center_icon || "💡", cx, cy + 6);
+        ctx.fillStyle = theme.text;
+        ctx.font = `700 11px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillText((spec.center_label || "").slice(0, 22), cx, cy + pulse + 16);
 
-        drawFlowConnector(ctx, leftX + nw + 6, cy, midX - 6, cy, "Transform", accent, progress * 1.8, theme);
-        drawFlowConnector(ctx, midX + nw + 6, cy, rightX - 6, cy, "Output", eduGreen, progress * 1.8, theme);
+        const n = Math.min(4, entities.length);
+        const activeIdx = Math.floor(t * 0.9) % Math.max(1, n);
+        const offsets = [
+          [-boxW * 0.34, -boxH * 0.25],
+          [boxW * 0.16, -boxH * 0.25],
+          [-boxW * 0.34, boxH * 0.12],
+          [boxW * 0.16, boxH * 0.12]
+        ];
+        for (let i = 0; i < n; i++) {
+          const cw = Math.min(180, boxW * 0.28);
+          const ch = 50;
+          const ex = cx + offsets[i][0];
+          const ey = cy + offsets[i][1];
+          drawAnimatedPacket(ctx, cx, cy, ex + cw / 2, ey + ch / 2, "", entities[i].icon, t * 0.8 + i * 0.25, entities[i].color || secColor, theme);
+          drawEntityCard(ctx, ex, ey, cw, ch, entities[i], theme, i === activeIdx, i === activeIdx ? 1.04 : 1);
+        }
+      }
+
+      // 7. Progressive Callout Pill at Bottom of Stage
+      const callouts = Array.isArray(spec.callouts) && spec.callouts.length ? spec.callouts : [scene.analogy];
+      const activeCallout = callouts[Math.floor(progress * callouts.length) % callouts.length] || "";
+      if (activeCallout) {
+        ctx.fillStyle = theme.card;
+        ctx.strokeStyle = `${accent}88`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.roundRect(pad + 14, boxY + boxH - 32, boxW - 28, 24, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = theme.text;
+        ctx.font = `500 11px "JetBrains Mono", monospace`;
+        ctx.textAlign = "center";
+        ctx.fillText(`✦ ${String(activeCallout).slice(0, 78)}`, cx, boxY + boxH - 16);
       }
     }
 
@@ -3192,7 +3873,7 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
       if (urlParams.get("calm") === "1") {
         document.body.classList.add("calm");
       }
-      if (urlParams.get("loaded") !== "1") return;
+      if (urlParams.get("loaded") !== "1" && urlParams.get("autoload") !== "1") return;
 
       try {
         const raw = localStorage.getItem("clarivid_studio_payload");
@@ -3230,6 +3911,8 @@ Task: Output a strict JSON object with "title" and 4 modular "scenes" where each
 
         switchScreen("studio");
         renderAllStudioViews();
+        startAmbientCanvasLoop();
+        enrichScenesWithVisuals(state.lessonTitle, state.scenes);
 
         if (payload.usedFallback) {
           showToast(`Notice: Loaded pre-validated lesson (${payload.fallbackReason || "fallback"}) for "${state.lessonTitle}".`);

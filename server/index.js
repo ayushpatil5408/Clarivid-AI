@@ -10,6 +10,7 @@ import auditRoute from './routes/audit.js'
 import compareRoute from './routes/compare.js'
 import reexplainRoute from './routes/reexplain.js'
 import askRoute from './routes/ask.js'
+import visualsRoute from './routes/visuals.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 
@@ -54,6 +55,7 @@ app.use('/api/audit', auditRoute)
 app.use('/api/compare', compareRoute)
 app.use('/api/reexplain', reexplainRoute)
 app.use('/api/ask', askRoute)
+app.use('/api/visuals', visualsRoute)
 
 app.use(errorHandler)
 
